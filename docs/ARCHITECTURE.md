@@ -269,3 +269,21 @@ DB_NAME=pawpos
 ```
 
 The database (`pawpos`) must exist before first run; `main.py` may attempt `CREATE DATABASE IF NOT EXISTS` if the user has rights.
+
+### Inventory services (Phase 7)
+
+`inventory_service` restricts every read/write to an active owner. `stock_overview`
+returns product snapshots including inactive products. `receive_stock` and
+`adjust_stock` lock the product, validate unit precision and numeric limits, and
+commit the balance and movement together. Receipt quantities are positive;
+adjustments are signed, nonzero, and require a common reason plus a note.
+Supplier text is delivery-specific and stored with the note (255 characters
+combined); it does not change the product's default supplier. Optional delivery
+dates use the existing movement timestamp, with past dates recorded at midnight.
+`stock_after` always means the balance when the operation was posted, including
+when a delivery is backdated. Future delivery dates are rejected.
+
+`list_movements` returns immutable rows for all four movement types, with optional
+product/type and inclusive calendar-date bounds. Sale references resolve to
+receipt numbers; refund references show the refund ID. No history mutation API
+is exposed. This phase uses existing tables without schema changes.

@@ -149,6 +149,10 @@ rolled back; verification leaves no test sale/void rows and no stock changes.
 
 ## Phase 7: Inventory
 
+**Implementation status:** owner-only inventory services and rollback/validation
+tests are implemented. The four-tab owner screen follows in this phase.
+No schema changes are required.
+
 **Tasks**
 
 - `inventory_service`: `receive_stock`, `adjust_stock` (no negative result), `list_movements(filters)`, `stock_overview`.

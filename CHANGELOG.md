@@ -67,3 +67,7 @@
   sessions, a startup connection check, Decimal formatting, bcrypt helpers,
   in-memory login state, and paw placeholder assets.
 - Add automated foundation checks.
+
+- Add owner inventory services for receiving deliveries, signed stock corrections,
+  stock overview, and filtered read-only movement history. Stock changes and
+  audit rows commit together; invalid quantities or failed writes change neither.
