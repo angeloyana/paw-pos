@@ -84,6 +84,12 @@ Startup and diagnostic messages are written to the project-root `pawpos.log`
 in UTF-8, alongside console output. The log is ignored by Git. If the log file
 cannot be opened, startup continues with console logging.
 
+Run the repeatable ten-step demo with
+`python -m pytest tests/test_demo_flow.py -q`. It uses a disposable file-backed
+SQLite database, reopens it after an app restart, and exercises the real Tk
+screens. PDF files are generated; OS viewer launches are mocked. A display is
+required (or use Xvfb as above).
+
 Use Ruff to lint and format Python code:
 
 ```sh

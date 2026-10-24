@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Automate the ten-step demo through real Tk screens and a reopened disposable
+  database, covering hold/resume, void, GCash/PDF, refund approval, inventory,
+  dashboard/history/customer purchases, and disabled-account login.
+
 - Add hover help for POS function keys and cart editing/removal, with clean
   tooltip cancellation on navigation/logout. Explain empty customer searches
   and walk-in checkout. Use current ttkbootstrap widget imports with support

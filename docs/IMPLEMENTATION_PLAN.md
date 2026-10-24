@@ -263,8 +263,9 @@ and format checks pass.
 
 **Implementation status:** file logging and friendly database startup dialogs
 are implemented and tested. POS shortcut tooltips, customer empty-state help,
-and compatible ttkbootstrap imports are complete. Final demo verification
-follows in this phase.
+and compatible ttkbootstrap imports are complete. The automated ten-step demo
+passes against a file-backed SQLite database reopened through a new engine/app.
+Final MySQL and full-suite checks follow in this phase.
 
 **Tasks**
 
