@@ -24,6 +24,10 @@ def test_all_tables_exist_and_compile_for_mysql(session_factory):
             "stock_movements",
             "refund_requests",
             "refund_items",
+            "refund_payouts",
+            "refund_payout_corrections",
+            "refund_decision_notices",
+            "refund_tracking_state",
         }
     statements = []
     engine = create_mock_engine(
@@ -34,7 +38,7 @@ def test_all_tables_exist_and_compile_for_mysql(session_factory):
     )
     Base.metadata.create_all(engine)
     tables = [sql for sql in statements if "CREATE TABLE" in sql]
-    assert len(tables) == 10
+    assert len(tables) == 14
     assert all("InnoDB" in sql and "utf8mb4" in sql for sql in tables)
 
 

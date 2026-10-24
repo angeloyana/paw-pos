@@ -4,7 +4,7 @@ Conventions: table names plural snake_case; integer auto-increment `id` primary 
 
 ## users
 
-All ten tables are registered by `pawpos.models` and created by `init_db()`.
+All fourteen tables are registered by `pawpos.models` and created by `init_db()`.
 Named checks reject negative product prices, stock, thresholds, sale/refund
 amounts, and movement balances; sale/refund item quantities must be positive.
 Enums are checked in SQLite tests as well as MySQL. The declared indexes cover
@@ -186,3 +186,22 @@ Append-only history. **Never update or delete rows.**
 | Stainless Food Bowl | Accessories | piece | 95.00 | 22 | 5 |
 
 Each seeded product with stock > 0 gets an initial `stock_received` movement (note "Initial stock"). Leave a couple low or at zero on purpose so the dashboard and disabled cards can be demonstrated.
+
+## Refund tracking (feature 001)
+
+Four additional tables are created automatically; existing tables need no ALTER
+SQL. `seed_database()` also performs an atomic one-time initialization before
+login, even when users already exist. It inserts legacy assumed-paid records for
+existing approved refunds and an initialization marker together. Later startups
+never backfill new approvals. No notices are backfilled and no shop data is reset.
+
+| Table | Columns and constraints |
+| --- | --- |
+| `refund_payouts` | Integer PK; unique required `refund_request_id` FK; required `legacy_assumed_paid` boolean; nullable method (cash/gcash), reference varchar(50), `paid_by` user FK, `paid_at` datetime. Check requires either a legacy record with all payment details NULL or a real payment with actor/time, cash with NULL reference, or GCash with nonblank reference. Amount derives from the approved request. |
+| `refund_payout_corrections` | Integer PK; indexed payout FK; required old/new methods, nullable old/new references varchar(50), required reason varchar(255), correcting user FK, local correction time. Append-only history; original payout actor/time are retained. |
+| `refund_decision_notices` | Integer PK; unique required refund FK; indexed recipient user FK; local creation time; nullable read time. Approval/rejection inserts the notice in its review transaction. |
+| `refund_tracking_state` | Singleton integer PK constrained to 1; local initialization time. Commits with legacy records. |
+
+Payout writes never change request approval status, stock, or report dates. A
+unique payout per request prevents duplicate records, including competing saves.
+Legacy records contain no fabricated payment method, reference, actor, or time.

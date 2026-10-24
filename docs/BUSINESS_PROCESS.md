@@ -107,3 +107,20 @@ and label piece/kg units. Inactive products remain in historical sales rankings.
 - Owner creates cashier accounts, disables/enables them, and resets their passwords.
 - Login is simulated: username + password checked against a bcrypt hash; the logged-in user is kept in memory. No tokens, no expiry, no auto-lock.
 - Disabled users cannot log in.
+
+### Refund payout records and decision notices
+
+Active cashiers and owners can read all shop refund decisions, including other
+shifts' requests. Only the requesting user receives a persistent decision notice.
+Opening that decision acknowledges their notice, without acknowledging anyone
+else's notices. Approval and rejection remain owner-only.
+
+After handing over the full approved amount, a cashier or owner records Cash or
+GCash (required reference, maximum 50 characters). No partial payouts or payment
+integration are provided. Staff coordinate the physical handover manually; the
+system prevents duplicate payment records, not simultaneous physical handovers.
+Owners can correct method/reference with a required reason and preserved history;
+this never reopens payment or changes the original actor/time. Existing approvals
+at first tracking startup are assumed paid with payment details unknown, and
+cannot be paid again or given invented details. Reports still deduct refunds on
+the approval date, irrespective of payout status.

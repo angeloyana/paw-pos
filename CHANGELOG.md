@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add shared refund tracking services, requester-only persistent decision notices,
+  full cash/GCash payout records, owner correction audit, and one-time legacy
+  assumed-paid initialization. Keep approval-date reports and stock unchanged.
+
 - Initialize the documentation guide, feature index, and reusable spec template.
   Preserve the completed initial build as history and align contributor reading
   guidance with `AGENTS.md`, retaining the existing `DATABASE.md` schema document.

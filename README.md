@@ -8,7 +8,7 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 ## Implementation status and setup
 
 **All eleven implementation phases are complete.** Startup checks the
-database connection, creates all ten tables, seeds an empty installation, and
+database connection, creates all fourteen tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
@@ -258,3 +258,13 @@ Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loy
 | Default owner login   | `owner` / `owner123` (seed; change it) |
 | Default cashier login | `cashier` / `cashier123` (seed)        |
 | Theme                 | ttkbootstrap, blue (`cosmo`)           |
+
+## Refund tracking data
+
+Startup creates four refund-tracking tables in addition to the original ten.
+No manual ALTER SQL is required. Before login, existing approved refunds are
+marked assumed paid once; payment method, reference, cashier, and time remain
+unknown. Subsequent approvals await payout. Existing users/catalog data are
+preserved and the initialization is safe to repeat. Decision notices are created
+only for reviews performed by this version. Sales reports continue to deduct
+refunds on approval rather than payout.

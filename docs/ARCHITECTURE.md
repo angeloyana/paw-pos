@@ -345,3 +345,21 @@ entries remain available in Inventory but do not generate dashboard restocking
 alerts. The card and list share that rule. `pending_refund_count` supplies the
 report/sidebar count; the existing refund service API delegates to it. No schema
 changes are required.
+
+### Shared refund tracking (feature 001)
+
+`refund_tracking_service` exposes active-user `list_refunds(receipt, status)`,
+`get_refund(id)`, `record_payout(id, method, reference="")`, `unread_notices()`, and
+`acknowledge_decision(id)`. Filters distinguish pending/rejected, awaiting payout,
+paid, and legacy assumed paid. Receipt searches treat wildcard characters
+literally. Detached frozen DTOs carry request, payout, and correction details.
+Owner-only `correct_payout(id, method, reference, reason)` appends before/after
+audit while preserving the original payment actor/time. Existing owner-only
+pending/history APIs and review permissions remain intact.
+
+Review and requester notice commit together. Acknowledgment affects only the
+current user's notice. Recording payment locks the approved request and relies
+on a unique payout FK for duplicate protection, translating duplicate writes
+after rollback. Payouts/corrections do not touch inventory or report aggregates.
+Startup seed initialization records existing approvals as assumed paid once,
+atomically with a durable marker, before any workspace is opened.

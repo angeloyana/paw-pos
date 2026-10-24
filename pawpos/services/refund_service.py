@@ -13,6 +13,7 @@ from pawpos.core.money import DecimalInput, round_money
 from pawpos.db.base import session_scope
 from pawpos.models import (
     Product,
+    RefundDecisionNotice,
     RefundItem,
     RefundRequest,
     Sale,
@@ -347,6 +348,13 @@ def approve(request_id: int, resellable_map: dict[int, bool]) -> RefundDetails:
         request.status = "approved"
         request.reviewed_by = owner.id
         request.reviewed_at = now
+        session.add(
+            RefundDecisionNotice(
+                refund_request_id=request.id,
+                user_id=request.requested_by,
+                created_at=now,
+            )
+        )
         session.flush()
         result = _details(request)
     return result
@@ -362,6 +370,13 @@ def reject(request_id: int, note: str) -> RefundDetails:
         request.reviewed_by = owner.id
         request.reviewed_at = datetime.now()
         request.review_note = note
+        session.add(
+            RefundDecisionNotice(
+                refund_request_id=request.id,
+                user_id=request.requested_by,
+                created_at=request.reviewed_at,
+            )
+        )
         session.flush()
         result = _details(request)
     return result

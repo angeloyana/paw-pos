@@ -5,7 +5,15 @@ from sqlalchemy import select
 from pawpos.core.money import D
 from pawpos.core.security import hash_password
 from pawpos.db.base import session_scope
-from pawpos.models import Category, Product, StockMovement, User
+from pawpos.models import (
+    Category,
+    Product,
+    RefundPayout,
+    RefundRequest,
+    RefundTrackingState,
+    StockMovement,
+    User,
+)
 
 CATEGORIES = (
     ("Dog Food", True),
@@ -39,6 +47,7 @@ PRODUCTS = (
 def seed_database() -> bool:
     """Create demo users and inventory atomically only when no users exist."""
     with session_scope() as session:
+        initialize_refund_tracking(session)
         if session.scalar(select(User.id).limit(1)) is not None:
             return False
         owner = User(
@@ -81,3 +90,20 @@ def seed_database() -> bool:
                     )
                 )
     return True
+
+
+def initialize_refund_tracking(session) -> None:
+    """Classify pre-tracking approvals once, without inventing payment details."""
+    if session.get(RefundTrackingState, 1) is not None:
+        return
+    session.add(RefundTrackingState(id=1))
+    session.flush()
+    existing = select(RefundPayout.refund_request_id)
+    for request_id in session.scalars(
+        select(RefundRequest.id).where(
+            RefundRequest.status == "approved", ~RefundRequest.id.in_(existing)
+        )
+    ):
+        session.add(
+            RefundPayout(refund_request_id=request_id, legacy_assumed_paid=True)
+        )

@@ -109,3 +109,16 @@ Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify
 - AC: Chart 1: daily sales (bar, last 7 days, toggle 30). Chart 2: best sellers (horizontal bar, top 5; range today / 7 / 30 days). Low-stock table.
 - AC: Charts use Matplotlib embedded via `FigureCanvasTkAgg`, themed to match blue.
 - AC: Refresh button (and refresh when the dashboard is shown).
+
+## I. Shared refund tracking
+
+- AC: Active cashiers and owners can query every shop refund by literal receipt
+  text and pending/rejected/awaiting-payout/paid/legacy-assumed-paid status.
+- AC: Approval/rejection creates a requester-only persistent notice atomically;
+  acknowledgment is restricted to the recipient.
+- AC: Record full approved payouts as cash or GCash with a required reference.
+  Record actor/time and reject duplicate or nonapproved payouts atomically.
+- AC: Owners alone can correct method/reference with a reason and preserved audit;
+  payment stays complete and original actor/time remain intact.
+- AC: Startup marks existing approvals assumed paid once, with no fabricated
+  payment details or old notices. Reports and stock are unchanged by payouts.
