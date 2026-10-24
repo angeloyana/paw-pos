@@ -13,6 +13,9 @@ opens the default blue-themed desktop login. Owners can manage categories and pr
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
 workspaces support logout.
+Tables across owner screens, POS, and dialogs share readable row spacing, bold
+headers, alternating backgrounds, and selection highlights that follow the
+account theme immediately.
 The ten-step demo passes through real Tk screens on local MySQL, including
 checkout, app recreation/hold restoration, refunds, inventory, reports, receipts,
 and account management. Verification changes are rolled back, preserving shop

@@ -9,6 +9,7 @@ import ttkbootstrap as ttk
 from pawpos.core.errors import PawPOSError, ValidationError
 from pawpos.core.money import format_qty
 from pawpos.services import inventory_service as inventory
+from pawpos.ui.widgets.table import TableView
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ class InventoryScreen(ttk.Frame):
         frame.grid(row=1, column=0, sticky="nsew")
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
-        tree = ttk.Treeview(frame, columns=[c[0] for c in columns], show="headings")
+        tree = TableView(frame, columns=[c[0] for c in columns], show="headings")
         for key, label, width in columns:
             tree.heading(key, text=label)
             tree.column(

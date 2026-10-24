@@ -10,6 +10,17 @@
 - **Currency:** `₱` with thousands separators and 2 decimals (e.g. `₱1,250.00`). Per-kg prices show `₱95.00/kg`. Kg quantities show up to 3 decimals (trim trailing zeros, e.g. `1.5 kg`).
 - **Window:** start maximized (min size 1280x720). Input is keyboard + mouse only.
 
+All workspace and dialog tables use the same appearance: body text in the system
+font at least 11 pt, bold padded headers at the system font size (at least 10 pt),
+rows at least 32 pixels tall at standard display
+scaling (growing with display scaling and font metrics), and subtle alternating
+row backgrounds. Headers, stripes, and selection highlights follow the active
+theme immediately. Low-stock warning text remains visible on striped rows;
+selection uses the theme's selection foreground and background for readability.
+Reloading, inserting, deleting, or moving rows keeps the stripes alternating.
+Existing column sizing, numeric alignment, scrolling, and keyboard/mouse actions
+are preserved.
+
 ## 2. Login screen
 
 The login screen is implemented. Owners enter the owner shell; cashiers enter

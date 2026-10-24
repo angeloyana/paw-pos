@@ -7,6 +7,7 @@ import ttkbootstrap as ttk
 from pawpos.core.errors import ValidationError
 from pawpos.services import customer_service
 from pawpos.ui.dialogs.base import ModalDialog
+from pawpos.ui.widgets.table import TableView
 
 
 class CustomerPicker(ModalDialog):
@@ -21,7 +22,7 @@ class CustomerPicker(ModalDialog):
         self.first_input.pack(fill="x")
         table_frame = ttk.Frame(self.body)
         table_frame.pack(fill="both", expand=True, pady=10)
-        self.table = ttk.Treeview(
+        self.table = TableView(
             table_frame,
             columns=("name", "contact"),
             show="headings",

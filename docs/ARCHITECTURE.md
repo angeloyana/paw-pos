@@ -106,6 +106,13 @@ pawpos/
 
 ## 3. Key design decisions
 
+All workspace and dialog tables use `ui/widgets/table.py`'s `TableView`, a
+`ttk.Treeview` subclass that shares theme-aware typography, headers, selection,
+and alternating row backgrounds. Row mutations coalesce striping into one idle
+callback, preserving screen-owned semantic tags and selection. Destruction
+cancels pending striping. The root's existing `refresh_theme()` traversal
+restyles live tables without recreating them or reloading their data.
+
 `POSScreen` calls catalog/customer services and owns its `Cart`; widgets and
 dialogs never query models. Adds and edits fetch current active product data
 independently of the visible search/category filter. The owner shell keeps one

@@ -9,6 +9,7 @@ from pawpos.core.money import format_peso
 from pawpos.services import sale_service
 from pawpos.ui.dialogs.base import ModalDialog
 from pawpos.ui.dialogs.void import VoidDialog
+from pawpos.ui.widgets.table import TableView
 
 
 class HeldListDialog(ModalDialog):
@@ -21,7 +22,7 @@ class HeldListDialog(ModalDialog):
         )
         container = ttk.Frame(self.body)
         container.pack(fill="both", expand=True)
-        self.table = ttk.Treeview(
+        self.table = TableView(
             container,
             columns=("time", "items", "total", "customer", "cashier"),
             show="headings",

@@ -2,6 +2,12 @@
 
 Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify.
 
+Shared table presentation applies across owner workspaces, POS, and dialogs:
+readable row spacing, bold padded headers, alternating row backgrounds, and
+distinct selection colors. Tables follow live theme changes while retaining
+their data, selection, and low-stock warning tags. Existing table interactions
+and column layouts are preserved.
+
 ## A. Authentication and users
 
 **F-A1 Login screen**

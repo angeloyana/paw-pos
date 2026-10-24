@@ -7,6 +7,7 @@ import ttkbootstrap as ttk
 from pawpos.core.money import format_peso
 from pawpos.services import customer_service, sales_history_service
 from pawpos.ui.owner.catalog_screen import CatalogScreen
+from pawpos.ui.widgets.table import TableView
 
 
 class CustomersScreen(CatalogScreen):
@@ -55,7 +56,7 @@ class CustomersScreen(CatalogScreen):
         ttk.Label(purchases, textvariable=self.purchase_message).grid(
             row=0, column=0, sticky="w", pady=(0, 6)
         )
-        self.purchases_tree = ttk.Treeview(
+        self.purchases_tree = TableView(
             purchases,
             columns=("receipt", "date", "method", "total", "refunded"),
             show="headings",

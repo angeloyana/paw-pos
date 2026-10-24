@@ -7,6 +7,7 @@ from collections.abc import Callable
 import ttkbootstrap as ttk
 
 from pawpos.core.errors import PawPOSError
+from pawpos.ui.widgets.table import TableView
 
 logger = logging.getLogger(__name__)
 
@@ -82,12 +83,12 @@ class CatalogScreen(ttk.Frame):
         self.status_label.configure(bootstyle="success")
         return True
 
-    def make_table(self, columns: list[tuple[str, str, int]]) -> ttk.Treeview:
+    def make_table(self, columns: list[tuple[str, str, int]]) -> TableView:
         container = ttk.Frame(self.body)
         container.grid(row=0, column=0, sticky="nsew")
         container.columnconfigure(0, weight=1)
         container.rowconfigure(0, weight=1)
-        tree = ttk.Treeview(
+        tree = TableView(
             container,
             columns=[key for key, _, _ in columns],
             show="headings",

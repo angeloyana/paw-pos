@@ -9,6 +9,7 @@ from pawpos.core.errors import ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.services import refund_tracking_service as tracking
 from pawpos.ui.dialogs.base import ModalDialog
+from pawpos.ui.widgets.table import TableView
 
 STATUS_LABELS = {
     "all": "All",
@@ -140,7 +141,7 @@ class RefundStatusDialog(ModalDialog):
         ).pack(side="left")
         self.refresh_button = ttk.Button(toolbar, text="Refresh", command=self.refresh)
         self.refresh_button.pack(side="left", padx=8)
-        self.tree = ttk.Treeview(
+        self.tree = TableView(
             self.body,
             columns=("id", "receipt", "requester", "amount", "status"),
             show="headings",

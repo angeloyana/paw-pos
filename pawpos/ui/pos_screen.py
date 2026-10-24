@@ -27,6 +27,7 @@ from pawpos.ui.dialogs.refund_status import RefundStatusDialog
 from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
+from pawpos.ui.widgets.table import TableView
 from pawpos.ui.widgets.tooltip import add_tooltip
 
 logger = logging.getLogger(__name__)
@@ -226,7 +227,7 @@ class POSScreen(ttk.Frame):
         table_frame.grid(row=1, column=0, sticky="nsew")
         table_frame.columnconfigure(0, weight=1)
         table_frame.rowconfigure(0, weight=1)
-        self.table = ttk.Treeview(
+        self.table = TableView(
             table_frame,
             columns=("name", "qty", "price", "total"),
             show="headings",

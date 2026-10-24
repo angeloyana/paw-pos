@@ -10,6 +10,7 @@ from pawpos.core.errors import PawPOSError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.services import report_service
 from pawpos.ui.widgets.chart_frame import ChartFrame
+from pawpos.ui.widgets.table import TableView
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +98,7 @@ class DashboardScreen(ttk.Frame):
         ttk.Label(
             low, textvariable=self.low_message, font=("Segoe UI", 12, "bold")
         ).grid(row=0, column=0, sticky="w", pady=(0, 6))
-        self.low_tree = ttk.Treeview(
+        self.low_tree = TableView(
             low,
             columns=("name", "category", "stock", "threshold"),
             show="headings",

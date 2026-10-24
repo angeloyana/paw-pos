@@ -6,6 +6,8 @@ from tkinter import messagebox
 
 import ttkbootstrap as ttk
 
+from pawpos.ui.widgets.table import TableView
+
 try:
     from ttkbootstrap.widgets.scrolled import ScrolledFrame
 except ImportError:  # Compatibility with earlier supported ttkbootstrap 1.x.
@@ -54,7 +56,7 @@ class RefundsScreen(ttk.Frame):
             self.notebook.add(tab, text=title)
             tab.columnconfigure(0, weight=1)
             tab.rowconfigure(0, weight=1)
-            tree = ttk.Treeview(
+            tree = TableView(
                 tab,
                 columns=(
                     "id",

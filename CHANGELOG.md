@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Improve every workspace and dialog table with readable row spacing, bold
+  padded headers, subtle alternating backgrounds, and theme-aware selection.
+  Live theme changes retain table data, selection, and low-stock warnings.
+
 - Complete feature 002: account Settings with all built-in themes and password
   changes. Verify 444 tests and 26 subtests with real Tk coverage, Ruff, app startup
   on disposable SQLite, and light/dark layouts. No manual ALTER SQL is needed.
