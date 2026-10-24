@@ -6,6 +6,7 @@ Statuses: `planned`, `in progress`, `done`. Keep each spec's status aligned here
 | ID | Feature | Status |
 | --- | --- | --- |
 | Initial build | [Completed initial implementation (historical record)](../IMPLEMENTATION_PLAN.md) | done |
+| 001 | [Cashier refund status and payouts](001-cashier-refund-status.md) | in progress |
 
 The initial build's completion and verification are recorded in its Phase 11
 section. Existing capabilities remain documented in [FEATURES.md](../FEATURES.md);
