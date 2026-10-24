@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add completed-sale receipt data, wrapped receipt text, and atomic 80 mm PDF
+  generation with an embedded peso-capable font. PDF printing opens the system
+  default viewer; failed viewer launches leave the PDF available for manual use.
+
 - Add atomic sale completion with product locks, stock revalidation, item price
   snapshots, linked stock movements, cash change, GCash reference validation,
   and daily `PAW-YYYYMMDD-NNNN` receipt numbering.

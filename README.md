@@ -76,6 +76,8 @@ Phase 7. Sidebar entries for later phases are disabled.
 To regenerate the bundled paw placeholders, run
 `python scripts/generate_assets.py`. Product image copies will live in
 `assets/products/`; generated receipts and logs are ignored by Git.
+Receipt PDFs use the bundled DejaVu Sans Mono font and its license in
+`assets/fonts/` so the peso sign prints without requiring a system font install.
 
 ## Reading order
 

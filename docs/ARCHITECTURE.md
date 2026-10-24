@@ -217,6 +217,18 @@ failure, letting the UI clear it after the commit. No schema changes are needed.
 
 `receipt_service.build_receipt(sale_id)` returns a data object used by both the on-screen preview (monospace text widget) and `receipt_service.make_pdf(receipt)`, which writes the PDF. `print_receipt()` opens it with the OS default app for the user to print.
 
+Receipt reads require an active account and a completed sale. Frozen receipt
+objects use saved sale-item names, prices, quantities, and totals, so later
+catalog edits do not alter them. `receipt_text(receipt)` wraps content to 38
+characters for both preview and PDF. PDFs are 80 mm wide, with height computed
+from wrapped lines, and use the bundled DejaVu Sans Mono font for the peso sign.
+The font and its redistribution license live in `assets/fonts/`.
+`make_pdf(receipt, output_dir=None)` writes a temporary file and replaces
+`receipts/<receipt_number>.pdf` only after generation succeeds.
+`print_receipt(receipt, output_dir=None)` opens that PDF using `os.startfile`,
+`open`, or `xdg-open`. It never sends a job directly to a printer. Actual viewer
+and printer availability depends on the local desktop configuration.
+
 ## 5. Error handling and logging
 
 - Python `logging` to `pawpos.log` (rotating file) and console.
