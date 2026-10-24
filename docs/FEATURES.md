@@ -112,6 +112,13 @@ Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify
 
 ## I. Shared refund tracking
 
+- AC: POS Refunds provides shared receipt/status filtering, decision/item/payment
+  details, requester-only unread badge and notices, ten-second polling, manual
+  retry, and callbacks cancelled at logout. Opening a decision acknowledges it.
+- AC: Confirmed payout recording preserves the cart. Owner Status / payouts adds
+  correction controls and visible audit history. Failed reads retain data; failed
+  writes retain inputs; committed writes disable repeat actions before refresh.
+
 - AC: Active cashiers and owners can query every shop refund by literal receipt
   text and pending/rejected/awaiting-payout/paid/legacy-assumed-paid status.
 - AC: Approval/rejection creates a requester-only persistent notice atomically;

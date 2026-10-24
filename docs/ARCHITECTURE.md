@@ -168,7 +168,7 @@ owners can reset their own seeded password as well as cashier passwords.
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | App style       | One Tkinter app; screens are frames swapped in a single root window                                                                               |
 | Schema creation | `Base.metadata.create_all()` on startup; no migrations                                                                                            |
-| Seeding         | `seed.py` runs on startup only if no users exist                                                                                                  |
+| Seeding         | `seed.py` initializes refund tracking on startup; demo users/catalog are added only if no users exist                                                                                                  |
 | Cart            | In-memory `Cart` object (pure Python, unit-testable). Persisted to DB only when held                                                              |
 | Held carts      | Stored as `sales` rows with `status='held'` plus `sale_items`                                                                                     |
 | Sale completion | One DB transaction, row-level lock on products (`with_for_update()`), then deduct stock                                                           |
@@ -363,3 +363,11 @@ on a unique payout FK for duplicate protection, translating duplicate writes
 after rollback. Payouts/corrections do not touch inventory or report aggregates.
 Startup seed initialization records existing approvals as assumed paid once,
 atomically with a durable marker, before any workspace is opened.
+
+`RefundStatusDialog` is shared by the cashier POS and owner Refunds workspace.
+It queries current detached details before payment, acknowledges the viewer's
+personal notice on opening details, and opens a nested `PayoutDialog`. Payment
+writes disable repeat actions before list refresh. The existing cart is untouched.
+The POS owns a ten-second Tk `after` timer for notices, a separate status label,
+unread badge, and explicit retry control; destruction cancels the timer. No
+blocking notification dialogs or new runtime dependencies are introduced.

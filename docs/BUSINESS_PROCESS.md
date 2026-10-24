@@ -11,8 +11,8 @@
 
 | Role        | Can do                                                                                                                                                                                                               |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Cashier** | Log in/out, create sales, hold/resume transactions, void items or whole transactions (with reason), look up past sales by receipt number, submit refund requests, reprint receipts, add/select customers at checkout |
-| **Owner**   | Everything the cashier can, plus: dashboard/reports, manage products, categories, inventory (receive stock, adjust stock, view movements), customers, sales history, approve/reject refunds, manage cashier accounts |
+| **Cashier** | Log in/out, create sales, hold/resume transactions, void items or whole transactions (with reason), look up past sales by receipt number, submit/read refund requests and decisions, record full payouts, reprint receipts, add/select customers at checkout |
+| **Owner**   | Everything the cashier can, plus: dashboard/reports, manage products, categories, inventory (receive stock, adjust stock, view movements), customers, sales history, approve/reject refunds, correct payout details with audit, manage cashier accounts |
 
 Owner screens are only visible to the owner. The cashier sees only the POS screen.
 
@@ -62,7 +62,7 @@ A refund applies only to a **completed** sale.
 5. On approval, the owner marks each refunded line **resellable: yes/no**.
    - Resellable = yes: stock is added back and a `refund` stock movement is recorded.
    - Resellable = no (damaged/opened): stock is not changed.
-6. The refund money is handed back manually (no payment integration). The system records the refund amount.
+6. A cashier or owner returns the full approved amount manually, then records the payout method/reference, actor, and time (no payment integration).
 
 **Rules (defaults, enforce in the service layer)**
 

@@ -189,8 +189,20 @@ refund movements. **Reject** requires a note and confirmation, and leaves stock
 unchanged. **History** shows processed requests, item decisions, reviewer, and
 review note. A timely request can be reviewed after its seven-day request
 window. The refund money is handed back manually; there is no payment reversal
-integration. POS users submit requests only; approval stays in the owner
-workspace.
+integration. Approval stays in the owner workspace. Cashiers open **Refunds**
+to browse all shifts' requests by receipt/status and inspect the owner's decision.
+Only the requesting user gets persistent unread notices; **View decisions** opens
+them. Notices refresh every ten seconds, or use **Refresh notices** to retry.
+
+After returning the full approved amount, choose **Record payout**, select Cash
+or GCash (reference required), and confirm that the money has already been
+returned. Coordinate with other staff before handing over money: the app prevents
+duplicate records, not duplicate physical handovers. No partial payments or
+payment-provider integration are supported. Owners use **Status / payouts** in
+Refunds to record payments or correct a paid refund's method/reference with a
+required reason. Correction history and the original payout cashier/time remain
+visible. Existing approved refunds are marked assumed paid before tracking and
+cannot be paid again; their payment details remain unknown.
 
 Local MySQL refund lookup/request, opened-food rejection, mixed resellable
 approval, rejection, and movement history were verified inside a transaction
@@ -221,7 +233,7 @@ history; new work uses specs from [the feature template](docs/features/TEMPLATE.
 
 **In scope**
 
-- Two roles: **Owner** (full access) and **Cashier** (sales, void, refund requests)
+- Two roles: **Owner** (full access) and **Cashier** (sales, void, refund requests/status/payouts)
 - Sell per-piece items and per-kilo items (weight typed manually by the cashier)
 - Payments: **Cash** and **GCash** (manual; only a reference number is stored)
 - Held transactions saved in the database

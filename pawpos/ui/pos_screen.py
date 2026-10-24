@@ -14,6 +14,7 @@ from pawpos.services import (
     category_service,
     product_service,
     receipt_service,
+    refund_tracking_service,
     sale_service,
 )
 from pawpos.services.cart import Cart
@@ -22,6 +23,7 @@ from pawpos.ui.dialogs.held_list import HeldListDialog
 from pawpos.ui.dialogs.payment import PaymentDialog
 from pawpos.ui.dialogs.receipt_preview import ReceiptPreview
 from pawpos.ui.dialogs.refund_request import RefundRequestDialog
+from pawpos.ui.dialogs.refund_status import RefundStatusDialog
 from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
@@ -71,6 +73,10 @@ class POSScreen(ttk.Frame):
             header, text="Request Refund", command=self.request_refund
         )
         self.refund_button.pack(side="right", padx=6)
+        self.refund_status_button = ttk.Button(
+            header, text="Refunds", command=self.open_refunds
+        )
+        self.refund_status_button.pack(side="right", padx=6)
         self.held_button = ttk.Button(header, text="Held (F8)", command=self.open_held)
         self.held_button.pack(side="right")
         add_tooltip(
@@ -127,6 +133,58 @@ class POSScreen(ttk.Frame):
             )
         self.refresh_catalog()
         self.render_cart()
+        self.refund_notice = tk.StringVar(self)
+        notice_bar = ttk.Frame(self)
+        notice_bar.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(8, 0))
+        ttk.Label(notice_bar, textvariable=self.refund_notice, wraplength=700).pack(
+            side="left"
+        )
+        self.notice_button = ttk.Button(
+            notice_bar,
+            text="View decisions",
+            command=lambda: self.open_refunds(unread_only=True),
+        )
+        self.notice_button.pack(side="right", padx=6)
+        self.notice_retry = ttk.Button(
+            notice_bar, text="Refresh notices", command=self.refresh_refund_notices
+        )
+        self.notice_retry.pack(side="right")
+        self._notice_after = None
+        self._poll_refund_notices()
+
+    def open_refunds(self, *, unread_only=False):
+        self.perform(
+            lambda: RefundStatusDialog(
+                self, owner=self.role == "owner", unread_only=unread_only
+            ).show()
+        )
+        self.refresh_refund_notices()
+
+    def refresh_refund_notices(self):
+        try:
+            notices = refund_tracking_service.unread_notices()
+        except Exception:
+            logger.exception("Cannot refresh refund decision notices")
+            self.refund_notice.set(
+                "Cannot refresh refund decisions. Use Refresh notices to retry."
+            )
+            return
+        self.refund_status_button.configure(
+            text=f"Refunds ({len(notices)} unread)" if notices else "Refunds"
+        )
+        self.notice_button.configure(state="normal" if notices else "disabled")
+        if notices:
+            latest = notices[0]
+            self.refund_notice.set(
+                f"Refund #{latest.request_id} was {latest.status}. {len(notices)} unread decision(s)."
+            )
+        else:
+            self.refund_notice.set("No unread refund decisions.")
+
+    def _poll_refund_notices(self):
+        self._notice_after = None
+        self.refresh_refund_notices()
+        self._notice_after = self.after(10000, self._poll_refund_notices)
 
     def perform(self, action) -> bool:
         try:
@@ -563,6 +621,9 @@ class POSScreen(ttk.Frame):
             return "break"
 
     def destroy(self):
+        if self._notice_after is not None:
+            self.after_cancel(self._notice_after)
+            self._notice_after = None
         for key, binding in self._shortcut_bindings.items():
             self.winfo_toplevel().unbind(key, binding)
         super().destroy()

@@ -1,4 +1,4 @@
-"""First-run demo catalog; never change an existing installation."""
+"""Initialize refund tracking once and seed demo data only on empty installations."""
 
 from sqlalchemy import select
 
@@ -45,7 +45,7 @@ PRODUCTS = (
 
 
 def seed_database() -> bool:
-    """Create demo users and inventory atomically only when no users exist."""
+    """Initialize tracking; add demo users/inventory only when no users exist."""
     with session_scope() as session:
         initialize_refund_tracking(session)
         if session.scalar(select(User.id).limit(1)) is not None:

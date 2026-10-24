@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Let cashiers browse shared refund decisions, receive requester-only unread
+  alerts, and record confirmed cash/GCash payouts. Add owner payout correction
+  controls and audit details, retry feedback, and notification cleanup at logout.
+
 - Add shared refund tracking services, requester-only persistent decision notices,
   full cash/GCash payout records, owner correction audit, and one-time legacy
   assumed-paid initialization. Keep approval-date reports and stock unchanged.

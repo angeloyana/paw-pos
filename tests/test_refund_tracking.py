@@ -22,6 +22,7 @@ from pawpos.models import (
 )
 from pawpos.services import refund_service as refunds
 from pawpos.services import refund_tracking_service as tracking
+from pawpos.services import report_service
 from tests.test_refund_rules import request, sign_in
 from tests.test_refund_rules import sold as sold_fixture
 
@@ -92,6 +93,7 @@ def test_rejection_has_note_and_notice_and_cannot_be_paid(sold):
 @pytest.mark.parametrize("method,reference", [("cash", ""), ("gcash", " TX-123 ")])
 def test_full_payout_preserves_reports_stock_and_quantity(sold, method, reference):
     result = approved(sold)
+    reports_before = report_service.daily_sales(7)
     factory = sold[0]
     with factory() as session:
         before_stock = session.get(Product, 1).stock_quantity
@@ -120,6 +122,8 @@ def test_full_payout_preserves_reports_stock_and_quantity(sold, method, referenc
             == paid.request.reviewed_at
         )
     assert refunds.remaining_refundable(result.items[0].sale_item_id) == remaining
+    sign_in("owner")
+    assert report_service.daily_sales(7) == reports_before
 
 
 @pytest.mark.parametrize(
@@ -287,3 +291,54 @@ def test_database_rejects_duplicate_and_incomplete_payouts(sold):
         session.add(RefundPayout(refund_request_id=result.id, legacy_assumed_paid=True))
     with pytest.raises(IntegrityError), sold[0].begin() as session:
         session.add(RefundPayout(refund_request_id=result.id, method="gcash"))
+
+
+def test_legacy_initialization_rolls_back_marker_and_records(sold):
+    result = approved(sold)
+    factory = sold[0]
+    with pytest.raises(RuntimeError), factory.begin() as session:
+        initialize_refund_tracking(session)
+        session.flush()
+        raise RuntimeError("Initialization interrupted")
+    with factory() as session:
+        assert session.get(RefundTrackingState, 1) is None
+        assert session.scalar(select(func.count()).select_from(RefundPayout)) == 0
+    with factory.begin() as session:
+        initialize_refund_tracking(session)
+    assert tracking.get_refund(result.id).status == "legacy_paid"
+
+
+def test_notices_and_payouts_survive_database_reopen(sold, tmp_path, monkeypatch):
+    factory = sold[0]
+    # Establish cutover before creating the new decision.
+    seed_database()
+    result = approved(sold)
+    with factory() as session:
+        import sqlite3
+
+        destination = sqlite3.connect(tmp_path / "restart.sqlite")
+        session.connection().connection.driver_connection.backup(destination)
+        destination.close()
+    path = f"sqlite:///{tmp_path / 'restart.sqlite'}"
+    engine = create_engine(path)
+    monkeypatch.setattr(
+        base, "SessionLocal", sessionmaker(engine, expire_on_commit=False)
+    )
+    seed_database()
+    sign_in()
+    assert tracking.unread_notices()[0].request_id == result.id
+    assert tracking.get_refund(result.id).status == "awaiting_payout"
+    tracking.record_payout(result.id, "gcash", "DURABLE")
+    tracking.acknowledge_decision(result.id)
+    login_session.logout()
+    engine.dispose()
+    reopened = create_engine(path)
+    monkeypatch.setattr(
+        base, "SessionLocal", sessionmaker(reopened, expire_on_commit=False)
+    )
+    seed_database()
+    sign_in()
+    assert tracking.unread_notices() == []
+    assert tracking.get_refund(result.id).payout.reference == "DURABLE"
+    assert tracking.get_refund(result.id).status == "paid"
+    reopened.dispose()

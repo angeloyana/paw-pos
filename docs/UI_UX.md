@@ -93,7 +93,7 @@ Single screen, two main columns plus a top bar.
 - Customer row: shows "Walk-in" or the customer name; **Select** opens a picker with search and quick-add.
 - Large total. Buttons: **Hold (F4)**, **Void (F6)**, **Pay (F5)** (Pay is the primary, large, blue button; disabled when the cart is empty).
 
-**Top bar:** cashier name; **Held (F8)**; **Request Refund**; **Logout**. No low-stock notice for cashiers.
+**Top bar:** cashier name; **Held (F8)**; **Request Refund**; **Refunds** with unread decision count; **Logout**. No low-stock notice for cashiers.
 
 ## 4. Dialogs
 
@@ -251,3 +251,32 @@ navigation or logout. Customer selection explains empty saved lists/searches
 and offers Add or Walk-in. Database startup errors show a native owned dialog
 before the themed login; headless startup retains console diagnostics. UTF-8
 diagnostics also go to the ignored project-root `pawpos.log`.
+
+### Shared refund status and payout tracking
+
+POS Refunds opens a shared modal list with receipt search and filters for All,
+Pending, Rejected, Approved awaiting payout, Paid, Assumed paid before tracking,
+and Unread decisions. Refresh runs on opening and by button/Enter; failed reads
+retain the previous list and show inline retry feedback. Select a request to
+load its current decision, item amounts, requester/reviewer/times, review note,
+payment details, and correction history. Opening a decision acknowledges only
+the signed-in requester's notice. Empty filters explain that no requests match.
+
+A nonblocking POS notice names the latest unread decision. The Refunds button
+shows the unread count, View decisions opens the unread filter, and Refresh
+notices retries failures. Notices refresh every ten seconds and when the modal
+closes; scheduled callbacks are cancelled when the POS is destroyed on logout.
+Unread notices survive sessions and only go to the original requester.
+
+Approved unpaid requests enable Record payout. A nested dialog shows the receipt
+and full amount, Cash/GCash selection, and required GCash reference. Confirmation
+explicitly states the money was already returned and reminds staff to coordinate
+physical handovers. Failed saves retain input; successful saves disable repeat
+actions before refreshing. Stale status is rechecked before opening payment.
+
+Owners can open Status / payouts from their existing Refunds workspace, including
+from a selected request. Processed approval details show payment status. Real paid
+requests enable owner-only Correct payout details, with required correction reason
+and retained before/after audit. Assumed-paid legacy requests show unknown payment
+details and have no payment/correction actions. Details scroll and Escape closes
+the shared modal while restoring the parent's focus/grab.

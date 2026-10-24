@@ -47,4 +47,5 @@ and full cash/GCash payout recording while retaining owner-only review.
 
 ## Remaining work
 
-Storage and services implemented; finish shared UI, alerts, and full verification.
+Storage, services, shared UI, alerts, and focused checks complete. Finish final
+full-suite verification and documentation closeout.

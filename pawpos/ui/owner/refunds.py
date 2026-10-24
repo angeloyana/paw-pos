@@ -13,7 +13,8 @@ except ImportError:  # Compatibility with earlier supported ttkbootstrap 1.x.
 
 from pawpos.core.errors import PawPOSError, ValidationError
 from pawpos.core.money import format_peso, format_qty
-from pawpos.services import refund_service
+from pawpos.services import refund_service, refund_tracking_service
+from pawpos.ui.dialogs.refund_status import STATUS_LABELS, RefundStatusDialog
 
 logger = logging.getLogger(__name__)
 
@@ -35,9 +36,13 @@ class RefundsScreen(ttk.Frame):
         ttk.Label(self, text="Refunds", font=("Segoe UI", 20, "bold")).grid(
             row=0, column=0, sticky="w"
         )
-        ttk.Button(self, text="Refresh", command=self.refresh).grid(
-            row=0, column=0, sticky="e"
+        toolbar = ttk.Frame(self)
+        toolbar.grid(row=0, column=0, sticky="e")
+        self.payouts_button = ttk.Button(
+            toolbar, text="Status / payouts", command=self.open_payouts
         )
+        self.payouts_button.pack(side="left", padx=8)
+        ttk.Button(toolbar, text="Refresh", command=self.refresh).pack(side="right")
         ttk.Label(self, textvariable=self.status, wraplength=900).grid(
             row=1, column=0, sticky="ew", pady=8
         )
@@ -118,6 +123,13 @@ class RefundsScreen(ttk.Frame):
         self.reject_button.grid(row=0, column=3)
         self.refresh()
 
+    def open_payouts(self):
+        request_id = self.selected.id if self.selected else None
+        if self.perform(
+            lambda: RefundStatusDialog(self, owner=True, initial_id=request_id).show()
+        ):
+            self.refresh()
+
     def _tab_changed(self, _event=None):
         self.clear_selection()
         for tree in self.trees.values():
@@ -196,6 +208,16 @@ class RefundsScreen(ttk.Frame):
         self.detail.set(
             f"#{request.id} — {request.receipt_number} — {request.status} — {format_peso(request.total_amount)}\nReason: {request.reason}{review}"
         )
+        if request.status == "approved":
+
+            def payment_details():
+                tracked = refund_tracking_service.get_refund(request.id)
+                self.detail.set(
+                    self.detail.get()
+                    + f"\nPayment: {STATUS_LABELS[tracked.status]}. Open Status / payouts for details and actions."
+                )
+
+            self.perform(payment_details)
         for index, item in enumerate(request.items):
             ttk.Label(
                 self.lines,
