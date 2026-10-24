@@ -309,3 +309,19 @@ products can still receive returns. A timely pending request remains reviewable
 after the request window expires. `reject(request_id, note)` requires a note,
 records reviewer/time, and leaves inventory unchanged. Already reviewed requests
 cannot be reviewed again. The existing refund tables need no schema changes.
+
+### Customer management and sales history (Phase 9)
+
+`customer_service.update_customer` requires an active owner and edits name/contact
+without deleting the customer or changing sale associations. Checkout lookup and
+quick creation remain available to active cashiers and owners. Customer deletion
+is not exposed in v1.
+
+`sales_history_service.list_sales` is owner-only and returns immutable summaries
+for completed sales, ordered newest first. Filters support inclusive calendar
+dates, literal receipt-number text, cashier ID, payment method, and customer ID
+(the latter supplies a customer's purchase list). Refund totals aggregate only
+approved requests before joining to sales, so multiple refund requests do not
+duplicate sale rows. `get_sale` returns original sale-item prices/names/quantities
+and tender details. Customer/cashier names reflect their current records. Existing
+receipt services supply preview/PDF reprinting. No schema changes are required.

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add owner-only customer editing and completed-sales history services, with
+  date/receipt/cashier/payment/customer filters, original item/payment snapshots,
+  and approved-only refund totals. Customer edits preserve purchase links.
+
 - Connect POS refund requests to receipt lookup/reprinting, per-item quantities,
   opened/used flags, reasons, and original-price totals. Add owner Pending and
   History tabs with per-line resellable choices, confirmed approval/rejection,

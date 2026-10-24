@@ -1,12 +1,13 @@
-"""Customer lookup and quick creation for signed-in checkout users."""
+"""Customer checkout lookup/creation and owner-only editing."""
 
 from dataclasses import dataclass
 
 from sqlalchemy import or_, select
 
+from pawpos.core.errors import NotFoundError, ValidationError
 from pawpos.db.base import session_scope
 from pawpos.models import Customer
-from pawpos.services.auth_service import _require_user
+from pawpos.services.auth_service import _require_owner, _require_user
 from pawpos.services.catalog_validation import text
 
 
@@ -45,4 +46,19 @@ def create_customer(name: str, contact: str = "") -> CustomerDetails:
         customer = Customer(name=name, contact=contact or None)
         session.add(customer)
         session.flush()
+        return CustomerDetails(customer.id, customer.name, customer.contact or "")
+
+
+def update_customer(customer_id: int, name: str, contact: str = "") -> CustomerDetails:
+    """Edit customer identity without removing their purchase history."""
+    with session_scope() as session:
+        _require_owner(session)
+        if type(customer_id) is not int or customer_id <= 0:
+            raise ValidationError("Choose a valid customer.")
+        name = text(name, "Name", 120)
+        contact = text(contact, "Contact", 120, required=False)
+        customer = session.get(Customer, customer_id)
+        if customer is None:
+            raise NotFoundError("Customer not found.")
+        customer.name, customer.contact = name, contact or None
         return CustomerDetails(customer.id, customer.name, customer.contact or "")

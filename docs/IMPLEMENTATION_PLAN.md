@@ -207,6 +207,10 @@ including all real Tk tests; Ruff lint and format checks pass.
 
 ## Phase 9: Customers, sales history, users
 
+**Implementation status:** owner customer editing and filtered completed-sale
+queries/details are implemented with service validation/access/rollback tests.
+The three owner screens follow in this phase. No schema changes are needed.
+
 **Tasks**
 
 - `ui/owner/customers.py` (CRUD, search, purchases), `sales_history.py` (filters, detail, reprint), `users.py` (add cashier, enable/disable, reset password).
