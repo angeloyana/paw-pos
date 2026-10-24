@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Initialize the documentation guide, feature index, and reusable spec template.
+  Preserve the completed initial build as history and align contributor reading
+  guidance with `AGENTS.md`, retaining the existing `DATABASE.md` schema document.
+
 - Complete Phase 11 and the full implementation plan. Verify all ten demo steps
   on disposable SQLite and local MySQL, preserving shop data through rollback.
   Final checks pass: 397 tests, 26 subtests, Ruff, and dependency consistency.

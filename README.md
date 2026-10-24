@@ -205,16 +205,17 @@ Receipt PDFs use the bundled DejaVu Sans Mono font and its license in
 
 ## Reading order
 
-| #   | File                     | Purpose                                            |
-| --- | ------------------------ | -------------------------------------------------- |
-| 1   | `README.md`              | Overview, scope, global rules for the AI           |
-| 2   | `BUSINESS_PROCESS.md`    | How the shop works, roles, and business rules      |
-| 3   | `FEATURES.md`            | Feature list per role with acceptance criteria     |
-| 4   | `ARCHITECTURE.md`        | Layers, project structure, key flows, transactions |
-| 5   | `DATABASE.md`            | Tables, columns, constraints, seed data            |
-| 6   | `UI_UX.md`               | Screens, layouts, shortcuts, theme                 |
-| 7   | `TECH_STACK.md`          | Libraries, versions, configuration                 |
-| 8   | `IMPLEMENTATION_PLAN.md` | Phased build order with tasks and "done" checks    |
+For each contributor session, follow [AGENTS.md](AGENTS.md):
+
+1. Read the [documentation guide](docs/README.md).
+2. Read the [feature index](docs/features/INDEX.md).
+3. Read the spec for the current task.
+4. Read the living docs listed in that spec's **Touches** field.
+
+The guide links the current feature, business, architecture,
+[database schema](docs/DATABASE.md), UI, and tech-stack documentation.
+The [initial implementation plan](docs/IMPLEMENTATION_PLAN.md) is preserved as
+history; new work uses specs from [the feature template](docs/features/TEMPLATE.md).
 
 ## Scope summary
 
@@ -236,16 +237,16 @@ Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loy
 
 ## Global rules for the AI agent
 
-1. **Follow the layers**: UI never talks to the database directly; UI calls services, services use models/session. (See `ARCHITECTURE.md`.)
+1. **Follow the layers**: UI never talks to the database directly; UI calls services, services use models/session. (See [ARCHITECTURE.md](docs/ARCHITECTURE.md).)
 2. **Money uses `decimal.Decimal`**, never `float`. Database columns are `Numeric`. Display with the peso sign: `₱1,234.50`.
 3. **Quantities**: per-piece items are whole numbers; per-kilo items allow up to **3 decimals** (kg).
 4. **Every stock change creates a `stock_movements` row** in the same DB transaction as the change. Stock is never edited without a movement record.
 5. **Sales, refunds, and stock changes must be atomic**: one transaction, rollback on any error.
 6. **Never hard-delete** products, users, categories with history. Use `is_active`.
-7. **Scope discipline**: do not add features listed as out of scope. If something is ambiguous, pick the simplest option consistent with these docs and note it in a code comment.
+7. **Scope discipline**: do not add features listed as out of scope. If requirements are unclear or code and docs disagree, report the issue and ask the user, following [AGENTS.md](AGENTS.md).
 8. **Keep code simple and readable.** This is a school project: clear names, short functions, docstrings on services.
-9. **Write unit tests** for the core logic listed in `IMPLEMENTATION_PLAN.md`. Tests use an in-memory SQLite database.
-10. After each phase, run the app (`python main.py`) and the tests, and confirm the phase's "Done when" checklist.
+9. **Write unit tests** for testable changes according to the current task spec. Tests use disposable SQLite databases.
+10. Follow the task loop in [AGENTS.md](AGENTS.md), verify the spec's "Done when" checklist, and update the affected docs, feature index, and changelog. Run the app (`python main.py`) for runtime changes.
 
 ## Quick facts
 
