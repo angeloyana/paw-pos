@@ -103,6 +103,13 @@ pawpos/
 
 ## 3. Key design decisions
 
+Authentication returns a frozen `CurrentUser` containing only public identity
+fields. A failed login clears previous login state. User-management operations
+recheck that the signed-in account is active and has the owner role in the DB;
+they return frozen `UserDetails` without password hashes. Usernames are trimmed
+and case-folded on creation and login. Account status changes apply to cashiers;
+owners can reset their own seeded password as well as cashier passwords.
+
 | Topic           | Decision                                                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | App style       | One Tkinter app; screens are frames swapped in a single root window                                                                               |

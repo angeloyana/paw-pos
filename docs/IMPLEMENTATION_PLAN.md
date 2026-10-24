@@ -21,9 +21,10 @@ live MySQL connection locally before proceeding to Phase 1.
 
 ## Phase 1: Models, seed, auth
 
-**Implementation status:** models and atomic seed routine are implemented.
-Authentication and desktop login are next. SQLite tests check the schema and
-seed behavior; live MySQL verification remains pending.
+**Implementation status:** models, atomic seeding, authentication, and owner-only
+account services are implemented. Desktop login and startup wiring are next.
+SQLite tests check schema, seeding, and account rules; live MySQL verification
+remains pending.
 
 **Tasks**
 

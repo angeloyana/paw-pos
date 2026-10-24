@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add login/logout and owner-only cashier creation, enable/disable, account
+  listing, and password reset services. Disabled users cannot log in; owners
+  cannot disable themselves. Password hashes are excluded from service results.
+
 - Add the ten database tables and atomic first-run seed data: two demo accounts,
   eight categories, fourteen products, and initial stock history.
 
