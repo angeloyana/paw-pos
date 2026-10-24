@@ -1,32 +1,13 @@
-import tkinter as tk
 from unittest.mock import patch
 
 import pytest
 from sqlalchemy.exc import OperationalError
 
 from pawpos.core import session as login_session
-from pawpos.db.seed import seed_database
 from pawpos.services import auth_service, user_service
-from pawpos.ui.app import PawPOSApp
 from pawpos.ui.login_screen import LoginScreen
+from pawpos.ui.owner.shell import OwnerShell
 from pawpos.ui.placeholder_screen import PlaceholderScreen
-
-
-@pytest.fixture
-def app(session_factory):
-    seed_database()
-    try:
-        probe = tk.Tk()
-    except tk.TclError as error:
-        pytest.skip(f"Desktop display unavailable: {error}")
-    probe.destroy()
-    app = PawPOSApp()
-    app.update()
-    yield app
-    try:
-        app.close()
-    except tk.TclError:
-        pass
 
 
 @pytest.mark.parametrize(
@@ -43,7 +24,9 @@ def test_login_routes_by_role_and_logout_clears_state(app, username, password, h
     form.password.set(password)
     form.login_button.invoke()
     app.update()
-    assert isinstance(app.screen, PlaceholderScreen)
+    assert isinstance(
+        app.screen, OwnerShell if username == "owner" else PlaceholderScreen
+    )
     assert app.screen.heading == heading
     assert login_session.current_user.username == username
     app.screen.logout_button.invoke()
@@ -87,7 +70,7 @@ def test_unexpected_error_is_generic_and_login_can_be_retried(app):
     assert form.password.get() == ""
     form.password.set("owner123")
     form.login_button.invoke()
-    assert isinstance(app.screen, PlaceholderScreen)
+    assert isinstance(app.screen, OwnerShell)
 
 
 def test_closing_window_clears_login_state(app):

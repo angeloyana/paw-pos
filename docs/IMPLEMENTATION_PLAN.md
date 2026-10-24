@@ -38,9 +38,11 @@ a live MySQL server still need local verification before Phase 2 acceptance.
 
 ## Phase 2: Catalog services and owner shell
 
-**Implementation status:** catalog services and validation tests are implemented;
-the owner shell and category/product screens are next. The user authorized
-continuing while live MySQL verification remains pending.
+**Implementation status:** catalog services, the owner shell, and category/product
+screens are implemented. Service tests cover validation, access, filters, stock
+history, and image rollback. Real Tk tests cover catalog forms, image preview,
+and deactivation. The user authorized continuing while live MySQL verification
+remains pending. No database schema changes were needed in this phase.
 
 **Tasks**
 

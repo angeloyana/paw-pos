@@ -6,11 +6,12 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 2 is in progress; live MySQL acceptance is pending.** Startup checks the
+**Phase 2 is implemented; live MySQL acceptance is pending.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
-opens the blue-themed desktop login. Owners and cashiers reach separate
-placeholder workspaces with logout. Catalog services are implemented; owner
-category/product screens are next. The POS screen comes in a later phase.
+opens the blue-themed desktop login. Owners can manage categories and products
+from the sidebar, including images, search, initial stock, and deactivation.
+Cashiers still reach a placeholder workspace; the POS screen comes in Phase 4.
+Both workspaces support logout.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`
@@ -54,6 +55,14 @@ working directory. Existing environment variables take precedence. Supported
 settings are `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` as shown
 in `.env.example`; connections use `utf8mb4` and a five-second connect timeout.
 The configured database must already exist.
+
+In the owner workspace, select **Categories** or **Products**. Select a table row
+to edit it; use **Add category** or **New** to create another record. Product
+images are copied to `assets/products/` when saved. **Show inactive** includes
+deactivated records, which can be reactivated with the **Active** checkbox.
+Categories with products cannot be deactivated. Initial stock is entered only
+when creating a product; existing stock will be managed through Inventory in
+Phase 7. Sidebar entries for later phases are disabled.
 
 To regenerate the bundled paw placeholders, run
 `python scripts/generate_assets.py`. Product image copies will live in

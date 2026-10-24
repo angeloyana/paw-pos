@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add the owner sidebar and category/product forms with validation feedback,
+  image previews, search and category filters, reactivation, and confirmed
+  deactivation. Existing product stock is read-only in the form.
+
 - Add category and product services with owner access checks, validation, search,
   category filtering, soft deletion, and atomic initial stock history. Product
   image copies are removed if saving fails.

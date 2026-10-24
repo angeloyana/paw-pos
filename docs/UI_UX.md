@@ -12,9 +12,9 @@
 
 ## 2. Login screen
 
-Phase 1 implements this screen and separate owner/cashier placeholder workspaces.
-The full owner shell and POS screen follow in later phases. Failed login clears
-the password and shows an inline error; logout returns to an empty login form.
+The login screen is implemented. Owners enter the owner shell; cashiers still
+reach a placeholder until Phase 4. Failed login clears the password and shows an
+inline error; logout returns to an empty login form.
 
 - Centered card: logo, "PawPOS", username, password (masked), **Login** button. Enter submits. Error message inline in red.
 - Cashier goes to the POS screen; owner goes to the owner shell.
@@ -67,6 +67,15 @@ Single screen, two main columns plus a top bar.
 | **Refund request**  | Receipt number entry, **Load**, shows items with checkboxes and qty/kg entry, "Opened/used" checkbox per line, reason field, **Submit request**. Shows rule errors inline                     |
 
 ## 5. Owner shell
+
+Phase 2 implements the sidebar, Products, and Categories. The Dashboard currently
+shows an introduction; reports follow in Phase 10. Navigation for later phases
+is disabled. Select a catalog table row to edit it. Forms show errors inline and
+retain input on validation failure. The Active checkbox permits reactivation;
+deactivation buttons ask for confirmation. Product stock is editable only during
+creation. Missing image files display the paw placeholder.
+Catalog forms have a vertical scrollbar so the final controls remain accessible
+at the minimum window size and with larger system fonts.
 
 - Left **sidebar** with logo and buttons: **Dashboard, Products, Categories, Inventory, Customers, Sales History, Refunds, Users**, plus **POS** (opens the cashier screen to sell) and **Logout** at the bottom. Active item highlighted. A badge on Refunds shows the pending count.
 - Content area on the right swaps frames.

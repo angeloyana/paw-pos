@@ -8,6 +8,7 @@ from pawpos.config import SHOP_NAME, THEME
 from pawpos.core.session import CurrentUser
 from pawpos.services import auth_service
 from pawpos.ui.login_screen import LoginScreen
+from pawpos.ui.owner.shell import OwnerShell
 from pawpos.ui.placeholder_screen import PlaceholderScreen
 
 
@@ -42,7 +43,12 @@ class PawPOSApp(ttk.Window):
 
     def show_workspace(self, user: CurrentUser) -> None:
         self.title(f"{SHOP_NAME} — {user.full_name}")
-        self._replace_screen(PlaceholderScreen(self, user, self.show_login))
+        screen = (
+            OwnerShell(self, user, self.show_login)
+            if user.role == "owner"
+            else PlaceholderScreen(self, user, self.show_login)
+        )
+        self._replace_screen(screen)
 
     def close(self) -> None:
         auth_service.logout()
