@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Complete feature 002: account Settings with all built-in themes and password
+  changes. Verify 444 tests and 26 subtests with real Tk coverage, Ruff, app startup
+  on disposable SQLite, and light/dark layouts. No manual ALTER SQL is needed.
+
 - Add Settings for owners and cashiers: save any built-in theme per account and
   change your own password using the current password and confirmation. Theme
   changes apply immediately; POS settings preserve the cart and customer.

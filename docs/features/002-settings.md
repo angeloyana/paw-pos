@@ -1,6 +1,6 @@
 # 002: Settings
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** `docs/FEATURES.md`, `docs/BUSINESS_PROCESS.md`, `docs/DATABASE.md`, `docs/ARCHITECTURE.md`, `docs/UI_UX.md`, `README.md`, `CHANGELOG.md`.
 
@@ -45,12 +45,19 @@ own password while signed in. Preferences belong to the account.
 - [x] Settings navigation preserves POS state and modal keyboard/focus behavior.
 - [x] All built-in themes work; custom colors and charts follow the theme.
 - [x] Relevant tests and the full suite pass; the app runs.
-- [ ] Living docs/changelog are current and all changes are committed.
-- [ ] Remaining work is resolved and spec/index statuses are `done`.
+- [x] Living docs/changelog are current and all changes are committed.
+- [x] Remaining work is resolved and spec/index statuses are `done`.
+
+## Verification
+
+- Full suite: 444 tests and 26 subtests passed with real Tk coverage on an
+  isolated Xvfb/Matchbox display; no skipped tests.
+- Ruff lint and format checks, and `git diff --check`, pass.
+- Actual app startup, seeding, and event loop passed using disposable SQLite.
+  Light/dark Settings layouts were inspected at 1280×720.
+- No existing-table alterations, manual SQL, new dependencies, or shop-data
+  changes were needed.
 
 ## Remaining work
 
-Tasks 1–2 implemented. Full suite: 444 tests and 26 subtests passed with real Tk
-coverage on an isolated Xvfb/Matchbox display. Ruff checks pass. Actual app startup,
-seeding, and event loop passed with disposable SQLite; light/dark Settings layouts
-were inspected at 1280×720. Remaining: commit UI and close out documentation.
+None.
