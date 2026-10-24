@@ -79,8 +79,7 @@ normal startup and both role workspaces with local desktop/database access.
 sidebar entry. Product cards, live search/category filters, cached thumbnails,
 weight entry with live pricing, cart editing/removal, and customer lookup/quick
 creation are connected to services. Function keys are scoped to the visible POS;
-hold/void/resume keys show availability messages for their later phases;
-payment was connected in Phase 5.
+payment was connected in Phase 5 and hold/void/resume in Phase 6.
 Owners retain the cart and customer across page changes. No schema changes.
 Live MySQL startup and catalog/POS reads were verified during Phase 5.
 Verification: the full suite passes with 188 tests and 26 subtests, including
@@ -124,6 +123,22 @@ manual acceptance checks.
 **Done when:** a full sale works end to end; stock decreases; movement rows exist; preview shows after payment; PDF opens; tests pass.
 
 ## Phase 6: Hold, resume, void
+
+**Implementation status:** persistent holds, shared held lists, snapshot/customer
+restoration, and reasoned line/transaction/held voids are implemented. F4/F6/F8
+and their buttons call the new flows. Active carts are protected from resume
+replacement; failed writes preserve the cart/held record. Nested confirmation
+dialogs restore parent focus/grab. Cancellation deletes held sale/items and
+retains audit rows in the existing `void_logs` table. No schema changes.
+
+Verification: 258 tests and 26 subtests pass, including real Tk hold/resume
+across app recreation, resumed-cart void/payment, reason validation, active-cart
+protection, nested modal keyboard/grab behavior, and rollback preservation.
+A file-backed SQLite test reopens the database through a new engine to verify
+hold persistence. Ruff lint/format checks pass. Normal startup and held-list
+reads pass for both roles against local MySQL. MySQL hold/resume, held
+cancellation, and line/all voids also pass inside an outer transaction that is
+rolled back; verification leaves no test sale/void rows and no stock changes.
 
 **Tasks**
 

@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from pawpos.models import Sale, StockMovement
 from pawpos.services import auth_service, product_service
 from pawpos.ui.dialogs.customer_picker import CustomerPicker
+from pawpos.ui.dialogs.held_list import HeldListDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.pos_screen import POSScreen
 from pawpos.ui.widgets.product_card import ThumbnailCache
@@ -158,14 +159,22 @@ def test_pos_shortcuts_modal_scope_and_cleanup(app):
     app.update()
     assert app.focus_get() == screen.search_entry
     for key, message in (
-        ("F4", "Hold cart"),
+        ("F4", "cart is empty"),
         ("F5", "cart is empty"),
-        ("F6", "Void"),
-        ("F8", "Resume held carts"),
+        ("F6", "cart is empty"),
     ):
         app.event_generate(f"<{key}>")
         app.update()
         assert message in screen.status.get()
+    with patch.object(
+        HeldListDialog,
+        "show",
+        autospec=True,
+        side_effect=lambda dialog: dialog.destroy(),
+    ) as show:
+        app.event_generate("<F8>")
+        app.update()
+        show.assert_called_once()
     dialog = WeightDialog(app, "Food", Decimal("95"), "kg", Decimal("2"))
     dialog.deiconify()
     dialog.first_input.focus_force()

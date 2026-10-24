@@ -6,7 +6,7 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 5 is implemented.** Startup checks the
+**Phase 6 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
@@ -15,6 +15,8 @@ workspaces support logout.
 Local MySQL startup, catalog/POS reads, both demo-account logins, and logout have
 been verified. Automated checkout/rollback tests use disposable SQLite data;
 live MySQL checkout and physical printing remain manual acceptance checks.
+Hold/resume, held cancellation, and line/transaction voids were also verified
+against local MySQL inside a transaction that was fully rolled back.
 
 The POS supports live search, category filters, cached product thumbnails,
 piece/kg cart entry, quantity editing, removal, and optional customer selection
@@ -22,8 +24,21 @@ or quick creation. Click a product to add it; kg items prompt for weight and sho
 the computed line price. Double-click a cart row or press Enter to edit it;
 Delete removes the selected row. F2 focuses search. Out-of-stock cards are
 disabled. Owner navigation preserves the cart and selected customer until
-logout. Adding to a cart does not deduct stock. Hold/resume/void (Phase 6) and
-refunds (Phase 8) currently show availability messages.
+logout. Adding to a cart does not deduct stock. Refund requests (Phase 8)
+currently show an availability message.
+
+**Hold (F4)** saves the cart and customer to the database, then clears the POS.
+**Held (F8)** lists saved transactions after logout or restart. Resume restores
+the original quantities/prices and customer and removes the held record. Hold
+or empty the active cart before resuming another; you can still cancel a held
+transaction while a cart is active. Holds are shared by the shop's active
+cashiers and owner. Stock is checked again at payment.
+
+**Void (F6)** logs a selected line or the whole transaction. Choose a common
+reason or **Other** and explain it, then confirm. **Cancel held (void)** uses the
+same reason dialog. Whole-transaction voids clear the cart/customer; cancelled
+holds retain their item/reason audit in `void_logs`. Holds and voids leave stock
+unchanged. Delete/Remove remains a cart edit; use Void for a logged cancellation.
 
 Press **Pay (F5)** to choose **Cash** or **GCash**. Cash shows change as you type;
 the quick buttons enter the exact total, 100, 500, or 1000 pesos. GCash requires

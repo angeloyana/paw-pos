@@ -10,11 +10,18 @@ from pawpos.config import SHOP_NAME
 from pawpos.core.errors import BusinessRuleError, PawPOSError, ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.core.session import CurrentUser
-from pawpos.services import category_service, product_service, receipt_service
+from pawpos.services import (
+    category_service,
+    product_service,
+    receipt_service,
+    sale_service,
+)
 from pawpos.services.cart import Cart
 from pawpos.ui.dialogs.customer_picker import CustomerPicker
+from pawpos.ui.dialogs.held_list import HeldListDialog
 from pawpos.ui.dialogs.payment import PaymentDialog
 from pawpos.ui.dialogs.receipt_preview import ReceiptPreview
+from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
 
@@ -66,7 +73,7 @@ class POSScreen(ttk.Frame):
         ttk.Button(
             header,
             text="Held (F8)",
-            command=lambda: self.future_action("Resume held carts", 6),
+            command=self.open_held,
         ).pack(side="right")
         ttk.Label(
             self, textvariable=self.status, bootstyle="danger", wraplength=850
@@ -104,10 +111,10 @@ class POSScreen(ttk.Frame):
         self._shortcut_bindings = {}
         for key, action in {
             "<F2>": self.search_entry.focus_set,
-            "<F4>": lambda: self.future_action("Hold cart", 6),
+            "<F4>": self.hold_current,
             "<F5>": self.pay,
-            "<F6>": lambda: self.future_action("Void", 6),
-            "<F8>": lambda: self.future_action("Resume held carts", 6),
+            "<F6>": self.void_current,
+            "<F8>": self.open_held,
         }.items():
             self._shortcut_bindings[key] = self.winfo_toplevel().bind(
                 key,
@@ -200,13 +207,13 @@ class POSScreen(ttk.Frame):
         ttk.Button(
             actions,
             text="Hold (F4)",
-            command=lambda: self.future_action("Hold cart", 6),
+            command=self.hold_current,
         ).pack(side="left")
         ttk.Button(
             actions,
             text="Void (F6)",
             bootstyle="danger",
-            command=lambda: self.future_action("Void", 6),
+            command=self.void_current,
         ).pack(side="left", padx=6)
         self.pay_button = ttk.Button(actions, text="PAY (F5)", command=self.pay)
         self.pay_button.pack(side="right", fill="x", expand=True)
@@ -402,6 +409,73 @@ class POSScreen(ttk.Frame):
 
     def future_action(self, label, phase):
         self.status.set(f"{label} will be available in Phase {phase}.")
+
+    def hold_current(self):
+        if not self.cart.lines:
+            self.status.set("The cart is empty. Add a product before holding.")
+            return
+        held = None
+
+        def save():
+            nonlocal held
+            held = sale_service.hold_cart(
+                self.cart, customer_id=self.customer.id if self.customer else None
+            )
+
+        if self.perform(save):
+            self.cart.clear()
+            self.customer = None
+            self.customer_text.set("Walk-in")
+            self.render_cart()
+            self.status.set(f"Transaction #{held.id} held.")
+            self.search_entry.focus_set()
+
+    def open_held(self):
+        resumed = None
+
+        def choose():
+            nonlocal resumed
+            resumed = HeldListDialog(self, can_resume=not bool(self.cart.lines)).show()
+
+        if self.perform(choose) and resumed is not None:
+            self.cart = resumed.cart
+            self.customer = resumed.customer
+            self.customer_text.set(self.customer.name if self.customer else "Walk-in")
+            self.render_cart()
+            self.refresh_products()
+            self.status.set(
+                "Held transaction resumed. Stock will be checked at payment."
+            )
+            self.search_entry.focus_set()
+
+    def void_current(self):
+        if not self.cart.lines:
+            self.status.set("The cart is empty. Nothing to void.")
+            return
+        selected = self.table.selection()
+        product_id = int(selected[0]) if selected else None
+
+        def apply(scope, reason):
+            if scope == "line":
+                sale_service.void_line(self.cart, product_id, reason)
+            else:
+                sale_service.void_all(self.cart, reason)
+
+        def choose():
+            result = VoidDialog(
+                self,
+                apply,
+                allow_line=product_id is not None,
+                description=f"Active cart: {len(self.cart.lines)} lines, {format_peso(self.cart.total)}.",
+            ).show()
+            if result:
+                if result == "transaction":
+                    self.customer = None
+                    self.customer_text.set("Walk-in")
+                self.render_cart()
+
+        self.perform(choose)
+        self.search_entry.focus_set()
 
     def pay(self):
         if not self.cart.lines:

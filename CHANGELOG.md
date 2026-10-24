@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Connect F4/F6/F8 to hold, void, and held-transaction dialogs. Restore held
+  quantities, prices, and customers after restart; prevent active-cart
+  replacement; require reasons and confirmation for voids/held cancellations.
+  Restore focus and modal grabs after nested dialogs, and let Escape close the
+  held list even when its table has focus.
+
 - Add persistent held-cart services with customer and item snapshots, atomic
   resume/cancellation, and reasoned line/transaction void logs. Holds and voids
   leave stock unchanged; failed writes preserve the active cart and held rows.

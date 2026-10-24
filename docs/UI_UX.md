@@ -31,8 +31,8 @@ in the cart. Invalid input disables OK and keeps the dialog open. Cart editing
 uses the same dialog, with whole-number validation for piece items.
 
 F2 focuses search; Enter/double-click edits the selected cart row, and Delete
-removes it while the cart table has focus. F5 opens payment. F4/F6/F8 and the
-corresponding buttons display availability messages for later phases. Payment is disabled
+removes it while the cart table has focus. F4 holds, F5 opens payment, F6 opens
+void confirmation, and F8 lists held transactions. Payment is disabled
 when the cart is empty. POS function keys are inactive in dialogs, on other
 owner pages, and after logout. Owners retain their in-memory cart and customer
 when switching sidebar pages. Logout discards that in-memory transaction.
@@ -45,6 +45,22 @@ clears both, refreshes product stock, and opens a read-only receipt preview.
 Print writes the PDF and opens the OS viewer; errors remain in the preview.
 The header's Last receipt button reopens the last completed sale during this
 POS session, including after a failed preview. It never resubmits payment.
+
+Phase 6 connects Hold/F4, Held/F8, and Void/F6. Holding clears the cart/customer
+after saving. The held list shows time, line count, total, customer, and original
+cashier. Resume is disabled while an active cart has items, with an explanation;
+cancelling a held transaction is still available. Refresh reloads the list, and
+an empty list explains that there are no held transactions. Resume restores the
+saved snapshots/customer and removes that held record. Payment handles any
+subsequent stock shortage.
+
+Void defaults to the selected line, or the whole transaction when no line is
+selected. Its confirmation dialog requires a common reason or nonblank Other
+text (maximum 255 characters). No owner PIN is required. Cancel held opens a
+nested transaction-void dialog and then refreshes the list. Successful writes
+update the cart; failures retain the dialog/input and show an inline error.
+Nested modals restore the parent's keyboard focus/grab, Enter confirms, and
+Escape closes the dialog. Whole-cart voids clear the selected customer too.
 
 Single screen, two main columns plus a top bar.
 
