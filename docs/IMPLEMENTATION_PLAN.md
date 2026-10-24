@@ -209,7 +209,8 @@ including all real Tk tests; Ruff lint and format checks pass.
 
 **Implementation status:** owner customer editing and filtered completed-sale
 queries/details are implemented with service validation/access/rollback tests.
-The three owner screens follow in this phase. No schema changes are needed.
+The Customers screen supports add/edit/search and completed purchase lists.
+Sales History and Users screens follow in this phase. No schema changes are needed.
 
 **Tasks**
 

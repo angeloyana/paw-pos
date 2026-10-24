@@ -10,6 +10,7 @@ from pawpos.config import ASSETS_DIR, SHOP_NAME
 from pawpos.core.session import CurrentUser
 from pawpos.services import refund_service
 from pawpos.ui.owner.categories import CategoriesScreen
+from pawpos.ui.owner.customers import CustomersScreen
 from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
 from pawpos.ui.owner.refunds import RefundsScreen
@@ -62,6 +63,7 @@ class OwnerShell(ttk.Frame):
                 "Products",
                 "Categories",
                 "Inventory",
+                "Customers",
                 "Refunds",
                 "POS",
             ):
@@ -80,6 +82,7 @@ class OwnerShell(ttk.Frame):
             "Products",
             "Categories",
             "Inventory",
+            "Customers",
             "Refunds",
             "POS",
         ):
@@ -108,6 +111,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = InventoryScreen(self.content)
         elif page == "Refunds":
             self.current_screen = RefundsScreen(self.content, self.refresh_refund_badge)
+        elif page == "Customers":
+            self.current_screen = CustomersScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:

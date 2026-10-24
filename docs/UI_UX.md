@@ -190,3 +190,12 @@ Processed details show status, reviewer/time, note, and resellable choices;
 review controls are disabled. After a saved review, controls are disabled before
 refresh, preventing resubmission if the read fails. Empty pending lists explain
 where processed reviews appear.
+
+### Customers (Phase 9)
+
+The owner can search names/contacts, add customers, and select a row to edit.
+Contact is optional; customer deletion is not available. Selecting a customer
+loads only their completed purchases below the form, with receipt, date, payment,
+total, and approved refunded amount. Empty states explain unmatched searches and
+customers without purchases. Validation/write errors preserve input. Saved input
+is cleared before refreshing so a refresh failure cannot duplicate a new record.

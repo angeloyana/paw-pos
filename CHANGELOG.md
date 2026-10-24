@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Enable owner Customers management with add/edit, name/contact search, and
+  completed purchase lists. Preserve customer history and form input on errors.
+
 - Add owner-only customer editing and completed-sales history services, with
   date/receipt/cashier/payment/customer filters, original item/payment snapshots,
   and approved-only refund totals. Customer edits preserve purchase links.

@@ -104,6 +104,10 @@ Categories with products cannot be deactivated. Initial stock is entered only
 when creating a product; use **Inventory** to change existing stock. Sidebar
 entries for later phases are disabled.
 
+Owners can also open **Customers** to add/edit names and optional contacts,
+search either field, and view the selected customer's completed purchases.
+Customer records and purchase links are retained; there is no delete action.
+
 Inventory has four owner-only tabs:
 
 - **Stock Overview** lists products, categories, stock, and thresholds, with low
