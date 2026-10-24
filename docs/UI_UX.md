@@ -109,7 +109,8 @@ Single screen, two main columns plus a top bar.
 
 ## 5. Owner shell
 
-The sidebar implements Products, Categories, Inventory, Refunds, and POS. The Dashboard currently
+The sidebar implements Products, Categories, Inventory, Customers, Sales History,
+Refunds, Users, and POS. The Dashboard currently
 shows an introduction; reports follow in Phase 10. Navigation for later phases
 is disabled. Select a catalog table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
@@ -211,3 +212,15 @@ Detail text is read-only. Reprint receipt generates the existing 80 mm PDF and
 opens the default viewer, without changing sales or stock. Viewer errors retain
 the selected sale and the generated PDF path for manual opening. Details/forms
 scroll at the minimum window size; the sales table scrolls in both directions.
+
+### Users (Phase 9)
+
+Add cashier clears the form for username, full name, and masked new password.
+Selecting an account makes its identity fields read-only and clears the password
+input. Cashiers can be disabled with confirmation or re-enabled. Owner accounts
+have no enabled/disabled action; services also protect the current owner from
+self-disable. Reset password applies to the selected account, including the
+owner's own demo password. Validation and write failures retain form input.
+Successful actions clear password and account input before refreshing; read
+failures report that the save succeeded. No password/hash appears in the table.
+The form scrolls so every control is reachable at the minimum window size.

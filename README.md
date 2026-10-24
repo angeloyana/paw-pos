@@ -6,7 +6,7 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 8 is implemented.** Startup checks the
+**Phase 9 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
@@ -113,6 +113,20 @@ any date), receipt text, cashier account, and payment method. Refunded amounts
 include approved refunds only. Select a sale to see its original item prices,
 quantities, and payment details. **Reprint receipt** saves its 80 mm PDF and opens
 the default viewer. Reprinting never charges the customer or changes inventory.
+
+In **Users**, choose **Add cashier** and enter a unique username, full name, and
+password. Select a cashier to disable (with confirmation) or enable the account,
+or enter a new password and select **Reset password**. Owners cannot disable
+themselves or other owner accounts. An owner can select their own account to
+change the demo password. Existing names/usernames are read-only; password
+values are never displayed and are cleared after a successful save.
+
+Phase 9 customer editing/purchases, sales filters and approved refund totals,
+cashier account creation/status/password changes, and owner self-disable
+protection were verified against local MySQL in an outer transaction that was
+fully rolled back. Verification preserved shop data and existing credentials.
+Receipt reprinting tests generate actual PDFs with mocked OS viewer launchers;
+physical printing remains a manual check.
 
 Inventory has four owner-only tabs:
 

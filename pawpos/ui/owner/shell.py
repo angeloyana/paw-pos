@@ -15,6 +15,7 @@ from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
 from pawpos.ui.owner.refunds import RefundsScreen
 from pawpos.ui.owner.sales_history import SalesHistoryScreen
+from pawpos.ui.owner.users import UsersScreen
 from pawpos.ui.pos_screen import POSScreen
 
 logger = logging.getLogger(__name__)
@@ -67,6 +68,7 @@ class OwnerShell(ttk.Frame):
                 "Customers",
                 "Sales History",
                 "Refunds",
+                "Users",
                 "POS",
             ):
                 button.configure(state="disabled")
@@ -87,6 +89,7 @@ class OwnerShell(ttk.Frame):
             "Customers",
             "Sales History",
             "Refunds",
+            "Users",
             "POS",
         ):
             return
@@ -118,6 +121,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = CustomersScreen(self.content)
         elif page == "Sales History":
             self.current_screen = SalesHistoryScreen(self.content)
+        elif page == "Users":
+            self.current_screen = UsersScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:
@@ -129,11 +134,11 @@ class OwnerShell(ttk.Frame):
             ).pack(anchor="w")
             ttk.Label(
                 self.current_screen,
-                text="Manage your products, categories, and inventory from the sidebar.",
+                text="Manage catalog, inventory, customers, sales, refunds, and users from the sidebar.",
             ).pack(anchor="w", pady=16)
             ttk.Label(
                 self.current_screen,
-                text="Reports and other workspaces will be available in later phases.",
+                text="Dashboard charts and reports follow in Phase 10.",
             ).pack(anchor="w")
         self.current_screen.pack(fill="both", expand=True)
         self.refresh_refund_badge()

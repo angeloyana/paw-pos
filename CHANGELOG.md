@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Enable owner Users management: create cashiers, confirm disabling, re-enable,
+  and reset passwords, including the owner's demo password. Keep owner status
+  protected and password inputs masked; clear saved account inputs before
+  refreshing to avoid duplicate creation after a read failure.
+
 - Enable owner Sales History with date/receipt/account/payment filters, original
   item and tender details, approved refund totals, and receipt PDF reprinting.
 

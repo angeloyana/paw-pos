@@ -207,11 +207,24 @@ including all real Tk tests; Ruff lint and format checks pass.
 
 ## Phase 9: Customers, sales history, users
 
-**Implementation status:** owner customer editing and filtered completed-sale
-queries/details are implemented with service validation/access/rollback tests.
-The Customers screen supports add/edit/search and completed purchase lists.
-Sales History supports filters, original item/payment details, and PDF reprinting.
-The Users screen follows in this phase. No schema changes are needed.
+**Implementation status:** all three owner screens are implemented. Customers
+supports add/edit/search and completed purchase lists while retaining sale links.
+Sales History filters completed sales by dates/receipt/account/payment, shows
+original item/tender details and approved refund totals, and opens receipt PDFs.
+Users supports cashier creation, enable/disable, and password resets. Owner
+self-disable is blocked. Saved customer/account input is cleared before refresh;
+validation and write failures retain entered values. No schema changes.
+
+Verification: 16 new service tests cover filtered history, inclusive date bounds,
+approved refund aggregation, immutable sale details, customer edits/rollback,
+and owner access. Sixteen new real Tk tests cover all three screens, login after
+account changes, owner protection, original receipts and PDF viewer handoff,
+form preservation/refresh failures, and minimum-window layout. MySQL startup,
+both demo logins/logout, customer purchases/edits, filtered sales/refund totals,
+and cashier creation/status/password flows pass. All live verification records
+and stock changes are rolled back; existing shop data/credentials are preserved.
+The full suite passes with 359 tests and 26 subtests, including all real Tk
+tests. Ruff lint/format checks pass.
 
 **Tasks**
 
