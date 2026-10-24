@@ -2,10 +2,10 @@
 
 ## 1. Look and feel
 
-- **Library:** ttkbootstrap, theme **`cosmo`** (blue primary). Make the theme name a constant in `config.py`.
+- **Library:** ttkbootstrap, default theme **`cosmo`** (blue primary), configured in `config.py`. Signed-in users can choose any built-in theme in Settings.
 - **Tone:** friendly pet-shop feel, but clean and professional. Straightforward labels, no clutter.
 - **Brand:** system name **PawPOS**; paw-icon placeholder logo (`assets/logo.png`) in the login screen and top bar.
-- **Palette (guide):** primary blue `#2F80ED`, light blue background `#EAF3FF`, white cards, dark text `#1F2D3D`, success green, warning amber, danger red for voids/low stock.
+- **Palette (default-theme guide):** primary blue `#2F80ED`, light blue background `#EAF3FF`, white cards, dark text `#1F2D3D`, success green, warning amber, danger red for voids/low stock.
 - **Typography:** system font (Segoe UI on Windows). Body 11 pt, headings 16-20 pt bold, totals 24 pt bold.
 - **Currency:** `₱` with thousands separators and 2 decimals (e.g. `₱1,250.00`). Per-kg prices show `₱95.00/kg`. Kg quantities show up to 3 decimals (trim trailing zeros, e.g. `1.5 kg`).
 - **Window:** start maximized (min size 1280x720). Input is keyboard + mouse only.
@@ -91,9 +91,9 @@ Single screen, two main columns plus a top bar.
 - Table: item name, qty or kg, unit price, line total. Select a line; buttons or keys to edit quantity and remove.
 - Double-click or Enter on a line to edit quantity/weight.
 - Customer row: shows "Walk-in" or the customer name; **Select** opens a picker with search and quick-add.
-- Large total. Buttons: **Hold (F4)**, **Void (F6)**, **Pay (F5)** (Pay is the primary, large, blue button; disabled when the cart is empty).
+- Large total. Buttons: **Hold (F4)**, **Void (F6)**, **Pay (F5)** (Pay is the primary large button; disabled when the cart is empty).
 
-**Top bar:** cashier name; **Held (F8)**; **Request Refund**; **Refunds** with unread decision count; **Logout**. No low-stock notice for cashiers.
+**Top bar:** cashier name; **Held (F8)**; **Request Refund**; **Refunds** with unread decision count; **Settings**; **Logout**. No low-stock notice for cashiers.
 
 ## 4. Dialogs
 
@@ -110,7 +110,7 @@ Single screen, two main columns plus a top bar.
 ## 5. Owner shell
 
 The sidebar implements Products, Categories, Inventory, Customers, Sales History,
-Refunds, Users, and POS. The Dashboard now shows report cards, charts, and active
+Refunds, Users, Settings, and POS. The Dashboard now shows report cards, charts, and active
 low-stock products. All owner sidebar workspaces are enabled. Select a catalog
 table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
@@ -119,7 +119,7 @@ creation. Missing image files display the paw placeholder.
 Catalog forms have a vertical scrollbar so the final controls remain accessible
 at the minimum window size and with larger system fonts.
 
-- Left **sidebar** with logo and buttons: **Dashboard, Products, Categories, Inventory, Customers, Sales History, Refunds, Users**, plus **POS** (opens the cashier screen to sell) and **Logout** at the bottom. Active item highlighted. A badge on Refunds shows the pending count.
+- Left **sidebar** with logo and buttons: **Dashboard, Products, Categories, Inventory, Customers, Sales History, Refunds, Users, Settings**, plus **POS** (opens the cashier screen to sell) and **Logout** at the bottom. Active item highlighted. A badge on Refunds shows the pending count.
 - Content area on the right swaps frames.
 
 ### Screens
@@ -227,7 +227,7 @@ The form scrolls so every control is reachable at the minimum window size.
 
 ### Dashboard (Phase 10)
 
-Owner login and the Dashboard sidebar entry show four summary cards, two blue
+Owner login and the Dashboard sidebar entry show four summary cards, two theme-colored
 Matplotlib charts, and a read-only low-stock table. Daily net sales offers 7/30
 calendar days, fills empty dates, and renders negative days in red. Currency
 axis labels show pesos and centavos. Best sellers offers Today/7/30 days and
@@ -280,3 +280,29 @@ requests enable owner-only Correct payout details, with required correction reas
 and retained before/after audit. Assumed-paid legacy requests show unknown payment
 details and have no payment/correction actions. Details scroll and Escape closes
 the shared modal while restoring the parent's focus/grab.
+
+### Settings
+
+Owners open Settings from the sidebar; owners and cashiers can also use the POS
+Settings button to open a modal window. Both share the same form: Appearance
+with a read-only list of all built-in theme names, Apply theme, Reload saved
+theme, and Change password with masked Current password, New password, Confirm
+new password, and a separate Change password button.
+
+Apply theme saves the account preference first, then changes appearance immediately
+without recreating the workspace. Failed saves keep the existing theme and retain
+input with inline feedback. Custom canvases and dashboard charts follow theme
+colors. Dark themes use filled sidebar buttons to keep navigation readable.
+Login restores the saved theme (missing/unsupported values use `cosmo`);
+logout restores `cosmo`. A failed theme read opens the default workspace with a
+message directing the user to Settings to retry.
+
+Password changes require the correct current password, matching confirmation,
+and the existing nonblank/72 UTF-8 byte validation. Failure retains inputs;
+success clears password fields and keeps the user signed in. Navigating away or
+closing the modal discards password input. Forgotten-password recovery still
+requires contacting the owner for a reset.
+
+Settings preserves the POS cart, selected customer, and last receipt. POS function
+keys are inactive in the modal; Escape/Close dismisses it and restores focus.
+Controls fit the minimum window size. Theme and password saves are independent.

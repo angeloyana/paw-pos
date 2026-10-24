@@ -18,13 +18,19 @@ Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify
 - AC: Create cashier (username unique, full name, password), enable/disable, reset password.
 - AC: Owner cannot disable their own account. No forgotten-password recovery. Signed-in password changes require the current password.
 
-**F-A4 Account settings services**
+**F-A4 Account settings**
 
 - AC: Active owners and cashiers can read/save only their own built-in theme
   preference. Missing or unsupported saved themes default to `cosmo`.
 - AC: Change own password requires the correct current password and matching
   confirmation, preserves the session, and uses existing bcrypt validation.
 - AC: Failed saves roll back; seed runs preserve preferences and passwords.
+- AC: Owners have a Settings sidebar page; both roles can open the shared form
+  in a modal from POS, preserving cart/customer/last receipt and keyboard focus.
+- AC: Apply theme saves then updates all existing widgets, custom canvases, and
+  charts immediately. Login restores the account theme; logout uses `cosmo`.
+- AC: Inline feedback retains failed input; successful password changes clear
+  secrets. Theme and password changes save independently.
 
 ## B. Catalog
 
@@ -115,7 +121,7 @@ Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify
 
 - AC: Cards: today's net sales, today's transactions, number of low-stock items, pending refunds count.
 - AC: Chart 1: daily sales (bar, last 7 days, toggle 30). Chart 2: best sellers (horizontal bar, top 5; range today / 7 / 30 days). Low-stock table.
-- AC: Charts use Matplotlib embedded via `FigureCanvasTkAgg`, themed to match blue.
+- AC: Charts use Matplotlib embedded via `FigureCanvasTkAgg`, themed to match the selected account theme.
 - AC: Refresh button (and refresh when the dashboard is shown).
 
 ## I. Shared refund tracking

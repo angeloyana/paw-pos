@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add Settings for owners and cashiers: save any built-in theme per account and
+  change your own password using the current password and confirmation. Theme
+  changes apply immediately; POS settings preserve the cart and customer.
+
 - Add account theme preference storage and authenticated password-change services
   for owners and cashiers. A new table is created automatically; no ALTER SQL.
 

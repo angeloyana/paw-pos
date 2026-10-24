@@ -59,6 +59,9 @@ class InventoryScreen(ttk.Frame):
         self.refresh_history()
         self.notebook.bind("<<NotebookTabChanged>>", self._tab_changed)
 
+    def refresh_theme(self):
+        self.overview_tree.tag_configure("low", foreground=ttk.Style().colors.warning)
+
     def _tab_changed(self, _event=None):
         if self.notebook.select() == str(self.tabs["Movement History"]):
             self.refresh_history()
@@ -122,7 +125,7 @@ class InventoryScreen(ttk.Frame):
                 ("status", "Status", 110),
             ],
         )
-        self.overview_tree.tag_configure("low", foreground="#b45309")
+        self.overview_tree.tag_configure("low", foreground=ttk.Style().colors.warning)
         ttk.Label(
             tab,
             text="Low stock: balance at or below threshold. Inactive products are included.",

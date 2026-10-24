@@ -11,10 +11,10 @@
 
 | Role        | Can do                                                                                                                                                                                                               |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Cashier** | Log in/out, create sales, hold/resume transactions, void items or whole transactions (with reason), look up past sales by receipt number, submit/read refund requests and decisions, record full payouts, reprint receipts, add/select customers at checkout |
+| **Cashier** | Log in/out, create sales, hold/resume transactions, void items or whole transactions (with reason), look up past sales by receipt number, submit/read refund requests and decisions, record full payouts, reprint receipts, add/select customers at checkout, change own password and theme |
 | **Owner**   | Everything the cashier can, plus: dashboard/reports, manage products, categories, inventory (receive stock, adjust stock, view movements), customers, sales history, approve/reject refunds, correct payout details with audit, manage cashier accounts |
 
-Owner screens are only visible to the owner. The cashier sees only the POS screen.
+Owner screens are only visible to the owner. The cashier uses the POS screen and its Settings window.
 
 ## 3. Core sale flow
 

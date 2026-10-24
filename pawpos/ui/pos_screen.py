@@ -62,6 +62,10 @@ class POSScreen(ttk.Frame):
         ).pack(side="left")
         self.logout_button = ttk.Button(header, text="Logout", command=on_logout)
         self.logout_button.pack(side="right")
+        self.settings_button = ttk.Button(
+            header, text="Settings", command=self.open_settings
+        )
+        self.settings_button.pack(side="right", padx=6)
         self.last_receipt_button = ttk.Button(
             header,
             text="Last receipt",
@@ -102,7 +106,13 @@ class POSScreen(ttk.Frame):
         )
         self.category_bar = ttk.Frame(browse)
         self.category_bar.grid(row=1, column=0, columnspan=2, sticky="ew", pady=8)
-        self.canvas = tk.Canvas(browse, highlightthickness=0, width=440, height=1)
+        self.canvas = tk.Canvas(
+            browse,
+            highlightthickness=0,
+            width=440,
+            height=1,
+            background=ttk.Style().colors.bg,
+        )
         self.canvas.grid(row=2, column=0, sticky="nsew")
         scrollbar = ttk.Scrollbar(browse, command=self.canvas.yview)
         scrollbar.grid(row=2, column=1, sticky="ns")
@@ -151,6 +161,11 @@ class POSScreen(ttk.Frame):
         self.notice_retry.pack(side="right")
         self._notice_after = None
         self._poll_refund_notices()
+
+    def open_settings(self):
+        from pawpos.ui.settings_screen import SettingsDialog
+
+        SettingsDialog(self).show()
 
     def open_refunds(self, *, unread_only=False):
         self.perform(

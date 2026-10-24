@@ -59,6 +59,7 @@ pawpos/
 │   ├── models/
 │   │   ├── __init__.py        # imports all models
 │   │   ├── user.py
+│   │   ├── user_settings.py     # per-account theme
 │   │   ├── category.py
 │   │   ├── product.py
 │   │   ├── customer.py
@@ -68,6 +69,7 @@ pawpos/
 │   ├── services/
 │   │   ├── auth_service.py
 │   │   ├── user_service.py
+│   │   ├── settings_service.py
 │   │   ├── category_service.py
 │   │   ├── product_service.py
 │   │   ├── customer_service.py
@@ -81,6 +83,7 @@ pawpos/
 │       ├── app.py             # root window, screen switching, theme
 │       ├── widgets/           # product_card.py, money_entry.py, chart_frame.py, dialogs.py
 │       ├── login_screen.py
+│       ├── settings_screen.py  # shared owner form and POS modal
 │       ├── pos_screen.py
 │       ├── dialogs/           # weight, payment, receipt_preview, void, customer_picker, held_list, refund_request
 │       └── owner/
@@ -390,3 +393,11 @@ verifies the current hash and confirmation before hashing the replacement.
 Both services derive identity from the login session, recheck active status,
 and own their transactions. Neither accepts a target user ID. Password changes
 keep the in-memory identity and existing owner reset operations remain available.
+
+The owner sidebar and POS modal reuse `SettingsScreen`. `PawPOSApp.apply_theme`
+updates the existing ttk style and custom canvases/chart colors without replacing
+screens or POS state. Chart frames retain their last dataset for theme redraws,
+without querying services again. Login reads the account preference before creating
+the workspace; logout resets the default theme. Failed preference reads fall back
+to `cosmo` with visible retry guidance. The modal uses the shared focus/grab and
+Escape lifecycle; existing POS shortcut guards suppress actions while it has focus.

@@ -8,8 +8,8 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 ## Implementation status and setup
 
 **All eleven implementation phases are complete.** Startup checks the
-database connection, creates all fourteen tables, seeds an empty installation, and
-opens the blue-themed desktop login. Owners can manage categories and products
+database connection, creates all fifteen tables, seeds an empty installation, and
+opens the default blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
 workspaces support logout.
@@ -215,6 +215,22 @@ To regenerate the bundled paw placeholders, run
 Receipt PDFs use the bundled DejaVu Sans Mono font and its license in
 `assets/fonts/` so the peso sign prints without requiring a system font install.
 
+## Settings
+
+Owners open **Settings** from the sidebar. From POS, owners and cashiers use
+**Settings** to open a separate window without losing the cart, customer, or last
+receipt. Choose any built-in theme and press **Apply theme** to save and apply it
+immediately. The choice belongs to your account and returns at your next login;
+the login screen uses `cosmo`. **Reload saved theme** retries a failed read.
+
+To change your password, enter your current password, a new password, and matching
+confirmation, then press **Change password**. Passwords must be nonblank and at
+most 72 UTF-8 bytes. You stay signed in after success. If you forget your password,
+ask the owner to reset it through Users. Theme and password changes save separately.
+
+Startup creates the new `user_settings` table automatically. No manual ALTER SQL
+is needed, and existing shop data and saved preferences are preserved.
+
 ## Reading order
 
 For each contributor session, follow [AGENTS.md](AGENTS.md):
@@ -245,7 +261,7 @@ history; new work uses specs from [the feature template](docs/features/TEMPLATE.
 - Simulated login with bcrypt-hashed passwords
 
 **Out of scope (do NOT build)**
-Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loyalty points, real GCash API, digital scale integration, backup, CSV export, password reset flow for self-service, auto-lock, multi-terminal/concurrency handling, migrations (Alembic), packaging (PyInstaller), cashier low-stock alerts.
+Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loyalty points, real GCash API, digital scale integration, backup, CSV export, forgotten-password recovery, auto-lock, multi-terminal/concurrency handling, migrations (Alembic), packaging (PyInstaller), cashier low-stock alerts.
 
 ## Global rules for the AI agent
 
@@ -269,7 +285,7 @@ Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loy
 | Run command           | `python main.py`                       |
 | Default owner login   | `owner` / `owner123` (seed; change it) |
 | Default cashier login | `cashier` / `cashier123` (seed)        |
-| Theme                 | ttkbootstrap, blue (`cosmo`)           |
+| Theme                 | ttkbootstrap, per account (`cosmo` default) |
 
 ## Refund tracking data
 

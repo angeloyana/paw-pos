@@ -40,14 +40,17 @@ own password while signed in. Preferences belong to the account.
 
 ## Done when
 
-- [ ] Both roles can save independent themes, restored after login/restart.
-- [ ] Password validation, authorization, rollback, and replacement login work.
-- [ ] Settings navigation preserves POS state and modal keyboard/focus behavior.
-- [ ] All built-in themes work; custom colors and charts follow the theme.
-- [ ] Relevant tests and the full suite pass; the app runs.
+- [x] Both roles can save independent themes, restored after login/restart.
+- [x] Password validation, authorization, rollback, and replacement login work.
+- [x] Settings navigation preserves POS state and modal keyboard/focus behavior.
+- [x] All built-in themes work; custom colors and charts follow the theme.
+- [x] Relevant tests and the full suite pass; the app runs.
 - [ ] Living docs/changelog are current and all changes are committed.
 - [ ] Remaining work is resolved and spec/index statuses are `done`.
 
 ## Remaining work
 
-Task 1 implemented; verify service tests, then complete UI and final checks.
+Tasks 1–2 implemented. Full suite: 444 tests and 26 subtests passed with real Tk
+coverage on an isolated Xvfb/Matchbox display. Ruff checks pass. Actual app startup,
+seeding, and event loop passed with disposable SQLite; light/dark Settings layouts
+were inspected at 1280×720. Remaining: commit UI and close out documentation.

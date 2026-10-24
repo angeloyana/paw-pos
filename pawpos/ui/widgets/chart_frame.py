@@ -1,4 +1,4 @@
-"""Reusable Matplotlib canvas with blue dashboard styling."""
+"""Reusable Matplotlib canvas that follows the active account theme."""
 
 from textwrap import fill
 
@@ -19,6 +19,7 @@ class ChartFrame(ttk.Frame):
             row=0, column=0, sticky="w", pady=(0, 4)
         )
         self.colors = ttk.Style().colors
+        self._last_draw = None
         # Own the Figure directly; pyplot's global registry would retain old screens.
         self.figure = Figure(
             figsize=(4.8, 2.6), dpi=100, layout="constrained", facecolor=self.colors.bg
@@ -28,6 +29,8 @@ class ChartFrame(ttk.Frame):
         self.canvas.get_tk_widget().grid(row=1, column=0, sticky="nsew")
 
     def _style(self, *, horizontal=False):
+        self.colors = ttk.Style().colors
+        self.figure.set_facecolor(self.colors.bg)
         self.axes.clear()
         self.axes.set_facecolor(self.colors.bg)
         self.axes.tick_params(colors=self.colors.fg, labelsize=8)
@@ -43,6 +46,7 @@ class ChartFrame(ttk.Frame):
         self.axes.yaxis.label.set_color(self.colors.fg)
 
     def draw_daily(self, rows):
+        self._last_draw = (self.draw_daily, rows)
         self._style()
         # Pass Decimal values through; Matplotlib converts only its rendering coordinates.
         self.axes.bar(
@@ -79,6 +83,7 @@ class ChartFrame(ttk.Frame):
         self.canvas.draw_idle()
 
     def draw_best_sellers(self, rows):
+        self._last_draw = (self.draw_best_sellers, rows)
         self._style(horizontal=True)
         if rows:
             bars = self.axes.barh(
@@ -114,7 +119,13 @@ class ChartFrame(ttk.Frame):
         self.axes.set_xlabel("Quantity sold (piece / kg)", fontsize=8)
         self.canvas.draw_idle()
 
+    def refresh_theme(self):
+        if self._last_draw is not None:
+            draw, rows = self._last_draw
+            draw(rows)
+
     def destroy(self):
+        self._last_draw = None
         # Cancel queued Tk draws before destroying the canvas during navigation/logout.
         for name in ("_idle_draw_id", "_event_loop_id"):
             callback = getattr(self.canvas, name, None)

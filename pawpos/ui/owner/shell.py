@@ -18,6 +18,7 @@ from pawpos.ui.owner.refunds import RefundsScreen
 from pawpos.ui.owner.sales_history import SalesHistoryScreen
 from pawpos.ui.owner.users import UsersScreen
 from pawpos.ui.pos_screen import POSScreen
+from pawpos.ui.settings_screen import SettingsScreen
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class OwnerShell(ttk.Frame):
         self.pos_screen = None
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
-        sidebar = ttk.Frame(self, padding=16, bootstyle="light")
+        sidebar = ttk.Frame(self, padding=16)
         sidebar.grid(row=0, column=0, sticky="ns")
         with Image.open(ASSETS_DIR / "logo.png") as image:
             self.logo = ImageTk.PhotoImage(image.resize((56, 56)), master=self)
@@ -51,6 +52,7 @@ class OwnerShell(ttk.Frame):
             "Sales History",
             "Refunds",
             "Users",
+            "Settings",
             "POS",
         ):
             button = ttk.Button(
@@ -79,6 +81,7 @@ class OwnerShell(ttk.Frame):
             "Sales History",
             "Refunds",
             "Users",
+            "Settings",
             "POS",
         ):
             return
@@ -87,10 +90,8 @@ class OwnerShell(ttk.Frame):
                 self.current_screen.pack_forget()
             else:
                 self.current_screen.destroy()
-        for label, button in self.buttons.items():
-            button.configure(
-                bootstyle="primary" if label == page else "secondary-outline"
-            )
+        self.page = page
+        self.refresh_theme()
         if page == "POS":
             if self.pos_screen is None:
                 self.pos_screen = POSScreen(self.content, self.user, self.on_logout)
@@ -112,12 +113,22 @@ class OwnerShell(ttk.Frame):
             self.current_screen = SalesHistoryScreen(self.content)
         elif page == "Users":
             self.current_screen = UsersScreen(self.content)
+        elif page == "Settings":
+            self.current_screen = SettingsScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:
             self.current_screen = DashboardScreen(self.content)
         self.current_screen.pack(fill="both", expand=True)
         self.refresh_refund_badge()
+
+    def refresh_theme(self):
+        # Dark themes use dark secondary colors, which need filled button contrast.
+        inactive = (
+            "secondary" if ttk.Style().theme.type == "dark" else "secondary-outline"
+        )
+        for label, button in self.buttons.items():
+            button.configure(bootstyle="primary" if label == self.page else inactive)
 
     def refresh_refund_badge(self):
         try:
