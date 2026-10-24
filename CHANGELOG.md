@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add hover help for POS function keys and cart editing/removal, with clean
+  tooltip cancellation on navigation/logout. Explain empty customer searches
+  and walk-in checkout. Use current ttkbootstrap widget imports with support
+  for earlier 1.x releases.
+
 - Write UTF-8 diagnostics to project-root `pawpos.log` alongside console output.
   Show friendly database connection/initialization error dialogs before login,
   with console-only fallback when a display or log file is unavailable.

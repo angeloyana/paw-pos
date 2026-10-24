@@ -242,3 +242,12 @@ Read failures retain the previous display and show a retry message. Chart figure
 belong to their frames, reuse their canvases for range changes, and cancel queued
 Tk draws on destruction. The dashboard fits the 1280×720 minimum window and does
 not alter the draft POS cart/customer during navigation.
+
+### Final polish (Phase 11)
+
+POS search, Hold, Pay, Void, Held, edit/remove, and cart rows have hover help
+showing their keyboard actions. Tooltip windows and scheduled hovers close on
+navigation or logout. Customer selection explains empty saved lists/searches
+and offers Add or Walk-in. Database startup errors show a native owned dialog
+before the themed login; headless startup retains console diagnostics. UTF-8
+diagnostics also go to the ignored project-root `pawpos.log`.

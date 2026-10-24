@@ -3,7 +3,11 @@
 import tkinter as tk
 
 import ttkbootstrap as ttk
-from ttkbootstrap.scrolled import ScrolledFrame
+
+try:
+    from ttkbootstrap.widgets.scrolled import ScrolledFrame
+except ImportError:  # Compatibility with earlier supported ttkbootstrap 1.x.
+    from ttkbootstrap.scrolled import ScrolledFrame
 
 from pawpos.core.errors import PawPOSError, ValidationError
 from pawpos.core.money import format_peso, format_qty, round_money

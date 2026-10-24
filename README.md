@@ -24,7 +24,8 @@ The POS supports live search, category filters, cached product thumbnails,
 piece/kg cart entry, quantity editing, removal, and optional customer selection
 or quick creation. Click a product to add it; kg items prompt for weight and show
 the computed line price. Double-click a cart row or press Enter to edit it;
-Delete removes the selected row. F2 focuses search. Out-of-stock cards are
+Delete removes the selected row. F2 focuses search. Hover over POS shortcut
+controls for help; Enter edits a selected cart row and Escape closes dialogs. Out-of-stock cards are
 disabled. Owner navigation preserves the cart and selected customer until
 logout. Adding to a cart does not deduct stock. **Request Refund** looks up a completed
 receipt and submits selected items for owner review; it also offers receipt

@@ -16,6 +16,7 @@ class CustomerPicker(ModalDialog):
         self.name = tk.StringVar(self)
         self.contact = tk.StringVar(self)
         self.customers = {}
+        self.message = tk.StringVar(self)
         self.first_input = ttk.Entry(self.body, textvariable=self.search, width=48)
         self.first_input.pack(fill="x")
         table_frame = ttk.Frame(self.body)
@@ -35,6 +36,9 @@ class CustomerPicker(ModalDialog):
         self.table.configure(yscrollcommand=scroll.set)
         self.table.bind("<Double-1>", lambda _event: self.select())
         self.table.bind("<Return>", lambda _event: self.select())
+        ttk.Label(self.body, textvariable=self.message, wraplength=440).pack(
+            anchor="w", pady=(0, 8)
+        )
         actions = ttk.Frame(self.body)
         actions.pack(fill="x")
         ttk.Button(actions, text="Select", command=self.select).pack(side="left")
@@ -59,6 +63,13 @@ class CustomerPicker(ModalDialog):
             customers = customer_service.list_customers(self.search.get())
             self.customers = {str(row.id): row for row in customers}
             self.table.delete(*self.table.get_children())
+            self.message.set(
+                "Select a customer, continue as Walk-in, or add a new one."
+                if customers
+                else "No customers match your search. Add one below or continue as Walk-in."
+                if self.search.get().strip()
+                else "No saved customers. Add one below or continue as Walk-in."
+            )
             for key, row in self.customers.items():
                 self.table.insert("", "end", iid=key, values=(row.name, row.contact))
 

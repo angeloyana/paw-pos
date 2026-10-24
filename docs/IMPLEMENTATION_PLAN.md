@@ -262,8 +262,9 @@ and format checks pass.
 ## Phase 11: Polish and final checks
 
 **Implementation status:** file logging and friendly database startup dialogs
-are implemented and tested. Shortcut help and the final demo verification
-follow in this phase.
+are implemented and tested. POS shortcut tooltips, customer empty-state help,
+and compatible ttkbootstrap imports are complete. Final demo verification
+follows in this phase.
 
 **Tasks**
 

@@ -25,6 +25,7 @@ from pawpos.ui.dialogs.refund_request import RefundRequestDialog
 from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
+from pawpos.ui.widgets.tooltip import add_tooltip
 
 logger = logging.getLogger(__name__)
 
@@ -70,11 +71,11 @@ class POSScreen(ttk.Frame):
             header, text="Request Refund", command=self.request_refund
         )
         self.refund_button.pack(side="right", padx=6)
-        ttk.Button(
-            header,
-            text="Held (F8)",
-            command=self.open_held,
-        ).pack(side="right")
+        self.held_button = ttk.Button(header, text="Held (F8)", command=self.open_held)
+        self.held_button.pack(side="right")
+        add_tooltip(
+            self.held_button, "F8: List saved transactions to resume or cancel."
+        )
         ttk.Label(
             self, textvariable=self.status, bootstyle="danger", wraplength=850
         ).grid(row=1, column=0, columnspan=2, sticky="ew", pady=8)
@@ -87,6 +88,9 @@ class POSScreen(ttk.Frame):
         ttk.Label(tools, text="Search (F2)").pack(side="left")
         self.search_entry = ttk.Entry(tools, textvariable=self.search)
         self.search_entry.pack(side="left", fill="x", expand=True, padx=8)
+        add_tooltip(
+            self.search_entry, "F2: Focus product search while the POS is active."
+        )
         ttk.Button(tools, text="Refresh", command=self.refresh_catalog).pack(
             side="right"
         )
@@ -182,15 +186,28 @@ class POSScreen(ttk.Frame):
         self.empty_label.grid(row=2, column=0, sticky="w", pady=6)
         edits = ttk.Frame(panel)
         edits.grid(row=3, column=0, sticky="ew", pady=8)
-        ttk.Button(edits, text="Edit quantity", command=self.edit_selected).pack(
-            side="left"
+        self.edit_button = ttk.Button(
+            edits, text="Edit quantity", command=self.edit_selected
         )
-        ttk.Button(
+        self.edit_button.pack(side="left")
+        add_tooltip(
+            self.edit_button,
+            "Enter or double-click a cart row to edit its quantity or weight.",
+        )
+        self.remove_button = ttk.Button(
             edits,
             text="Remove (Delete)",
             command=self.remove_selected,
             bootstyle="secondary",
-        ).pack(side="left", padx=6)
+        )
+        self.remove_button.pack(side="left", padx=6)
+        add_tooltip(
+            self.remove_button,
+            "Delete: Remove the selected cart row. Use Void for a logged cancellation.",
+        )
+        add_tooltip(
+            self.table, "Select a row, then press Enter to edit or Delete to remove it."
+        )
         customer = ttk.Frame(panel)
         customer.grid(row=4, column=0, sticky="ew", pady=8)
         ttk.Label(customer, textvariable=self.customer_text, wraplength=250).pack(
@@ -204,19 +221,28 @@ class POSScreen(ttk.Frame):
         ).grid(row=5, column=0, sticky="e", pady=16)
         actions = ttk.Frame(panel)
         actions.grid(row=6, column=0, sticky="ew")
-        ttk.Button(
-            actions,
-            text="Hold (F4)",
-            command=self.hold_current,
-        ).pack(side="left")
-        ttk.Button(
-            actions,
-            text="Void (F6)",
-            bootstyle="danger",
-            command=self.void_current,
-        ).pack(side="left", padx=6)
+        self.hold_button = ttk.Button(
+            actions, text="Hold (F4)", command=self.hold_current
+        )
+        self.hold_button.pack(side="left")
+        add_tooltip(
+            self.hold_button,
+            "F4: Save the cart and customer for later, without changing stock.",
+        )
+        self.void_button = ttk.Button(
+            actions, text="Void (F6)", bootstyle="danger", command=self.void_current
+        )
+        self.void_button.pack(side="left", padx=6)
+        add_tooltip(
+            self.void_button,
+            "F6: Void a selected line or the whole cart, with a required reason.",
+        )
         self.pay_button = ttk.Button(actions, text="PAY (F5)", command=self.pay)
         self.pay_button.pack(side="right", fill="x", expand=True)
+        add_tooltip(
+            self.pay_button,
+            "F5: Complete payment with Cash or GCash. Add an item first.",
+        )
 
     def refresh_catalog(self):
         def load():
