@@ -24,6 +24,7 @@ class TableView(ttk.Treeview):
         colors = style.colors
         scale = self.winfo_fpixels("1i") / 96
         padding = max(4, round(6 * scale))
+        self._cell_padding = max(8, round(8 * scale))
         stripe = Colors.make_transparent(0.045, colors.inputfg, colors.inputbg)
         header = Colors.make_transparent(0.09, colors.primary, colors.inputbg)
         style.configure(
@@ -36,6 +37,7 @@ class TableView(ttk.Treeview):
             bordercolor=colors.border,
             borderwidth=1,
             relief="solid",
+            padding=(self._cell_padding, 0),
         )
         style.map(
             self.STYLE,
@@ -45,7 +47,7 @@ class TableView(ttk.Treeview):
         style.configure(
             f"{self.STYLE}.Heading",
             font=(self._body_font.cget("family"), self._heading_size, "bold"),
-            padding=(max(1, round(scale)), padding),
+            padding=(self._cell_padding, padding),
             background=header,
             foreground=colors.inputfg,
             relief="flat",
@@ -57,6 +59,7 @@ class TableView(ttk.Treeview):
         )
         self.tag_configure(self.STRIPES[0], background=colors.inputbg)
         self.tag_configure(self.STRIPES[1], background=stripe)
+        self._schedule_stripes()
 
     def _schedule_stripes(self):
         # Coalesce bulk reloads so striping runs once, rather than once per row.
@@ -68,6 +71,24 @@ class TableView(ttk.Treeview):
         for index, item in enumerate(self.get_children()):
             tags = tuple(t for t in self.item(item, "tags") if t not in self.STRIPES)
             self.item(item, tags=(*tags, self.STRIPES[index % 2]))
+        self._fit_columns()
+
+    def _fit_columns(self):
+        # Fixed widths predate the larger table font. Keep text inside each cell,
+        # and let the existing horizontal scrollbars handle narrower windows.
+        heading_font = font.Font(
+            self, font=ttk.Style().lookup(f"{self.STYLE}.Heading", "font")
+        )
+        columns = self.cget("columns")
+        widths = [heading_font.measure(self.heading(key, "text")) for key in columns]
+        for item in self.get_children():
+            for index, value in enumerate(self.item(item, "values")[: len(columns)]):
+                widths[index] = max(widths[index], self._body_font.measure(value))
+        for key, width in zip(columns, widths):
+            minimum = max(self.column(key, "minwidth"), width + 2 * self._cell_padding)
+            self.column(
+                key, minwidth=minimum, width=max(self.column(key, "width"), minimum)
+            )
 
     def insert(self, parent, index, iid=None, **kwargs):
         item = super().insert(parent, index, iid=iid, **kwargs)

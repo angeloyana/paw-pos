@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fix table text crowding neighboring columns and borders by adding cell padding
+  and sizing columns for their headers and loaded values, including after reloads
+  and theme changes.
+
 - Rewrite the README as a human-facing GitHub guide for setup, configuration,
   automatic seeding, running, testing, daily workflows, and troubleshooting.
 

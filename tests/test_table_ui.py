@@ -150,3 +150,47 @@ def test_row_height_accommodates_large_fonts(app):
         font.Font(app, font=app.style.lookup(table.STYLE, "font")).metrics("linespace")
         > 0
     )
+
+
+@pytest.mark.parametrize("page", ["Products", "Dashboard"])
+@pytest.mark.parametrize("theme", ["cosmo", "darkly"])
+def test_columns_fit_headers_and_values_with_cell_spacing(app, page, theme):
+    screen = owner_screen(app, page)
+    table = screen.tree if page == "Products" else screen.low_tree
+    app.apply_theme(theme)
+    app.state("normal")
+    app.geometry("1280x720")
+    app.update()
+    padding = app.tk.splitlist(app.style.lookup(table.STYLE, "padding"))
+    assert padding and int(padding[0]) >= 8
+    heading_font = font.Font(
+        app, font=app.style.lookup(f"{table.STYLE}.Heading", "font")
+    )
+    for index, column in enumerate(table.cget("columns")):
+        required = max(
+            heading_font.measure(table.heading(column, "text")),
+            *(
+                table._body_font.measure(table.item(row, "values")[index])
+                for row in table.get_children()
+            ),
+        ) + 2 * int(padding[0])
+        assert table.column(column, "minwidth") >= required
+        assert table.column(column, "width") >= required
+
+
+def test_column_sizing_updates_on_reload_and_larger_fonts(app):
+    table = TableView(app, columns=("name",), show="headings")
+    table.heading("name", text="Name")
+    table.column("name", width=50, minwidth=30)
+    table.pack(fill="both", expand=True)
+    table.insert("", "end", values=("Short",))
+    app.update()
+    old_width = table.column("name", "minwidth")
+    table.delete(*table.get_children())
+    value = "Health and Care — extended category name"
+    table.insert("", "end", values=(value,))
+    table._body_font.configure(size=18)
+    table.refresh_theme()
+    app.update()
+    assert table.column("name", "minwidth") > old_width
+    assert table.column("name", "width") >= table._body_font.measure(value) + 16

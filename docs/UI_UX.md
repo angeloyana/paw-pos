@@ -18,8 +18,11 @@ row backgrounds. Headers, stripes, and selection highlights follow the active
 theme immediately. Low-stock warning text remains visible on striped rows;
 selection uses the theme's selection foreground and background for readability.
 Reloading, inserting, deleting, or moving rows keeps the stripes alternating.
-Existing column sizing, numeric alignment, scrolling, and keyboard/mouse actions
-are preserved.
+Cells and headers have horizontal padding to separate adjacent values and keep
+text away from table borders. Column minimum widths fit their headers and loaded
+values using the current font metrics; reloading rows or changing themes updates
+these widths. Narrow windows use horizontal scrolling instead of squeezing text
+into neighboring columns. Numeric alignment and keyboard/mouse actions are preserved.
 
 ## 2. Login screen
 
