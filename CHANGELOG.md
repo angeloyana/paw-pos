@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Replace the cashier placeholder with the POS screen and enable owner POS
+  navigation. Add product cards, search/category filtering, cached thumbnails,
+  weight pricing previews, cart editing/removal, and customer selection/quick
+  creation. Scope keyboard shortcuts to the POS and preserve owner draft carts
+  across sidebar navigation. Payment, hold, void, and refund actions still show
+  messages for their planned phases.
+
 - Add signed-in customer lookup by name/contact and quick creation with optional
   contact, ready for the Phase 4 checkout picker.
 

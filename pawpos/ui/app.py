@@ -9,7 +9,7 @@ from pawpos.core.session import CurrentUser
 from pawpos.services import auth_service
 from pawpos.ui.login_screen import LoginScreen
 from pawpos.ui.owner.shell import OwnerShell
-from pawpos.ui.placeholder_screen import PlaceholderScreen
+from pawpos.ui.pos_screen import POSScreen
 
 
 class PawPOSApp(ttk.Window):
@@ -46,7 +46,7 @@ class PawPOSApp(ttk.Window):
         screen = (
             OwnerShell(self, user, self.show_login)
             if user.role == "owner"
-            else PlaceholderScreen(self, user, self.show_login)
+            else POSScreen(self, user, self.show_login)
         )
         self._replace_screen(screen)
 

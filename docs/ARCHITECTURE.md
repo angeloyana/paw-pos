@@ -103,6 +103,18 @@ pawpos/
 
 ## 3. Key design decisions
 
+`POSScreen` calls catalog/customer services and owns its `Cart`; widgets and
+dialogs never query models. Adds and edits fetch current active product data
+independently of the visible search/category filter. The owner shell keeps one
+POS frame alive while showing other pages so a draft cart/customer survives
+navigation. Logout destroys it. Root function-key bindings check visibility and
+dialog focus and are removed when the screen is destroyed. Later-phase action
+buttons only show status messages until their services are implemented.
+`WeightDialog` also edits whole-piece quantities; its live preview uses the
+cart's original unit-price snapshot when merging an existing weight line.
+`ThumbnailCache` belongs to the POS frame and keeps Tk images alive, falling
+back to the bundled paw for unreadable images.
+
 Customer checkout services expose `list_customers(search="")` and
 `create_customer(name, contact="")` to active signed-in users, returning frozen
 `CustomerDetails` values. Searches match literal text in names or contacts;

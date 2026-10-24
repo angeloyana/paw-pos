@@ -7,7 +7,7 @@ from pawpos.core import session as login_session
 from pawpos.services import auth_service, user_service
 from pawpos.ui.login_screen import LoginScreen
 from pawpos.ui.owner.shell import OwnerShell
-from pawpos.ui.placeholder_screen import PlaceholderScreen
+from pawpos.ui.pos_screen import POSScreen
 
 
 @pytest.mark.parametrize(
@@ -24,9 +24,7 @@ def test_login_routes_by_role_and_logout_clears_state(app, username, password, h
     form.password.set(password)
     form.login_button.invoke()
     app.update()
-    assert isinstance(
-        app.screen, OwnerShell if username == "owner" else PlaceholderScreen
-    )
+    assert isinstance(app.screen, OwnerShell if username == "owner" else POSScreen)
     assert app.screen.heading == heading
     assert login_session.current_user.username == username
     app.screen.logout_button.invoke()

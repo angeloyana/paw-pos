@@ -74,6 +74,18 @@ the desktop startup could not be verified in this environment.
 
 ## Phase 4: POS screen (selling UI)
 
+**Implementation status:** implemented for cashier login and the owner's POS
+sidebar entry. Product cards, live search/category filters, cached thumbnails,
+weight entry with live pricing, cart editing/removal, and customer lookup/quick
+creation are connected to services. Function keys are scoped to the visible POS;
+hold/payment/void/resume keys show availability messages for their later phases.
+Owners retain the cart and customer across page changes. No schema changes.
+Live MySQL acceptance remains pending from earlier phases.
+Verification: the full suite passes with 188 tests and 26 subtests, including
+real Tk login, catalog, POS, modal dialog, keyboard scope, and minimum-window
+layout checks on the local display. Ruff lint/format checks pass. `main.py`
+still reports a failed MySQL connection, so live database startup is unverified.
+
 **Tasks**
 
 - `widgets/product_card.py`, `pos_screen.py` (grid, category buttons, search, cart table, totals, top bar), thumbnail loader with cache.

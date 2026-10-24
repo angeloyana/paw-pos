@@ -6,18 +6,21 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 3 is implemented; live MySQL acceptance is pending.** Startup checks the
+**Phase 4 is implemented; live MySQL acceptance is pending.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
-Cashiers still reach a placeholder workspace; the POS screen comes in Phase 4.
-Both workspaces support logout.
+Cashiers enter the POS screen; owners can open it from the sidebar. Both
+workspaces support logout.
 
-The pure Python cart is ready for Phase 4's POS screen. It merges piece and kg
-items by product, checks quantities against supplied current stock, and calculates
-line totals with Decimal half-up rounding. Cart editing is currently available
-through the service API only; run its tests with
-`python -m pytest tests/test_cart.py tests/test_weight_pricing.py`.
+The POS supports live search, category filters, cached product thumbnails,
+piece/kg cart entry, quantity editing, removal, and optional customer selection
+or quick creation. Click a product to add it; kg items prompt for weight and show
+the computed line price. Double-click a cart row or press Enter to edit it;
+Delete removes the selected row. F2 focuses search. Out-of-stock cards are
+disabled. Owner navigation preserves the cart and selected customer until
+logout. Payment (Phase 5), hold/resume/void (Phase 6), and refunds (Phase 8)
+currently show availability messages; adding to a cart does not deduct stock.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`

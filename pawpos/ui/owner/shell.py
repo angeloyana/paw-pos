@@ -9,6 +9,7 @@ from pawpos.config import ASSETS_DIR, SHOP_NAME
 from pawpos.core.session import CurrentUser
 from pawpos.ui.owner.categories import CategoriesScreen
 from pawpos.ui.owner.products import ProductsScreen
+from pawpos.ui.pos_screen import POSScreen
 
 
 class OwnerShell(ttk.Frame):
@@ -16,6 +17,9 @@ class OwnerShell(ttk.Frame):
         super().__init__(parent)
         self.role = "owner"
         self.heading = "Owner dashboard"
+        self.user = user
+        self.on_logout = on_logout
+        self.pos_screen = None
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
         sidebar = ttk.Frame(self, padding=16, bootstyle="light")
@@ -47,7 +51,7 @@ class OwnerShell(ttk.Frame):
                 command=lambda page=label: self.show_page(page),
             )
             button.pack(fill="x", pady=3)
-            if label not in ("Dashboard", "Products", "Categories"):
+            if label not in ("Dashboard", "Products", "Categories", "POS"):
                 button.configure(state="disabled")
             self.buttons[label] = button
         self.logout_button = ttk.Button(sidebar, text="Logout", command=on_logout)
@@ -58,15 +62,24 @@ class OwnerShell(ttk.Frame):
         self.show_page("Dashboard")
 
     def show_page(self, page: str) -> None:
-        if page not in ("Dashboard", "Products", "Categories"):
+        if page not in ("Dashboard", "Products", "Categories", "POS"):
             return
         if self.current_screen is not None:
-            self.current_screen.destroy()
+            if self.current_screen is self.pos_screen:
+                self.current_screen.pack_forget()
+            else:
+                self.current_screen.destroy()
         for label, button in self.buttons.items():
             button.configure(
                 bootstyle="primary" if label == page else "secondary-outline"
             )
-        if page == "Products":
+        if page == "POS":
+            if self.pos_screen is None:
+                self.pos_screen = POSScreen(self.content, self.user, self.on_logout)
+            else:
+                self.pos_screen.refresh_catalog()
+            self.current_screen = self.pos_screen
+        elif page == "Products":
             self.current_screen = ProductsScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)

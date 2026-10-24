@@ -12,14 +12,30 @@
 
 ## 2. Login screen
 
-The login screen is implemented. Owners enter the owner shell; cashiers still
-reach a placeholder until Phase 4. Failed login clears the password and shows an
+The login screen is implemented. Owners enter the owner shell; cashiers enter
+the POS screen. Failed login clears the password and shows an
 inline error; logout returns to an empty login form.
 
 - Centered card: logo, "PawPOS", username, password (masked), **Login** button. Enter submits. Error message inline in red.
 - Cashier goes to the POS screen; owner goes to the owner shell.
 
 ## 3. Cashier POS screen
+
+Phase 4 implements browsing, cart editing, and customer selection. Category
+buttons wrap into rows to fit the owner workspace. Product thumbnails are cached
+for the screen lifetime, with a paw fallback for missing or corrupt files. Stock
+appears as plain text without low-stock alerts on the cashier screen. Click any
+part of an available card to add it; out-of-stock cards cannot add items.
+The weight dialog previews the merged line total when that product is already
+in the cart. Invalid input disables OK and keeps the dialog open. Cart editing
+uses the same dialog, with whole-number validation for piece items.
+
+F2 focuses search; Enter/double-click edits the selected cart row, and Delete
+removes it while the cart table has focus. F4/F5/F6/F8 and the corresponding
+buttons display availability messages for later phases. Payment is disabled
+when the cart is empty. POS function keys are inactive in dialogs, on other
+owner pages, and after logout. Owners retain their in-memory cart and customer
+when switching sidebar pages. Logout discards that in-memory transaction.
 
 Single screen, two main columns plus a top bar.
 
@@ -41,7 +57,7 @@ Single screen, two main columns plus a top bar.
 
 **Product grid (left, ~60% width)**
 
-- Scrollable grid of cards (4-5 per row). Card: 96x96 thumbnail (paw placeholder if none), name (max 2 lines), price (`/kg` suffix for kg items), stock text. Low stock text is amber; out of stock card is greyed and **disabled**, with "Out of stock" label.
+- Scrollable grid of cards (columns adapt to available width). Card: 96x96 thumbnail (paw placeholder if none), wrapped name, price (`/kg` suffix for kg items), stock text. Out-of-stock cards are **disabled**, with an "Out of stock" label. Low-stock alerts belong to the owner dashboard.
 - Category buttons (a horizontal row; "All" first) and a search box that filters live.
 - Click a card: per-piece adds 1; per-kg opens the weight dialog.
 
@@ -68,7 +84,7 @@ Single screen, two main columns plus a top bar.
 
 ## 5. Owner shell
 
-Phase 2 implements the sidebar, Products, and Categories. The Dashboard currently
+The sidebar implements Products, Categories, and POS. The Dashboard currently
 shows an introduction; reports follow in Phase 10. Navigation for later phases
 is disabled. Select a catalog table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
