@@ -1,0 +1,1 @@
+"""PawPOS automated checks."""
