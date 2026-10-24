@@ -6,10 +6,10 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 1 is in progress.** The entry point checks the database connection and
-creates the ten model tables. Atomic seeding and authentication/account services
-are implemented; startup seeding and the desktop login screen are next. The default
-logins below will become available when startup seeding is connected.
+**Phase 1 is implemented; live MySQL acceptance is pending.** Startup checks the
+database connection, creates all ten tables, seeds an empty installation, and
+opens the blue-themed desktop login. Owners and cashiers reach separate
+placeholder workspaces with logout. Catalog and POS screens come in later phases.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`
@@ -25,11 +25,16 @@ logins below will become available when startup seeding is connected.
 
 4. Copy `.env.example` to `.env` and fill in your local database credentials.
    Keep `.env` private; it is ignored by Git.
-5. Run `python main.py`. Success reports `Database connection successful.`;
-   failure reports what to check and exits with status 1.
-6. Run `python -m pytest`. Phase 0 checks also support
-   `python -m unittest discover -v`. Tests use in-memory SQLite and need no MySQL
-   server or real credentials.
+5. Run `python main.py` in a desktop session. Tables and demo data are created on
+   first run. Sign in as `owner` / `owner123` or `cashier` / `cashier123`. Existing
+   users, passwords, and inventory are preserved on later starts. These are
+   school-project demo passwords; change them before using real shop data.
+   Connection failures report what to check and exit with status 1.
+6. Run `python -m pytest`. Tests use in-memory SQLite and need no MySQL server or
+   real credentials. GUI tests use real Tk widgets and skip when no display is
+   available. On Linux with Xvfb installed, use `xvfb-run -a python -m pytest` to
+   include them in a headless session. Foundation checks also support
+   `python -m unittest discover -v`.
 
 Use Ruff to lint and format Python code:
 

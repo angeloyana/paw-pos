@@ -1,1 +1,1 @@
-"""Tkinter screens, introduced with authentication in Phase 1."""
+"""Tkinter screens that call services for business operations."""

@@ -12,6 +12,10 @@
 
 ## 2. Login screen
 
+Phase 1 implements this screen and separate owner/cashier placeholder workspaces.
+The full owner shell and POS screen follow in later phases. Failed login clears
+the password and shows an inline error; logout returns to an empty login form.
+
 - Centered card: logo, "PawPOS", username, password (masked), **Login** button. Enter submits. Error message inline in red.
 - Cashier goes to the POS screen; owner goes to the owner shell.
 

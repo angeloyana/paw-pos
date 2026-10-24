@@ -4,10 +4,9 @@
 
 ## Phase 0: Project setup
 
-**Implementation status:** foundation code and automated checks are present.
-`main.py` currently runs a database connection check and schema initialization;
-the GUI starts in Phase 1. No tables are introduced in this phase. Verify the
-live MySQL connection locally before proceeding to Phase 1.
+**Implementation status:** foundation code and automated checks are implemented.
+The connection checker reports success/failure clearly. Phase 1 extends startup
+with tables, seeding, and the desktop login.
 
 **Tasks**
 
@@ -21,10 +20,11 @@ live MySQL connection locally before proceeding to Phase 1.
 
 ## Phase 1: Models, seed, auth
 
-**Implementation status:** models, atomic seeding, authentication, and owner-only
-account services are implemented. Desktop login and startup wiring are next.
-SQLite tests check schema, seeding, and account rules; live MySQL verification
-remains pending.
+**Implementation status:** models, atomic seeding, authentication, owner-only
+account services, startup wiring, and the desktop login are implemented. SQLite
+tests check schema, seeding, account rules, and real Tk login/logout behavior
+under Xvfb. MySQL DDL compiles successfully, but table creation and login against
+a live MySQL server still need local verification before Phase 2 acceptance.
 
 **Tasks**
 
