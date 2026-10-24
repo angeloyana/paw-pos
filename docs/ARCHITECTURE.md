@@ -176,12 +176,25 @@ owners can reset their own seeded password as well as cashier passwords.
 
 ### 4.1 Complete a sale
 
-1. UI calls `sale_service.complete_sale(cart, cashier_id, customer_id, payment)`.
+1. UI calls `sale_service.complete_sale(cart, payment, customer_id=...)`.
 2. Validate: cart not empty; payment method valid; cash received >= total; GCash reference present.
 3. Begin transaction. Load each product `FOR UPDATE`. Verify `stock >= qty` and product active, else raise `BusinessRuleError`.
 4. Create `Sale(status='completed')`, `SaleItem` rows (snapshot name, unit type, unit price), generate receipt number.
 5. For each item: `product.stock -= qty`; insert `StockMovement(type='sale', change=-qty, stock_after, reference sale id)`.
-6. Commit. Return receipt data. UI shows the receipt preview.
+6. Commit. Return frozen `CompletedSale(id, receipt_number, total)`. UI clears
+   the cart and builds the receipt preview only after successful completion.
+
+`Payment(method, amount_received=None, gcash_reference="")` is validated by the
+pure `validate_payment(total, payment)` helper and again during completion.
+Cash must cover the total; GCash requires a trimmed reference of at most 50
+characters. Unused tender fields are stored as NULL. The active authenticated
+account supplies cashier identity; callers cannot attribute sales to another
+account. Optional customers must exist. Inactive products/categories and changed
+units block completion. Original cart name/price snapshots are preserved.
+Receipt numbering restarts each local day and stops at 9999. The unique receipt
+constraint and transaction protect writes; multiple-terminal sequencing remains
+out of scope. The service leaves the in-memory cart untouched on success or
+failure, letting the UI clear it after the commit. No schema changes are needed.
 
 ### 4.2 Hold / resume
 

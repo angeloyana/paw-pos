@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add atomic sale completion with product locks, stock revalidation, item price
+  snapshots, linked stock movements, cash change, GCash reference validation,
+  and daily `PAW-YYYYMMDD-NNNN` receipt numbering.
+
 - Replace the cashier placeholder with the POS screen and enable owner POS
   navigation. Add product cards, search/category filtering, cached thumbnails,
   weight pricing previews, cart editing/removal, and customer selection/quick
