@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add receipt-based refund request and owner review services, enforcing the
+  seven-day window, opened-food restrictions, and remaining quantities including
+  pending requests. Approval restores only resellable stock with linked movement
+  history; rejection releases quantities without changing inventory.
+
 - Enable the owner Inventory workspace with Stock Overview, Receive Stock,
   Adjust Stock, and read-only Movement History tabs. Include low-stock
   highlighting, supplier prefill, delivery dates, signed corrections, history

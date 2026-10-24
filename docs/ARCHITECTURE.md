@@ -287,3 +287,24 @@ when a delivery is backdated. Future delivery dates are rejected.
 product/type and inclusive calendar-date bounds. Sale references resolve to
 receipt numbers; refund references show the refund ID. No history mutation API
 is exposed. This phase uses existing tables without schema changes.
+
+### Refund services (Phase 8)
+
+`refund_service.lookup_receipt` exposes completed sale snapshots, food flags, and
+remaining refundable quantities to active signed-in users. Requests use
+`RefundLineInput(sale_item_id, quantity, is_opened)`; the service derives the
+requester from the login, validates the receipt and every line, and inserts the
+request/items together. The request window is inclusive through exactly seven
+elapsed days after completion. Pending and approved quantities reserve the sold
+quantity; rejected requests release it. Opened food is blocked using the
+product's current category food flag (the existing sale schema has no food-flag
+snapshot). Prices and units use sale-item snapshots, with half-up centavo rounding.
+
+Only owners can list pending/history, count pending requests, or review them.
+`approve(request_id, resellable_map)` requires a boolean for every refund-item ID.
+The request and affected products are locked; approval, reviewer/time, resellable
+flags, stock changes, and linked `refund` movements commit atomically. Inactive
+products can still receive returns. A timely pending request remains reviewable
+after the request window expires. `reject(request_id, note)` requires a note,
+records reviewer/time, and leaves inventory unchanged. Already reviewed requests
+cannot be reviewed again. The existing refund tables need no schema changes.

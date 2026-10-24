@@ -176,6 +176,10 @@ pass.
 
 ## Phase 8: Refunds
 
+**Implementation status:** refund request/review services and 33 rule/rollback
+tests are implemented. Cashier and owner screens follow in this phase. No schema
+changes are required.
+
 **Tasks**
 
 - `refund_service`: `create_request`, `list_pending`, `list_history`, `approve`, `reject`, `remaining_refundable(sale_item_id)`.
