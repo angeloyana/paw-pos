@@ -176,9 +176,25 @@ pass.
 
 ## Phase 8: Refunds
 
-**Implementation status:** refund request/review services and 33 rule/rollback
-tests are implemented. Cashier and owner screens follow in this phase. No schema
-changes are required.
+**Implementation status:** refund rules/services, cashier receipt lookup and
+request entry, owner Pending/History review tabs, receipt reprinting, and the
+pending sidebar badge are implemented. Requests preserve the active POS cart;
+owner approval adds stock only for resellable lines. Rejection requires a note
+and releases reserved quantities. Failed writes preserve inputs and pending
+state; committed review actions are disabled before a fallible refresh. Existing
+refund tables support this phase without schema changes.
+
+Verification: 33 service tests cover the exact seven-day boundary, completed
+receipts, opened food, quantity/precision rules, pending/approved reservations,
+rejection release, original-price rounding, access checks, review decisions,
+stock overflow, and transaction rollback. Eight real Tk tests cover request to
+review/inventory history, badges, validation, reprinting, modal cancellation,
+failed writes, refresh failures, and minimum-window layout. Normal startup and
+both role logins/logout pass against local MySQL. MySQL refund requests, mixed
+approval, rejection, remaining quantities, and movement rows are verified inside
+an outer transaction that is rolled back; shop stock and sale/refund/movement
+counts are unchanged. The full suite passes with 327 tests and 26 subtests,
+including all real Tk tests; Ruff lint and format checks pass.
 
 **Tasks**
 

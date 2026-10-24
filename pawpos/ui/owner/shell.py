@@ -1,5 +1,6 @@
 """Owner navigation; only completed screens are enabled."""
 
+import logging
 from collections.abc import Callable
 
 import ttkbootstrap as ttk
@@ -7,10 +8,14 @@ from PIL import Image, ImageTk
 
 from pawpos.config import ASSETS_DIR, SHOP_NAME
 from pawpos.core.session import CurrentUser
+from pawpos.services import refund_service
 from pawpos.ui.owner.categories import CategoriesScreen
 from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
+from pawpos.ui.owner.refunds import RefundsScreen
 from pawpos.ui.pos_screen import POSScreen
+
+logger = logging.getLogger(__name__)
 
 
 class OwnerShell(ttk.Frame):
@@ -52,7 +57,14 @@ class OwnerShell(ttk.Frame):
                 command=lambda page=label: self.show_page(page),
             )
             button.pack(fill="x", pady=3)
-            if label not in ("Dashboard", "Products", "Categories", "Inventory", "POS"):
+            if label not in (
+                "Dashboard",
+                "Products",
+                "Categories",
+                "Inventory",
+                "Refunds",
+                "POS",
+            ):
                 button.configure(state="disabled")
             self.buttons[label] = button
         self.logout_button = ttk.Button(sidebar, text="Logout", command=on_logout)
@@ -63,7 +75,14 @@ class OwnerShell(ttk.Frame):
         self.show_page("Dashboard")
 
     def show_page(self, page: str) -> None:
-        if page not in ("Dashboard", "Products", "Categories", "Inventory", "POS"):
+        if page not in (
+            "Dashboard",
+            "Products",
+            "Categories",
+            "Inventory",
+            "Refunds",
+            "POS",
+        ):
             return
         if self.current_screen is not None:
             if self.current_screen is self.pos_screen:
@@ -77,6 +96,9 @@ class OwnerShell(ttk.Frame):
         if page == "POS":
             if self.pos_screen is None:
                 self.pos_screen = POSScreen(self.content, self.user, self.on_logout)
+                self.pos_screen.bind(
+                    "<<RefundsChanged>>", lambda _event: self.refresh_refund_badge()
+                )
             else:
                 self.pos_screen.refresh_catalog()
             self.current_screen = self.pos_screen
@@ -84,6 +106,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = ProductsScreen(self.content)
         elif page == "Inventory":
             self.current_screen = InventoryScreen(self.content)
+        elif page == "Refunds":
+            self.current_screen = RefundsScreen(self.content, self.refresh_refund_badge)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:
@@ -102,3 +126,11 @@ class OwnerShell(ttk.Frame):
                 text="Reports and other workspaces will be available in later phases.",
             ).pack(anchor="w")
         self.current_screen.pack(fill="both", expand=True)
+        self.refresh_refund_badge()
+
+    def refresh_refund_badge(self):
+        try:
+            count = refund_service.pending_refund_count()
+            self.buttons["Refunds"].configure(text=f"Refunds ({count})")
+        except Exception:
+            logger.exception("Cannot refresh the pending refund badge")

@@ -108,8 +108,9 @@ dialogs never query models. Adds and edits fetch current active product data
 independently of the visible search/category filter. The owner shell keeps one
 POS frame alive while showing other pages so a draft cart/customer survives
 navigation. Logout destroys it. Root function-key bindings check visibility and
-dialog focus and are removed when the screen is destroyed. Later-phase action
-buttons only show status messages until their services are implemented.
+dialog focus and are removed when the screen is destroyed. Refund requests
+open a receipt-based modal and preserve the active cart/customer. Owner review
+is available separately through the Refunds sidebar entry.
 F5 now opens `PaymentDialog`, which owns the service call and returns a committed
 `CompletedSale` only on success. The POS then clears the cart/customer before
 loading any receipt or refreshing catalog data. Receipt failures cannot leave

@@ -109,7 +109,7 @@ Single screen, two main columns plus a top bar.
 
 ## 5. Owner shell
 
-The sidebar implements Products, Categories, Inventory, and POS. The Dashboard currently
+The sidebar implements Products, Categories, Inventory, Refunds, and POS. The Dashboard currently
 shows an introduction; reports follow in Phase 10. Navigation for later phases
 is disabled. Select a catalog table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
@@ -170,3 +170,23 @@ Movement History refreshes when opened and exposes only filtering and scrolling;
 there are no edit/delete actions. Date filters are inclusive and optional.
 History shows explicit positive signs, receipt/refund references, and an empty
 state when no rows match. Both tables have vertical and horizontal scrollbars.
+
+### Refunds (Phase 8)
+
+Request Refund opens a scrollable modal with receipt lookup, remaining
+quantities, per-item selection/quantity/opened flags, reason, and original-price
+total. Editing the receipt number invalidates the loaded sale and disables
+submission/reprinting until Load succeeds. Errors retain entered inputs;
+successful submission closes the dialog and reports pending owner approval on
+the POS. The current cart/customer stays intact. Reprint opens the existing
+receipt preview, without creating a refund or sale. Escape cancels the modal.
+
+The owner sidebar shows `Refunds (N)` and refreshes after requests, reviews, and
+navigation. The Refunds screen has Pending and History tabs with scrollable
+tables and item details. Each pending line defaults to Resellable No; Yes
+restores that line's stock on approval. Approve asks for confirmation and reminds
+the owner to return money manually. Reject requires a note and confirmation.
+Processed details show status, reviewer/time, note, and resellable choices;
+review controls are disabled. After a saved review, controls are disabled before
+refresh, preventing resubmission if the read fails. Empty pending lists explain
+where processed reviews appear.

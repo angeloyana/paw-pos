@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Connect POS refund requests to receipt lookup/reprinting, per-item quantities,
+  opened/used flags, reasons, and original-price totals. Add owner Pending and
+  History tabs with per-line resellable choices, confirmed approval/rejection,
+  rejection notes, reviewer details, and a live pending-count sidebar badge.
+  Validation and database failures preserve inputs; successful reviews disable
+  repeat actions before refreshing.
+
 - Add receipt-based refund request and owner review services, enforcing the
   seven-day window, opened-food restrictions, and remaining quantities including
   pending requests. Approval restores only resellable stock with linked movement

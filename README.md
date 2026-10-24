@@ -6,7 +6,7 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 7 is implemented.** Startup checks the
+**Phase 8 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
@@ -26,8 +26,9 @@ or quick creation. Click a product to add it; kg items prompt for weight and sho
 the computed line price. Double-click a cart row or press Enter to edit it;
 Delete removes the selected row. F2 focuses search. Out-of-stock cards are
 disabled. Owner navigation preserves the cart and selected customer until
-logout. Adding to a cart does not deduct stock. Refund requests (Phase 8)
-currently show an availability message.
+logout. Adding to a cart does not deduct stock. **Request Refund** looks up a completed
+receipt and submits selected items for owner review; it also offers receipt
+preview/reprinting.
 
 **Hold (F4)** saves the cart and customer to the database, then clears the POS.
 **Held (F8)** lists saved transactions after logout or restart. Resume restores
@@ -123,6 +124,28 @@ Delivery supplier/note text shares a 255-character history field. Past delivery
 dates are recorded at midnight; future dates are rejected. Stock after means
 the balance when posted, including for backdated deliveries. Returning to the
 POS refreshes its stock while preserving any draft cart.
+
+Use **Request Refund** on the POS to load a receipt, select items, enter returned
+quantities, flag opened/used items, and give a reason. Requests must be submitted
+within seven elapsed days of sale completion. Opened food is blocked. Pending
+and approved requests count against the remaining refundable quantity; rejected
+requests release that quantity. Requests leave stock unchanged and preserve any
+active cart/customer. The displayed amounts use the original sale prices.
+
+Owners open **Refunds** from the sidebar; its badge shows the pending count.
+Select a **Pending** request and set each line's **Resellable** choice (default
+No), then confirm **Approve**. Only resellable lines return to stock, with linked
+refund movements. **Reject** requires a note and confirmation, and leaves stock
+unchanged. **History** shows processed requests, item decisions, reviewer, and
+review note. A timely request can be reviewed after its seven-day request
+window. The refund money is handed back manually; there is no payment reversal
+integration. POS users submit requests only; approval stays in the owner
+workspace.
+
+Local MySQL refund lookup/request, opened-food rejection, mixed resellable
+approval, rejection, and movement history were verified inside a transaction
+that was fully rolled back, leaving sales, refunds, movements, and shop stock
+unchanged.
 
 To regenerate the bundled paw placeholders, run
 `python scripts/generate_assets.py`. Product image copies will live in

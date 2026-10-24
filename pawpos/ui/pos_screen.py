@@ -21,6 +21,7 @@ from pawpos.ui.dialogs.customer_picker import CustomerPicker
 from pawpos.ui.dialogs.held_list import HeldListDialog
 from pawpos.ui.dialogs.payment import PaymentDialog
 from pawpos.ui.dialogs.receipt_preview import ReceiptPreview
+from pawpos.ui.dialogs.refund_request import RefundRequestDialog
 from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
@@ -65,11 +66,10 @@ class POSScreen(ttk.Frame):
             state="disabled",
         )
         self.last_receipt_button.pack(side="right", padx=6)
-        ttk.Button(
-            header,
-            text="Request Refund",
-            command=lambda: self.future_action("Refund requests", 8),
-        ).pack(side="right", padx=6)
+        self.refund_button = ttk.Button(
+            header, text="Request Refund", command=self.request_refund
+        )
+        self.refund_button.pack(side="right", padx=6)
         ttk.Button(
             header,
             text="Held (F8)",
@@ -407,8 +407,19 @@ class POSScreen(ttk.Frame):
 
         self.perform(select)
 
-    def future_action(self, label, phase):
-        self.status.set(f"{label} will be available in Phase {phase}.")
+    def request_refund(self):
+        result = None
+
+        def request():
+            nonlocal result
+            result = RefundRequestDialog(self).show()
+
+        if self.perform(request) and result is not None:
+            self.status.set(
+                f"Refund request #{result.id} submitted for owner approval."
+            )
+            self.event_generate("<<RefundsChanged>>", when="tail")
+        self.search_entry.focus_set()
 
     def hold_current(self):
         if not self.cart.lines:
