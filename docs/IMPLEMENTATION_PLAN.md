@@ -234,6 +234,10 @@ tests. Ruff lint/format checks pass.
 
 ## Phase 10: Dashboard and reports
 
+**Implementation status:** owner report services and 24 report tests are
+implemented. Dashboard cards, charts, and the low-stock table follow in this
+phase. No schema changes are needed.
+
 **Tasks**
 
 - `report_service`: `today_summary`, `daily_sales(days)`, `best_sellers(days, limit)`, `low_stock()`, `pending_refund_count()`. Net sales subtract approved refunds.

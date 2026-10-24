@@ -156,7 +156,8 @@ Append-only history. **Never update or delete rows.**
 
 ## Derived values (compute in services, don't store)
 
-- **Net sales** = sum of completed sale totals - sum of approved refund totals (by date).
+- **Net sales** = sum of sale totals by completion date - sum of approved refund
+  totals by review date. Refund-only days may be negative.
 - **Remaining refundable qty of a sale item** = sale item qty - sum of refund item qty from `pending` + `approved` requests.
 - **Low stock** = `stock_quantity <= low_stock_threshold`.
 

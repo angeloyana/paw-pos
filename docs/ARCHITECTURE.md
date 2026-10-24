@@ -325,3 +325,23 @@ approved requests before joining to sales, so multiple refund requests do not
 duplicate sale rows. `get_sale` returns original sale-item prices/names/quantities
 and tender details. Customer/cashier names reflect their current records. Existing
 receipt services supply preview/PDF reprinting. No schema changes are required.
+
+### Dashboard reports (Phase 10)
+
+`report_service` restricts all reports to an active owner and returns immutable
+Decimal-valued snapshots. `today_summary` returns today's net sales, completed
+transaction count, low-stock count, and pending refunds. `daily_sales(7|30)`
+returns every local calendar date, oldest first, with zero-filled empty days.
+Gross sales use `completed_at`; approved refunds use `reviewed_at`, including
+refunds of sales from earlier days. Refund-only days can have negative net sales.
+Sales/refund aggregates run separately to avoid multiplying totals across joins.
+
+`best_sellers(1|7|30, limit=5)` ranks gross quantities from completed sales and
+labels units. Refund quantities do not reduce this gross-sales ranking. Products
+are grouped by ID/unit with current names, including inactive historical products;
+ties use name/ID/unit for a stable order. `low_stock` includes active products in
+active categories when stock is at or below threshold, including zero. Inactive
+entries remain available in Inventory but do not generate dashboard restocking
+alerts. The card and list share that rule. `pending_refund_count` supplies the
+report/sidebar count; the existing refund service API delegates to it. No schema
+changes are required.

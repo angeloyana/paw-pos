@@ -19,6 +19,7 @@ from pawpos.models import (
     SaleItem,
     StockMovement,
 )
+from pawpos.services import report_service
 from pawpos.services.auth_service import _require_owner, _require_user
 from pawpos.services.catalog_validation import flag, number, quantity, text
 
@@ -274,14 +275,8 @@ def list_history() -> list[RefundDetails]:
 
 
 def pending_refund_count() -> int:
-    """Return the owner sidebar badge count without loading request details."""
-    with session_scope() as session:
-        _require_owner(session)
-        return session.scalar(
-            select(func.count())
-            .select_from(RefundRequest)
-            .where(RefundRequest.status == "pending")
-        )
+    """Keep the existing refund badge API backed by the report count."""
+    return report_service.pending_refund_count()
 
 
 def _pending(session: Session, request_id: int) -> RefundRequest:

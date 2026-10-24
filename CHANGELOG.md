@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add owner report services for daily net sales, today's summary, gross-quantity
+  best sellers, active low-stock products, and pending refunds. Zero-fill date
+  ranges and deduct refunds on their approval date without duplicating sales.
+
 - Enable owner Users management: create cashiers, confirm disabling, re-enable,
   and reset passwords, including the owner's demo password. Keep owner status
   protected and password inputs masked; clear saved account inputs before
