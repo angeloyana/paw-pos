@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Write UTF-8 diagnostics to project-root `pawpos.log` alongside console output.
+  Show friendly database connection/initialization error dialogs before login,
+  with console-only fallback when a display or log file is unavailable.
+
 - Replace the owner dashboard placeholder with net-sales/transaction/low-stock/
   pending-refund cards, blue Matplotlib daily-sales and best-seller charts with
   range selectors, and an active low-stock table. Refresh on navigation or by

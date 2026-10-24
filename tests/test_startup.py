@@ -9,6 +9,14 @@ from pawpos.db.base import ConnectionCheck
 
 
 class StartupTests(unittest.TestCase):
+    def setUp(self):
+        logging_patch = patch.object(main, "configure_logging")
+        dialog_patch = patch.object(main, "show_startup_error")
+        logging_patch.start()
+        self.dialog = dialog_patch.start()
+        self.addCleanup(logging_patch.stop)
+        self.addCleanup(dialog_patch.stop)
+
     def test_unavailable_database_stops_before_initialization(self):
         with (
             patch.object(
@@ -22,6 +30,7 @@ class StartupTests(unittest.TestCase):
             self.assertLogs(level="ERROR"),
         ):
             self.assertEqual(main.main(), 1)
+        self.dialog.assert_called_once_with("Unavailable")
         initialize.assert_not_called()
         seed.assert_not_called()
         launch.assert_not_called()
@@ -42,6 +51,7 @@ class StartupTests(unittest.TestCase):
         initialize.assert_called_once_with()
         seed.assert_called_once_with()
         launch.assert_called_once_with()
+        self.dialog.assert_not_called()
 
     def test_database_initialization_failure_does_not_launch_desktop(self):
         with (
@@ -61,6 +71,7 @@ class StartupTests(unittest.TestCase):
             self.assertEqual(main.main(), 1)
         launch.assert_not_called()
         self.assertNotIn("private detail", " ".join(logs.output))
+        self.assertNotIn("private detail", self.dialog.call_args.args[0])
 
     def test_unavailable_display_has_friendly_error(self):
         with (

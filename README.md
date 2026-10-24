@@ -71,12 +71,17 @@ Install/configure a PDF viewer locally for the Print handoff.
    first run. Sign in as `owner` / `owner123` or `cashier` / `cashier123`. Existing
    users, passwords, and inventory are preserved on later starts. These are
    school-project demo passwords; change them before using real shop data.
-   Connection failures report what to check and exit with status 1.
+   Connection failures show a desktop error dialog with what to check and exit
+   with status 1. Without a display, the same error remains in the console.
 6. Run `python -m pytest`. Tests use in-memory SQLite and need no MySQL server or
    real credentials. GUI tests use real Tk widgets and skip when no display is
    available. On Linux with Xvfb installed, use `xvfb-run -a python -m pytest` to
    include them in a headless session. Foundation checks also support
    `python -m unittest discover -v`.
+
+Startup and diagnostic messages are written to the project-root `pawpos.log`
+in UTF-8, alongside console output. The log is ignored by Git. If the log file
+cannot be opened, startup continues with console logging.
 
 Use Ruff to lint and format Python code:
 

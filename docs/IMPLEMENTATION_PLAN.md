@@ -261,6 +261,10 @@ and format checks pass.
 
 ## Phase 11: Polish and final checks
 
+**Implementation status:** file logging and friendly database startup dialogs
+are implemented and tested. Shortcut help and the final demo verification
+follow in this phase.
+
 **Tasks**
 
 - Consistent theme and spacing, tooltips for shortcuts, empty states, error messages.

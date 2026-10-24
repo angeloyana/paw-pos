@@ -5,25 +5,28 @@ import tkinter as tk
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from pawpos.core.logging_setup import configure_logging
 from pawpos.db.base import check_connection, init_db
 from pawpos.db.seed import seed_database
 from pawpos.ui.app import run_app
+from pawpos.ui.startup import show_startup_error
 
 
 def main() -> int:
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    configure_logging()
     result = check_connection()
     if not result.success:
         logging.error(result.message)
+        show_startup_error(result.message)
         return 1
     logging.info(result.message)
     try:
         init_db()
         seed_database()
     except SQLAlchemyError:
-        logging.error(
-            "Cannot initialize the database. Check the database user's table privileges and schema."
-        )
+        message = "Cannot initialize the database. Check the database user's table privileges and schema."
+        logging.error(message)
+        show_startup_error(message)
         return 1
     try:
         run_app()
