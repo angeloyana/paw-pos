@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add persistent held-cart services with customer and item snapshots, atomic
+  resume/cancellation, and reasoned line/transaction void logs. Holds and voids
+  leave stock unchanged; failed writes preserve the active cart and held rows.
+
 - Connect Pay/F5 to live Cash/GCash validation, cash quick amounts and change,
   atomic completion, stock refresh, cart reset, and automatic receipt preview.
   Add Print and Last receipt actions; receipt failures keep the committed sale

@@ -59,7 +59,9 @@ project-wide soft-deletion rule. No migrations are used.
 
 ## sales
 
-Holds completed sales, held carts, and (optionally) cancelled held carts.
+Holds completed sales and held carts. Resuming removes the held sale/items;
+cancelling also removes them while retaining their item snapshots and reason in
+`void_logs`. Neither operation changes stock. No `voided` status is stored.
 | Column | Type | Notes |
 |--------|------|-------|
 | id | int PK | |

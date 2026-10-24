@@ -207,11 +207,28 @@ failure, letting the UI clear it after the commit. No schema changes are needed.
 - Hold: save cart as `Sale(status='held')` + items (receipt number NULL). Clear UI cart.
 - Resume: load held sale items into a new `Cart`, delete the held sale row and its items (cart is now active again).
 
+`hold_cart(cart, customer_id=None)` returns a frozen `HeldSummary`, leaving the
+caller to clear its cart after commit. `list_held()` lists all shop holds, oldest
+first, with time, line count, total, customer, and original cashier. Any active
+cashier or owner can resume or cancel a hold. `resume_held(id)` returns a
+`ResumedCart(cart, customer)` built before deleting the held sale/items in one
+transaction. Original product names/prices and quantities are retained; no live
+stock cap is applied while restoring, since holds do not reserve stock. Payment
+rechecks current availability. Invalid or already-consumed IDs leave data intact.
+
 ### 4.3 Void
 
 - Line void: remove from the in-memory cart and insert a `VoidLog` (product name, qty, amount, reason, user).
 - Void all: log every line, clear the cart. If the cart came from a resumed held sale, nothing else to delete (already removed on resume).
 - Voiding from the held list (cancel a held cart): delete the held sale, log voids for its lines.
+
+`void_line(cart, product_id, reason)` and `void_all(cart, reason)` validate the
+reason (trimmed, required, at most 255 characters), commit the audit rows, then
+mutate the in-memory cart. `cancel_held(id, reason)` logs one transaction-scope
+row per held line and deletes the held sale/items in the same transaction. Each
+log records the current actor and original name, quantity, and rounded amount.
+No stock or stock movements change. The existing schema has no `voided` sale
+status; cancellation history is retained in `void_logs`. No schema changes.
 
 ### 4.4 Refund
 

@@ -45,7 +45,9 @@ Owner screens are only visible to the owner. The cashier sees only the POS scree
 - The cashier can void **freely** (no owner approval) but **must enter a reason**.
 - Every void is logged (who, what, qty, amount, reason, when).
 - Voids never change stock (stock was never deducted).
-- Voiding a held transaction cancels it (status `voided`).
+- Voiding a held transaction removes the held sale/items and preserves each
+  line, the actor, and the cancellation reason in `void_logs` atomically. The
+  schema uses only `held` and `completed` sale statuses.
 
 ## 6. Refund (after payment)
 
