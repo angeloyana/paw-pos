@@ -53,6 +53,17 @@ remains pending. No database schema changes were needed in this phase.
 
 ## Phase 3: Cart logic (pure Python)
 
+**Implementation status:** implemented with `Cart` and immutable `CartLine`
+snapshots. Piece and kg additions merge by product; all adds and edits validate
+precision, positive quantity, supplied current stock, and database numeric limits
+before changing the cart. Tests cover rounding, totals, merging, editing,
+removal, invalid inputs, and failed-operation preservation. This phase needs no
+schema or UI changes. Live MySQL acceptance remains pending from earlier phases.
+Verification: 68 cart/pricing tests pass; the full suite passes with 157 tests
+and 26 subtests (12 GUI tests skipped without a display). Ruff lint and format
+checks pass. Running `main.py` reports the unavailable MySQL connection clearly;
+the desktop startup could not be verified in this environment.
+
 **Tasks**
 
 - `services/cart.py`: `Cart` with `add_piece`, `add_weight`, `set_quantity`, `remove_line`, `clear`, `total`, `lines`. Merge duplicate per-piece lines; per-kg lines each stay separate or merge by product (choose merge by product for simplicity).

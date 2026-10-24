@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add the pure Python cart with merged piece/kg lines, quantity editing and
+  removal, current-stock checks, immutable line snapshots, and Decimal half-up
+  pricing. Invalid operations preserve the active cart. The selling UI follows
+  in Phase 4.
+
 - Add the owner sidebar and category/product forms with validation feedback,
   image previews, search and category filters, reactivation, and confirmed
   deactivation. Existing product stock is read-only in the form.

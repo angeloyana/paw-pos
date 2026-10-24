@@ -103,6 +103,25 @@ pawpos/
 
 ## 3. Key design decisions
 
+`services/cart.py` is pure Python and does not open a session or require login.
+`Cart.add_piece(product_id, product_name, unit_price, quantity=1,
+stock_quantity=...)` and `add_weight(product_id, product_name, unit_price,
+quantity, stock_quantity=...)` accept Decimal, text, or integer numeric inputs;
+`stock_quantity` is keyword-only. `set_quantity(product_id, quantity,
+stock_quantity=...)` replaces the quantity using current supplied stock.
+`remove_line(product_id)` and `clear()` remove items. `lines` is an immutable
+tuple of frozen `CartLine` snapshots in first-added order; `total` is a Decimal.
+Missing lines raise `NotFoundError`, invalid inputs raise `ValidationError`,
+and insufficient stock or a conflicting unit type raises `BusinessRuleError`.
+
+Both unit types merge by product ID, retaining the first name and unit price
+until the line is removed. Each merged line is rounded half-up to centavos;
+the cart total sums those rounded amounts. Zero quantities are rejected; remove
+the line explicitly instead. Input quantities and amounts respect the existing
+database column limits, including the sale total limit. Failed operations leave
+the cart unchanged. The cart neither reserves nor changes stock; the caller
+supplies current stock on every add/edit, and sale completion must recheck it.
+
 Catalog services return frozen category/product data objects. Active catalog
 reads require a signed-in active user; writes and inactive listings require an
 active owner. Category deletion means deactivation and is blocked by any product

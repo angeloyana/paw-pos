@@ -6,12 +6,18 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 2 is implemented; live MySQL acceptance is pending.** Startup checks the
+**Phase 3 is implemented; live MySQL acceptance is pending.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers still reach a placeholder workspace; the POS screen comes in Phase 4.
 Both workspaces support logout.
+
+The pure Python cart is ready for Phase 4's POS screen. It merges piece and kg
+items by product, checks quantities against supplied current stock, and calculates
+line totals with Decimal half-up rounding. Cart editing is currently available
+through the service API only; run its tests with
+`python -m pytest tests/test_cart.py tests/test_weight_pricing.py`.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`
