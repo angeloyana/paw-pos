@@ -9,3 +9,6 @@ htmlcov/
 receipts/
 pawpos.log*
 *.egg-info/
+
+assets/products/*
+!assets/products/.gitkeep
