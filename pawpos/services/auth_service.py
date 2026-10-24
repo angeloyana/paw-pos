@@ -34,10 +34,18 @@ def logout() -> None:
     login_session.logout()
 
 
-def _require_owner(session: Session) -> User:
-    """Recheck persisted access so disabling an account takes effect immediately."""
+def _require_user(session: Session) -> User:
+    """Recheck persisted access before a catalog read or owner operation."""
     current = login_session.current_user
     user = session.get(User, current.id) if current is not None else None
-    if user is None or not user.is_active or user.role != "owner":
+    if user is None or not user.is_active:
+        raise AuthError("An active account is required.")
+    return user
+
+
+def _require_owner(session: Session) -> User:
+    """Recheck persisted access so disabling an account takes effect immediately."""
+    user = _require_user(session)
+    if user.role != "owner":
         raise AuthError("An active owner account is required.")
     return user

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add category and product services with owner access checks, validation, search,
+  category filtering, soft deletion, and atomic initial stock history. Product
+  image copies are removed if saving fails.
+
 - Launch the themed desktop login after database initialization and first-run
   seeding. Route owners and cashiers to placeholder workspaces, with logout and
   login state cleared when the window closes. Report startup failures clearly.

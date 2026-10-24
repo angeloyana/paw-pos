@@ -103,6 +103,17 @@ pawpos/
 
 ## 3. Key design decisions
 
+Catalog services return frozen category/product data objects. Active catalog
+reads require a signed-in active user; writes and inactive listings require an
+active owner. Category deletion means deactivation and is blocked by any product
+reference, including an inactive product. Initial product stock and its movement
+commit together. Product edits reject stock input; changing units is allowed only
+before stock or transaction history exists, to avoid reinterpreting quantities.
+Image files are verified and copied under UUID names; a failed save removes its
+new copy. Replacing a product image retains the old file. Searches treat `%` and
+`_` literally. Money accepts at most two decimal places and quantities use the
+documented piece/kg precision, within their database column limits.
+
 Authentication returns a frozen `CurrentUser` containing only public identity
 fields. A failed login clears previous login state. User-management operations
 recheck that the signed-in account is active and has the owner role in the DB;
