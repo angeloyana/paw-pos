@@ -14,6 +14,7 @@ from pawpos.ui.owner.customers import CustomersScreen
 from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
 from pawpos.ui.owner.refunds import RefundsScreen
+from pawpos.ui.owner.sales_history import SalesHistoryScreen
 from pawpos.ui.pos_screen import POSScreen
 
 logger = logging.getLogger(__name__)
@@ -64,6 +65,7 @@ class OwnerShell(ttk.Frame):
                 "Categories",
                 "Inventory",
                 "Customers",
+                "Sales History",
                 "Refunds",
                 "POS",
             ):
@@ -83,6 +85,7 @@ class OwnerShell(ttk.Frame):
             "Categories",
             "Inventory",
             "Customers",
+            "Sales History",
             "Refunds",
             "POS",
         ):
@@ -113,6 +116,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = RefundsScreen(self.content, self.refresh_refund_badge)
         elif page == "Customers":
             self.current_screen = CustomersScreen(self.content)
+        elif page == "Sales History":
+            self.current_screen = SalesHistoryScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:

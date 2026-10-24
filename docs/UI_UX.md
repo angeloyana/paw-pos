@@ -199,3 +199,15 @@ loads only their completed purchases below the form, with receipt, date, payment
 total, and approved refunded amount. Empty states explain unmatched searches and
 customers without purchases. Validation/write errors preserve input. Saved input
 is cleared before refreshing so a refresh failure cannot duplicate a new record.
+
+### Sales History (Phase 9)
+
+The owner can filter completed sales by inclusive dates (blank = any date),
+literal receipt text, account, and Cash/GCash. Account choices include inactive
+users and owners because both can have historical sales. The table shows gross
+sale totals and approved-only refunded amounts. Select a row to see original
+item quantities/prices, customer/cashier, cash tender/change or GCash reference.
+Detail text is read-only. Reprint receipt generates the existing 80 mm PDF and
+opens the default viewer, without changing sales or stock. Viewer errors retain
+the selected sale and the generated PDF path for manual opening. Details/forms
+scroll at the minimum window size; the sales table scrolls in both directions.

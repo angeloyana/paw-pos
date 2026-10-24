@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Enable owner Sales History with date/receipt/account/payment filters, original
+  item and tender details, approved refund totals, and receipt PDF reprinting.
+
 - Enable owner Customers management with add/edit, name/contact search, and
   completed purchase lists. Preserve customer history and form input on errors.
 

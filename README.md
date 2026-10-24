@@ -108,6 +108,12 @@ Owners can also open **Customers** to add/edit names and optional contacts,
 search either field, and view the selected customer's completed purchases.
 Customer records and purchase links are retained; there is no delete action.
 
+**Sales History** lists completed sales with inclusive date filters (blank means
+any date), receipt text, cashier account, and payment method. Refunded amounts
+include approved refunds only. Select a sale to see its original item prices,
+quantities, and payment details. **Reprint receipt** saves its 80 mm PDF and opens
+the default viewer. Reprinting never charges the customer or changes inventory.
+
 Inventory has four owner-only tabs:
 
 - **Stock Overview** lists products, categories, stock, and thresholds, with low
