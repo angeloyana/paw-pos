@@ -1,4 +1,4 @@
-"""Owner navigation; only completed screens are enabled."""
+"""Owner navigation with a report dashboard and persistent POS draft cart."""
 
 import logging
 from collections.abc import Callable
@@ -11,6 +11,7 @@ from pawpos.core.session import CurrentUser
 from pawpos.services import refund_service
 from pawpos.ui.owner.categories import CategoriesScreen
 from pawpos.ui.owner.customers import CustomersScreen
+from pawpos.ui.owner.dashboard import DashboardScreen
 from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
 from pawpos.ui.owner.refunds import RefundsScreen
@@ -60,18 +61,6 @@ class OwnerShell(ttk.Frame):
                 command=lambda page=label: self.show_page(page),
             )
             button.pack(fill="x", pady=3)
-            if label not in (
-                "Dashboard",
-                "Products",
-                "Categories",
-                "Inventory",
-                "Customers",
-                "Sales History",
-                "Refunds",
-                "Users",
-                "POS",
-            ):
-                button.configure(state="disabled")
             self.buttons[label] = button
         self.logout_button = ttk.Button(sidebar, text="Logout", command=on_logout)
         self.logout_button.pack(side="bottom", fill="x", pady=(20, 0))
@@ -126,20 +115,7 @@ class OwnerShell(ttk.Frame):
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:
-            self.current_screen = ttk.Frame(self.content, padding=32)
-            ttk.Label(
-                self.current_screen,
-                text="Owner dashboard",
-                font=("Segoe UI", 24, "bold"),
-            ).pack(anchor="w")
-            ttk.Label(
-                self.current_screen,
-                text="Manage catalog, inventory, customers, sales, refunds, and users from the sidebar.",
-            ).pack(anchor="w", pady=16)
-            ttk.Label(
-                self.current_screen,
-                text="Dashboard charts and reports follow in Phase 10.",
-            ).pack(anchor="w")
+            self.current_screen = DashboardScreen(self.content)
         self.current_screen.pack(fill="both", expand=True)
         self.refresh_refund_badge()
 

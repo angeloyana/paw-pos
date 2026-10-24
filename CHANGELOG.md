@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Replace the owner dashboard placeholder with net-sales/transaction/low-stock/
+  pending-refund cards, blue Matplotlib daily-sales and best-seller charts with
+  range selectors, and an active low-stock table. Refresh on navigation or by
+  button, show empty states and negative net days, retain visible data on read
+  failures, and clean up chart callbacks on logout/navigation.
+
 - Add owner report services for daily net sales, today's summary, gross-quantity
   best sellers, active low-stock products, and pending refunds. Zero-fill date
   ranges and deduct refunds on their approval date without duplicating sales.

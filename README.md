@@ -6,7 +6,7 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 9 is implemented.** Startup checks the
+**Phase 10 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
@@ -101,8 +101,28 @@ to edit it; use **Add category** or **New** to create another record. Product
 images are copied to `assets/products/` when saved. **Show inactive** includes
 deactivated records, which can be reactivated with the **Active** checkbox.
 Categories with products cannot be deactivated. Initial stock is entered only
-when creating a product; use **Inventory** to change existing stock. Sidebar
-entries for later phases are disabled.
+when creating a product; use **Inventory** to change existing stock. All owner
+sidebar workspaces are now enabled.
+
+The owner login opens **Dashboard**, with today's net sales and transaction
+count, active low-stock count, and pending refunds. Daily net sales can show
+**7 days** or **30 days**. Best sellers show the top five by gross quantity sold
+for **Today**, **7 days**, or **30 days**, with piece/kg labels. Best sellers retain
+inactive products' sales history; returned quantities do not reduce this gross
+ranking.
+
+Net sales add completed sales on their completion date and subtract approved
+refunds on their approval date, including refunds of earlier sales. Pending and
+rejected requests do not reduce net sales. Date ranges use local calendar days,
+include today, and fill dates without activity with zero; refund-only days can
+be negative. The low-stock list includes active products in active categories
+at or below threshold, including zero stock. Inactive products remain available
+in Inventory but do not generate dashboard restocking alerts.
+
+Use **Refresh** after inventory/refund changes; returning to Dashboard also
+refreshes its cards, charts, and low-stock list. Empty charts/lists show an
+explanation. Read errors retain the previous display and offer a retry. Dashboard
+navigation preserves the owner's draft POS cart and selected customer.
 
 Owners can also open **Customers** to add/edit names and optional contacts,
 search either field, and view the selected customer's completed purchases.
@@ -125,6 +145,9 @@ Phase 9 customer editing/purchases, sales filters and approved refund totals,
 cashier account creation/status/password changes, and owner self-disable
 protection were verified against local MySQL in an outer transaction that was
 fully rolled back. Verification preserved shop data and existing credentials.
+Phase 10 report arithmetic, refund deductions, pending counts, chart ranges,
+low-stock refresh after receiving, and draft-cart preservation were also verified
+on local MySQL in a transaction that was fully rolled back.
 Receipt reprinting tests generate actual PDFs with mocked OS viewer launchers;
 physical printing remains a manual check.
 

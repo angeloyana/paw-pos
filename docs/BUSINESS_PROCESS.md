@@ -78,7 +78,10 @@ A refund applies only to a **completed** sale.
 - **Adjust stock:** the owner corrects stock for damage, loss, or counting mistakes (signed quantity, reason required). Logged as `adjustment`.
 - **Sale:** stock decreases automatically; a `sale` movement is logged per line.
 - **Refund (resellable):** stock increases; a `refund` movement is logged.
-- **Low stock:** a product is "low" when `stock_quantity <= low_stock_threshold`. Shown on the **owner dashboard only**.
+- **Low stock:** a product is "low" when `stock_quantity <= low_stock_threshold`.
+  The owner dashboard alerts on active products in active categories, including
+  zero stock. Inactive records remain available in Inventory. Cashiers do not
+  receive low-stock alerts.
 - **Out of stock:** products with stock 0 are shown in the POS grid but **disabled**.
 
 ## 8. Customers
@@ -93,7 +96,11 @@ A refund applies only to a **completed** sale.
 2. **Best-selling products** (chart, top 5 by quantity sold, selectable range: today / 7 days / 30 days)
 3. **Low-stock list** (table)
 
-Refunded amounts (approved) are subtracted from net sales in reports.
+Net sales count sales on their completion date and subtract approved refunds
+on their review date. Pending/rejected requests do not reduce net sales.
+Calendar ranges include today and zero-fill empty dates; refund-only days may
+be negative. Best sellers rank gross quantities sold, without subtracting returns,
+and label piece/kg units. Inactive products remain in historical sales rankings.
 
 ## 10. Accounts
 

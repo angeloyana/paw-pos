@@ -110,9 +110,9 @@ Single screen, two main columns plus a top bar.
 ## 5. Owner shell
 
 The sidebar implements Products, Categories, Inventory, Customers, Sales History,
-Refunds, Users, and POS. The Dashboard currently
-shows an introduction; reports follow in Phase 10. Navigation for later phases
-is disabled. Select a catalog table row to edit it. Forms show errors inline and
+Refunds, Users, and POS. The Dashboard now shows report cards, charts, and active
+low-stock products. All owner sidebar workspaces are enabled. Select a catalog
+table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
 deactivation buttons ask for confirmation. Product stock is editable only during
 creation. Missing image files display the paw placeholder.
@@ -224,3 +224,21 @@ owner's own demo password. Validation and write failures retain form input.
 Successful actions clear password and account input before refreshing; read
 failures report that the save succeeded. No password/hash appears in the table.
 The form scrolls so every control is reachable at the minimum window size.
+
+### Dashboard (Phase 10)
+
+Owner login and the Dashboard sidebar entry show four summary cards, two blue
+Matplotlib charts, and a read-only low-stock table. Daily net sales offers 7/30
+calendar days, fills empty dates, and renders negative days in red. Currency
+axis labels show pesos and centavos. Best sellers offers Today/7/30 days and
+labels the top five gross quantities with piece/kg units. Product names wrap,
+and exact quantity labels use Decimal-derived text.
+
+The low-stock list includes active products/categories at or below threshold,
+including zero stock, and scrolls in both directions. Cards/list share the same
+rule. Empty charts and low-stock lists explain that there is no matching
+activity. All reports refresh on screen creation, selector changes, or Refresh.
+Read failures retain the previous display and show a retry message. Chart figures
+belong to their frames, reuse their canvases for range changes, and cancel queued
+Tk draws on destruction. The dashboard fits the 1280×720 minimum window and does
+not alter the draft POS cart/customer during navigation.

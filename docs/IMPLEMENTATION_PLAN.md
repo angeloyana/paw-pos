@@ -234,9 +234,23 @@ tests. Ruff lint/format checks pass.
 
 ## Phase 10: Dashboard and reports
 
-**Implementation status:** owner report services and 24 report tests are
-implemented. Dashboard cards, charts, and the low-stock table follow in this
-phase. No schema changes are needed.
+**Implementation status:** all owner report services, four dashboard cards,
+blue Matplotlib daily-sales/best-seller charts, range selectors, low-stock table,
+and refresh/empty/error states are implemented. Net sales deduct refunds by
+approval date; best sellers rank gross quantities with units. Low-stock alerts
+include active products/categories only. Charts reuse their canvases across
+refreshes and cancel queued draws during destruction. No schema changes.
+
+Verification: 24 report tests cover exact totals, local calendar bounds, empty
+and refund-only days, approved versus pending/rejected refunds, Decimal values,
+quantity ranking/ties, active low-stock rules, and owner access. Seven real Tk
+tests cover seeded cards, chart ranges/labels, negative net values, receiving
+stock, read-error recovery, minimum-window layout, and repeated navigation.
+Normal MySQL startup, both demo logins/logout, report arithmetic, chart ranges,
+pending counts, and stock refresh/draft-cart preservation pass. All live test
+sales/refunds/movements and stock changes are rolled back. The full suite passes
+with 390 tests and 26 subtests, including all real Tk/Matplotlib tests. Ruff lint
+and format checks pass.
 
 **Tasks**
 
