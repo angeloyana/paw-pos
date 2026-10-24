@@ -2,33 +2,33 @@
 
 PawPOS is a single-shop **point of sale system for a pet shop** that sells pet food and pet supplies. It is a **school project**: one desktop computer, fully offline, Python + Tkinter + SQLAlchemy + MySQL.
 
-> **These documents are written to be consumed by an AI coding agent.** Read them in the order below, then build following `IMPLEMENTATION_PLAN.md` one phase at a time.
+> Setup and daily workflows are described below. Design documents and phase
+> acceptance history are listed in the reading order.
 
 ## Implementation status and setup
 
-**Phase 10 is implemented.** Startup checks the
+**All eleven implementation phases are complete.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
 workspaces support logout.
-Local MySQL startup, catalog/POS reads, both demo-account logins, and logout have
-been verified. Inventory receiving, adjustments, and history were verified on
-local MySQL inside an outer transaction that was rolled back without changing
-shop stock or history. Automated checkout/rollback tests use disposable SQLite
-data; live MySQL checkout and physical printing remain manual acceptance checks.
-Hold/resume, held cancellation, and line/transaction voids were also verified
-against local MySQL inside a transaction that was fully rolled back.
+The ten-step demo passes through real Tk screens on local MySQL, including
+checkout, app recreation/hold restoration, refunds, inventory, reports, receipts,
+and account management. Verification changes are rolled back, preserving shop
+data. Automated tests use disposable SQLite databases, including a file-backed
+restart test, and generate actual PDFs with mocked viewer launchers. Physical
+printer output remains a manual hardware check.
 
 The POS supports live search, category filters, cached product thumbnails,
 piece/kg cart entry, quantity editing, removal, and optional customer selection
 or quick creation. Click a product to add it; kg items prompt for weight and show
 the computed line price. Double-click a cart row or press Enter to edit it;
 Delete removes the selected row. F2 focuses search. Hover over POS shortcut
-controls for help; Enter edits a selected cart row and Escape closes dialogs. Out-of-stock cards are
-disabled. Owner navigation preserves the cart and selected customer until
-logout. Adding to a cart does not deduct stock. **Request Refund** looks up a completed
-receipt and submits selected items for owner review; it also offers receipt
+controls for help; Enter edits a selected cart row and Escape closes dialogs.
+Out-of-stock cards are disabled. Owner navigation preserves the cart and selected customer until
+logout. Adding to a cart does not deduct stock. **Request Refund** looks up a
+completed receipt and submits selected items for owner review; it also offers receipt
 preview/reprinting.
 
 **Hold (F4)** saves the cart and customer to the database, then clears the POS.
@@ -74,8 +74,8 @@ Install/configure a PDF viewer locally for the Print handoff.
    school-project demo passwords; change them before using real shop data.
    Connection failures show a desktop error dialog with what to check and exit
    with status 1. Without a display, the same error remains in the console.
-6. Run `python -m pytest`. Tests use in-memory SQLite and need no MySQL server or
-   real credentials. GUI tests use real Tk widgets and skip when no display is
+6. Run `python -m pytest`. Tests use disposable SQLite data and need no MySQL
+   server or real credentials. GUI tests use real Tk widgets and skip when no display is
    available. On Linux with Xvfb installed, use `xvfb-run -a python -m pytest` to
    include them in a headless session. Foundation checks also support
    `python -m unittest discover -v`.
@@ -153,15 +153,6 @@ themselves or other owner accounts. An owner can select their own account to
 change the demo password. Existing names/usernames are read-only; password
 values are never displayed and are cleared after a successful save.
 
-Phase 9 customer editing/purchases, sales filters and approved refund totals,
-cashier account creation/status/password changes, and owner self-disable
-protection were verified against local MySQL in an outer transaction that was
-fully rolled back. Verification preserved shop data and existing credentials.
-Phase 10 report arithmetic, refund deductions, pending counts, chart ranges,
-low-stock refresh after receiving, and draft-cart preservation were also verified
-on local MySQL in a transaction that was fully rolled back.
-Receipt reprinting tests generate actual PDFs with mocked OS viewer launchers;
-physical printing remains a manual check.
 
 Inventory has four owner-only tabs:
 
@@ -253,7 +244,7 @@ Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loy
 6. **Never hard-delete** products, users, categories with history. Use `is_active`.
 7. **Scope discipline**: do not add features listed as out of scope. If something is ambiguous, pick the simplest option consistent with these docs and note it in a code comment.
 8. **Keep code simple and readable.** This is a school project: clear names, short functions, docstrings on services.
-9. **Write unit tests** for the core logic listed in `IMPLEMENTATION_PLAN.md` (Phase 9). Tests use an in-memory SQLite database.
+9. **Write unit tests** for the core logic listed in `IMPLEMENTATION_PLAN.md`. Tests use an in-memory SQLite database.
 10. After each phase, run the app (`python main.py`) and the tests, and confirm the phase's "Done when" checklist.
 
 ## Quick facts

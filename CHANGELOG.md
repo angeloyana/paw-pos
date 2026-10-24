@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Complete Phase 11 and the full implementation plan. Verify all ten demo steps
+  on disposable SQLite and local MySQL, preserving shop data through rollback.
+  Final checks pass: 397 tests, 26 subtests, Ruff, and dependency consistency.
+  Refresh README setup/workflows and distinguish verified PDFs/viewer handoffs
+  from the manual physical-printer check.
+
 - Automate the ten-step demo through real Tk screens and a reopened disposable
   database, covering hold/resume, void, GCash/PDF, refund approval, inventory,
   dashboard/history/customer purchases, and disabled-account login.

@@ -109,8 +109,9 @@ updates, cancellation, rollback, and receipt recovery. Ruff lint/format checks
 pass. Normal startup and both role workspaces were verified against local
 MySQL; the initial connection failures were due to sandbox restrictions.
 Sale transaction tests use disposable SQLite data. Platform viewer handoffs are
-tested with mocked launchers; live MySQL checkout and physical printing remain
-manual acceptance checks.
+tested with mocked launchers. The final Phase 11 demo also verifies checkout
+against local MySQL in a rolled-back transaction. Physical printer output
+remains a manual hardware check.
 
 **Tasks**
 
@@ -261,11 +262,27 @@ and format checks pass.
 
 ## Phase 11: Polish and final checks
 
-**Implementation status:** file logging and friendly database startup dialogs
-are implemented and tested. POS shortcut tooltips, customer empty-state help,
-and compatible ttkbootstrap imports are complete. The automated ten-step demo
-passes against a file-backed SQLite database reopened through a new engine/app.
-Final MySQL and full-suite checks follow in this phase.
+**Implementation status:** complete. File logging, friendly database startup
+dialogs with headless fallback, POS shortcut tooltips, customer empty-state help,
+and compatible ttkbootstrap imports are implemented. Setup, default accounts,
+workflows, log behavior, and repeatable demo commands are documented in README.
+No schema changes or out-of-scope features were added.
+
+Final verification: **397 tests and 26 subtests pass**, including all real
+Tk/Matplotlib tests, with no skips or warnings. Ruff lint/format and installed
+dependency checks pass. `tests/test_demo_flow.py` runs every documented demo step
+through real Tk screens, closes the app/engine, and reopens a disposable on-disk
+SQLite database before resuming the held cart. It verifies the GCash sale, void
+history, out-of-stock card, opened-food rejection, resellable refund movement,
+receiving/low-stock refresh, dashboard/history/customer purchases, PDF reprint,
+and disabled cashier login.
+
+The same ten-step flow also passes through the desktop UI on local MySQL,
+including app recreation. An outer transaction rolls back all verification
+users/customers/sales/voids/refunds/movements and stock changes; row counts and
+balances match their pre-check values. Normal startup and UTF-8 file logging
+pass. PDFs are generated with mocked OS viewer handoffs. Physical printer output
+remains a manual hardware check; application receipt/PDF behavior is verified.
 
 **Tasks**
 
