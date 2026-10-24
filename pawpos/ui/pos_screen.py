@@ -10,9 +10,11 @@ from pawpos.config import SHOP_NAME
 from pawpos.core.errors import BusinessRuleError, PawPOSError, ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.core.session import CurrentUser
-from pawpos.services import category_service, product_service
+from pawpos.services import category_service, product_service, receipt_service
 from pawpos.services.cart import Cart
 from pawpos.ui.dialogs.customer_picker import CustomerPicker
+from pawpos.ui.dialogs.payment import PaymentDialog
+from pawpos.ui.dialogs.receipt_preview import ReceiptPreview
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
 
@@ -26,6 +28,7 @@ class POSScreen(ttk.Frame):
         self.heading = "Cashier POS"
         self.cart = Cart()
         self.customer = None
+        self.last_sale = None
         self.products = {}
         self.cards = {}
         self.category_id = None
@@ -48,6 +51,13 @@ class POSScreen(ttk.Frame):
         ).pack(side="left")
         self.logout_button = ttk.Button(header, text="Logout", command=on_logout)
         self.logout_button.pack(side="right")
+        self.last_receipt_button = ttk.Button(
+            header,
+            text="Last receipt",
+            command=self.open_last_receipt,
+            state="disabled",
+        )
+        self.last_receipt_button.pack(side="right", padx=6)
         ttk.Button(
             header,
             text="Request Refund",
@@ -95,7 +105,7 @@ class POSScreen(ttk.Frame):
         for key, action in {
             "<F2>": self.search_entry.focus_set,
             "<F4>": lambda: self.future_action("Hold cart", 6),
-            "<F5>": lambda: self.future_action("Payment", 5),
+            "<F5>": self.pay,
             "<F6>": lambda: self.future_action("Void", 6),
             "<F8>": lambda: self.future_action("Resume held carts", 6),
         }.items():
@@ -198,9 +208,7 @@ class POSScreen(ttk.Frame):
             bootstyle="danger",
             command=lambda: self.future_action("Void", 6),
         ).pack(side="left", padx=6)
-        self.pay_button = ttk.Button(
-            actions, text="PAY (F5)", command=lambda: self.future_action("Payment", 5)
-        )
+        self.pay_button = ttk.Button(actions, text="PAY (F5)", command=self.pay)
         self.pay_button.pack(side="right", fill="x", expand=True)
 
     def refresh_catalog(self):
@@ -394,6 +402,46 @@ class POSScreen(ttk.Frame):
 
     def future_action(self, label, phase):
         self.status.set(f"{label} will be available in Phase {phase}.")
+
+    def pay(self):
+        if not self.cart.lines:
+            self.status.set("The cart is empty. Add a product before payment.")
+            return
+        completed = None
+
+        def take_payment():
+            nonlocal completed
+            completed = PaymentDialog(
+                self, self.cart, self.customer.id if self.customer else None
+            ).show()
+
+        if not self.perform(take_payment) or completed is None:
+            return
+        # Payment is already committed; clear before doing any fallible receipt work.
+        self.last_sale = completed
+        self.cart.clear()
+        self.customer = None
+        self.customer_text.set("Walk-in")
+        self.render_cart()
+        self.last_receipt_button.configure(state="normal")
+        self.refresh_products()
+        self.open_last_receipt()
+        self.search_entry.focus_set()
+
+    def open_last_receipt(self):
+        if self.last_sale is None:
+            return
+
+        def preview():
+            receipt = receipt_service.build_receipt(self.last_sale.id)
+            ReceiptPreview(self, receipt).show()
+
+        if self.perform(preview):
+            self.status.set(f"Sale {self.last_sale.receipt_number} completed.")
+        else:
+            self.status.set(
+                f"Sale {self.last_sale.receipt_number} is complete. {self.status.get()} Use Last receipt to retry."
+            )
 
     def shortcut(self, event, action):
         focus = self.focus_get()

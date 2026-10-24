@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ModalDialog(ttk.Toplevel):
     def __init__(self, parent, title: str):
-        super().__init__(parent)
+        super().__init__(master=parent)
         self.withdraw()
         self.title(title)
         self.transient(parent.winfo_toplevel())

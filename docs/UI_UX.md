@@ -31,11 +31,20 @@ in the cart. Invalid input disables OK and keeps the dialog open. Cart editing
 uses the same dialog, with whole-number validation for piece items.
 
 F2 focuses search; Enter/double-click edits the selected cart row, and Delete
-removes it while the cart table has focus. F4/F5/F6/F8 and the corresponding
-buttons display availability messages for later phases. Payment is disabled
+removes it while the cart table has focus. F5 opens payment. F4/F6/F8 and the
+corresponding buttons display availability messages for later phases. Payment is disabled
 when the cart is empty. POS function keys are inactive in dialogs, on other
 owner pages, and after logout. Owners retain their in-memory cart and customer
 when switching sidebar pages. Logout discards that in-memory transaction.
+
+Phase 5 connects the payment dialog: choose Cash or GCash, enter a sufficient
+amount or reference, and confirm. Live validation disables confirmation until
+the tender is valid; Cash displays change and offers Exact/100/500/1000 buttons.
+Cancellation and failed payment preserve the cart/customer. A successful commit
+clears both, refreshes product stock, and opens a read-only receipt preview.
+Print writes the PDF and opens the OS viewer; errors remain in the preview.
+The header's Last receipt button reopens the last completed sale during this
+POS session, including after a failed preview. It never resubmits payment.
 
 Single screen, two main columns plus a top bar.
 

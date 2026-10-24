@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Connect Pay/F5 to live Cash/GCash validation, cash quick amounts and change,
+  atomic completion, stock refresh, cart reset, and automatic receipt preview.
+  Add Print and Last receipt actions; receipt failures keep the committed sale
+  recoverable without repeating payment. Correct modal ownership so dialogs
+  belong to their calling screen.
+
 - Add completed-sale receipt data, wrapped receipt text, and atomic 80 mm PDF
   generation with an embedded peso-capable font. PDF printing opens the system
   default viewer; failed viewer launches leave the PDF available for manual use.

@@ -110,6 +110,12 @@ POS frame alive while showing other pages so a draft cart/customer survives
 navigation. Logout destroys it. Root function-key bindings check visibility and
 dialog focus and are removed when the screen is destroyed. Later-phase action
 buttons only show status messages until their services are implemented.
+F5 now opens `PaymentDialog`, which owns the service call and returns a committed
+`CompletedSale` only on success. The POS then clears the cart/customer before
+loading any receipt or refreshing catalog data. Receipt failures cannot leave
+the paid cart available for a second payment. The Last receipt button retains
+the completed sale ID within the POS session for preview retries. Modal windows
+use an explicit `master` so Tk parents them to the calling screen.
 `WeightDialog` also edits whole-piece quantities; its live preview uses the
 cart's original unit-price snapshot when merging an existing weight line.
 `ThumbnailCache` belongs to the POS frame and keeps Tk images alive, falling

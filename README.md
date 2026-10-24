@@ -6,12 +6,15 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 4 is implemented; live MySQL acceptance is pending.** Startup checks the
+**Phase 5 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
 workspaces support logout.
+Local MySQL startup, catalog/POS reads, both demo-account logins, and logout have
+been verified. Automated checkout/rollback tests use disposable SQLite data;
+live MySQL checkout and physical printing remain manual acceptance checks.
 
 The POS supports live search, category filters, cached product thumbnails,
 piece/kg cart entry, quantity editing, removal, and optional customer selection
@@ -19,8 +22,18 @@ or quick creation. Click a product to add it; kg items prompt for weight and sho
 the computed line price. Double-click a cart row or press Enter to edit it;
 Delete removes the selected row. F2 focuses search. Out-of-stock cards are
 disabled. Owner navigation preserves the cart and selected customer until
-logout. Payment (Phase 5), hold/resume/void (Phase 6), and refunds (Phase 8)
-currently show availability messages; adding to a cart does not deduct stock.
+logout. Adding to a cart does not deduct stock. Hold/resume/void (Phase 6) and
+refunds (Phase 8) currently show availability messages.
+
+Press **Pay (F5)** to choose **Cash** or **GCash**. Cash shows change as you type;
+the quick buttons enter the exact total, 100, 500, or 1000 pesos. GCash requires
+a reference number. Confirm payment saves the sale and its stock movements
+together, then clears the cart/customer and opens a receipt preview. Stock or
+payment errors keep the cart for correction. **Print** saves an 80 mm PDF under
+`receipts/` and opens the default PDF viewer, where you can print it. **Last
+receipt** reopens the most recent receipt in the current POS session, including
+after a preview/printing failure; reopening it does not charge the sale again.
+Install/configure a PDF viewer locally for the Print handoff.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`

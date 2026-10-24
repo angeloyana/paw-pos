@@ -23,8 +23,9 @@ with tables, seeding, and the desktop login.
 **Implementation status:** models, atomic seeding, authentication, owner-only
 account services, startup wiring, and the desktop login are implemented. SQLite
 tests check schema, seeding, account rules, and real Tk login/logout behavior
-under Xvfb. MySQL DDL compiles successfully, but table creation and login against
-a live MySQL server still need local verification before Phase 2 acceptance.
+under Xvfb. MySQL DDL compiles successfully. During Phase 5, normal startup,
+table initialization, both demo-account logins, catalog/POS reads, and logout
+were also verified against local MySQL with desktop access.
 
 **Tasks**
 
@@ -41,8 +42,8 @@ a live MySQL server still need local verification before Phase 2 acceptance.
 **Implementation status:** catalog services, the owner shell, and category/product
 screens are implemented. Service tests cover validation, access, filters, stock
 history, and image rollback. Real Tk tests cover catalog forms, image preview,
-and deactivation. The user authorized continuing while live MySQL verification
-remains pending. No database schema changes were needed in this phase.
+and deactivation. Live MySQL startup and catalog/POS reads were verified during
+Phase 5. No database schema changes were needed in this phase.
 
 **Tasks**
 
@@ -58,11 +59,11 @@ snapshots. Piece and kg additions merge by product; all adds and edits validate
 precision, positive quantity, supplied current stock, and database numeric limits
 before changing the cart. Tests cover rounding, totals, merging, editing,
 removal, invalid inputs, and failed-operation preservation. This phase needs no
-schema or UI changes. Live MySQL acceptance remains pending from earlier phases.
+schema or UI changes. Live MySQL startup was subsequently verified in Phase 5.
 Verification: 68 cart/pricing tests pass; the full suite passes with 157 tests
 and 26 subtests (12 GUI tests skipped without a display). Ruff lint and format
-checks pass. Running `main.py` reports the unavailable MySQL connection clearly;
-the desktop startup could not be verified in this environment.
+checks pass. Initial sandboxed startup could not reach MySQL; Phase 5 verified
+normal startup and both role workspaces with local desktop/database access.
 
 **Tasks**
 
@@ -78,13 +79,13 @@ the desktop startup could not be verified in this environment.
 sidebar entry. Product cards, live search/category filters, cached thumbnails,
 weight entry with live pricing, cart editing/removal, and customer lookup/quick
 creation are connected to services. Function keys are scoped to the visible POS;
-hold/payment/void/resume keys show availability messages for their later phases.
+hold/void/resume keys show availability messages for their later phases;
+payment was connected in Phase 5.
 Owners retain the cart and customer across page changes. No schema changes.
-Live MySQL acceptance remains pending from earlier phases.
+Live MySQL startup and catalog/POS reads were verified during Phase 5.
 Verification: the full suite passes with 188 tests and 26 subtests, including
 real Tk login, catalog, POS, modal dialog, keyboard scope, and minimum-window
-layout checks on the local display. Ruff lint/format checks pass. `main.py`
-still reports a failed MySQL connection, so live database startup is unverified.
+layout checks on the local display. Ruff lint/format checks pass.
 
 **Tasks**
 
@@ -95,6 +96,22 @@ still reports a failed MySQL connection, so live database startup is unverified.
 **Done when:** a cashier can fill a cart with piece and kg items, edit/remove lines, and see correct totals; disabled cards cannot be clicked; shortcuts work.
 
 ## Phase 5: Complete sale, receipt, printing
+
+**Implementation status:** atomic sale completion, validated Cash/GCash payment,
+receipt preview, 80 mm PDFs, and the default-viewer handoff are implemented.
+Successful payment clears the cart/customer and refreshes stock. Failure before
+commit preserves the cart. A Last receipt action recovers/reopens a committed
+sale's preview without repeating payment. PDFs embed a bundled, licensed font
+with the peso sign. No schema changes.
+
+Verification: 229 tests and 26 subtests pass, including real Tk Cash/GCash
+checkout, receipt preview, actual PDF generation, cart/customer reset, stock
+updates, cancellation, rollback, and receipt recovery. Ruff lint/format checks
+pass. Normal startup and both role workspaces were verified against local
+MySQL; the initial connection failures were due to sandbox restrictions.
+Sale transaction tests use disposable SQLite data. Platform viewer handoffs are
+tested with mocked launchers; live MySQL checkout and physical printing remain
+manual acceptance checks.
 
 **Tasks**
 

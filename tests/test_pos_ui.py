@@ -159,7 +159,7 @@ def test_pos_shortcuts_modal_scope_and_cleanup(app):
     assert app.focus_get() == screen.search_entry
     for key, message in (
         ("F4", "Hold cart"),
-        ("F5", "Payment"),
+        ("F5", "cart is empty"),
         ("F6", "Void"),
         ("F8", "Resume held carts"),
     ):
