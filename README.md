@@ -1,301 +1,384 @@
-# PawPOS: Project Documentation
+# PawPOS
 
-PawPOS is a single-shop **point of sale system for a pet shop** that sells pet food and pet supplies. It is a **school project**: one desktop computer, fully offline, Python + Tkinter + SQLAlchemy + MySQL.
+PawPOS is a desktop **point of sale system for a pet shop**, built as a school
+project. It manages sales, inventory, customers, receipts, and refunds for one
+shop using one computer. Prices use Philippine pesos (₱).
 
-> Setup and daily workflows are described below. Design documents and phase
-> acceptance history are listed in the reading order.
+The application runs locally with **Python, Tkinter/ttkbootstrap, SQLAlchemy,
+and MySQL**. After installing the dependencies, daily operation works offline.
+GCash payments and refund payouts are recorded manually; the app does not connect
+to a payment provider.
 
-## Implementation status and setup
+## Contents
 
-**All eleven implementation phases are complete.** Startup checks the
-database connection, creates all fifteen tables, seeds an empty installation, and
-opens the default blue-themed desktop login. Owners can manage categories and products
-from the sidebar, including images, search, initial stock, and deactivation.
-Cashiers enter the POS screen; owners can open it from the sidebar. Both
-workspaces support logout.
-Tables across owner screens, POS, and dialogs share readable row spacing, bold
-headers, alternating backgrounds, and selection highlights that follow the
-account theme immediately.
-The ten-step demo passes through real Tk screens on local MySQL, including
-checkout, app recreation/hold restoration, refunds, inventory, reports, receipts,
-and account management. Verification changes are rolled back, preserving shop
-data. Automated tests use disposable SQLite databases, including a file-backed
-restart test, and generate actual PDFs with mocked viewer launchers. Physical
-printer output remains a manual hardware check.
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Running and seeding](#running-and-seeding)
+- [Building](#building)
+- [Using PawPOS](#using-pawpos)
+- [Testing and code checks](#testing-and-code-checks)
+- [Files and assets](#files-and-assets)
+- [Troubleshooting](#troubleshooting)
+- [Project documentation](#project-documentation)
 
-The POS supports live search, category filters, cached product thumbnails,
-piece/kg cart entry, quantity editing, removal, and optional customer selection
-or quick creation. Click a product to add it; kg items prompt for weight and show
-the computed line price. Double-click a cart row or press Enter to edit it;
-Delete removes the selected row. F2 focuses search. Hover over POS shortcut
-controls for help; Enter edits a selected cart row and Escape closes dialogs.
-Out-of-stock cards are disabled. Owner navigation preserves the cart and selected customer until
-logout. Adding to a cart does not deduct stock. **Request Refund** looks up a
-completed receipt and submits selected items for owner review; it also offers receipt
-preview/reprinting.
+## Features
 
-**Hold (F4)** saves the cart and customer to the database, then clears the POS.
-**Held (F8)** lists saved transactions after logout or restart. Resume restores
-the original quantities/prices and customer and removes the held record. Hold
-or empty the active cart before resuming another; you can still cancel a held
-transaction while a cart is active. Holds are shared by the shop's active
-cashiers and owner. Stock is checked again at payment.
+- **Owner and cashier accounts** with password authentication and account themes.
+- **Checkout** for products sold by piece or kilogram, optional customers, cash
+  and manual GCash payments, and PDF receipts.
+- **Held carts and voids**, with saved transactions and logged cancellation reasons.
+- **Catalog and inventory management**, including product images, stock receipts,
+  adjustments, movement history, and low-stock indicators for the owner.
+- **Refund requests and owner decisions**, plus shared status tracking, decision
+  notices, and recorded payouts.
+- **Owner dashboard and sales history** with charts, filters, and receipt reprints.
 
-**Void (F6)** logs a selected line or the whole transaction. Choose a common
-reason or **Other** and explain it, then confirm. **Cancel held (void)** uses the
-same reason dialog. Whole-transaction voids clear the cart/customer; cancelled
-holds retain their item/reason audit in `void_logs`. Holds and voids leave stock
-unchanged. Delete/Remove remains a cart edit; use Void for a logged cancellation.
+This version is designed for a single terminal. It does not include executable
+packaging, multi-terminal support, barcode scanning, digital scales, discounts,
+VAT calculation, or integrated payment processing.
 
-Press **Pay (F5)** to choose **Cash** or **GCash**. Cash shows change as you type;
-the quick buttons enter the exact total, 100, 500, or 1000 pesos. GCash requires
-a reference number. Confirm payment saves the sale and its stock movements
-together, then clears the cart/customer and opens a receipt preview. Stock or
-payment errors keep the cart for correction. **Print** saves an 80 mm PDF under
-`receipts/` and opens the default PDF viewer, where you can print it. **Last
-receipt** reopens the most recent receipt in the current POS session, including
-after a preview/printing failure; reopening it does not charge the sale again.
-Install/configure a PDF viewer locally for the Print handoff.
+## Prerequisites
 
-1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
-2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`
-   and create a local database user with privileges on it.
-3. Create and activate a virtual environment:
+Install the following before setting up the project:
 
-   ```sh
-   python -m venv .venv
-   source .venv/bin/activate
-   # Windows PowerShell: .venv\Scripts\Activate.ps1
-   pip install -r requirements.txt
-   ```
+| Requirement | Purpose |
+| --- | --- |
+| Python **3.11 or 3.12** | Run the application and development commands |
+| Tkinter | Display the desktop interface |
+| Local **MySQL 8** server | Store application data |
+| PDF viewer | Open generated receipts and print them |
 
-4. Copy `.env.example` to `.env` and fill in your local database credentials.
-   Keep `.env` private; it is ignored by Git.
-5. Run `python main.py` in a desktop session. Tables and demo data are created on
-   first run. Sign in as `owner` / `owner123` or `cashier` / `cashier123`. Existing
-   users, passwords, and inventory are preserved on later starts. These are
-   school-project demo passwords; change them before using real shop data.
-   Connection failures show a desktop error dialog with what to check and exit
-   with status 1. Without a display, the same error remains in the console.
-6. Run `python -m pytest`. Tests use disposable SQLite data and need no MySQL
-   server or real credentials. GUI tests use real Tk widgets and skip when no display is
-   available. On Linux with Xvfb installed, use `xvfb-run -a python -m pytest` to
-   include them in a headless session. Foundation checks also support
-   `python -m unittest discover -v`.
+A graphical desktop session is required to run the app. Check Tkinter with
+`python -m tkinter`; a small demonstration window should open. On systems where
+Python is named `python3`, use `python3` to create the virtual environment.
+Linux distributions may require a separate Tkinter package matching your Python
+version, such as `python3-tk` on Ubuntu/Debian.
 
-Startup and diagnostic messages are written to the project-root `pawpos.log`
-in UTF-8, alongside console output. The log is ignored by Git. If the log file
-cannot be opened, startup continues with console logging.
+## Installation
 
-Run the repeatable ten-step demo with
-`python -m pytest tests/test_demo_flow.py -q`. It uses a disposable file-backed
-SQLite database, reopens it after an app restart, and exercises the real Tk
-screens. PDF files are generated; OS viewer launches are mocked. A display is
-required (or use Xvfb as above).
+### 1. Get the project
 
-Use Ruff to lint and format Python code:
+Clone this repository or download and extract it from GitHub. Open a terminal
+in the `paw-pos` project directory, where `main.py` and `requirements.txt` live.
+Run the commands below from that directory.
 
-```sh
-python -m ruff check .
-python -m ruff format --check .
-# Apply formatting:
-python -m ruff format .
+### 2. Create a virtual environment and install dependencies
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-`ruff.toml` targets Python 3.11, uses an 88-character line length, and enables
-Ruff's standard error checks plus import sorting.
+If PowerShell prevents activation, you can use the environment directly:
 
-Configuration is loaded from the project-root `.env`, regardless of the current
-working directory. Existing environment variables take precedence. Supported
-settings are `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` as shown
-in `.env.example`; connections use `utf8mb4` and a five-second connect timeout.
-The configured database must already exist.
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe main.py
+```
 
-In the owner workspace, select **Categories** or **Products**. Select a table row
-to edit it; use **Add category** or **New** to create another record. Product
-images are copied to `assets/products/` when saved. **Show inactive** includes
-deactivated records, which can be reactivated with the **Active** checkbox.
-Categories with products cannot be deactivated. Initial stock is entered only
-when creating a product; use **Inventory** to change existing stock. All owner
-sidebar workspaces are now enabled.
+Complete the database and configuration steps before starting the app.
+Use that same interpreter path for the testing commands if you skip activation.
 
-The owner login opens **Dashboard**, with today's net sales and transaction
-count, active low-stock count, and pending refunds. Daily net sales can show
-**7 days** or **30 days**. Best sellers show the top five by gross quantity sold
-for **Today**, **7 days**, or **30 days**, with piece/kg labels. Best sellers retain
-inactive products' sales history; returned quantities do not reduce this gross
-ranking.
+**macOS / Linux**
 
-Net sales add completed sales on their completion date and subtract approved
-refunds on their approval date, including refunds of earlier sales. Pending and
-rejected requests do not reduce net sales. Date ranges use local calendar days,
-include today, and fill dates without activity with zero; refund-only days can
-be negative. The low-stock list includes active products in active categories
-at or below threshold, including zero stock. Inactive products remain available
-in Inventory but do not generate dashboard restocking alerts.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
-Use **Refresh** after inventory/refund changes; returning to Dashboard also
-refreshes its cards, charts, and low-stock list. Empty charts/lists show an
-explanation. Read errors retain the previous display and offer a retry. Dashboard
-navigation preserves the owner's draft POS cart and selected customer.
+Activate the environment again whenever you open a new terminal.
+Use `deactivate` when you are finished.
 
-Owners can also open **Customers** to add/edit names and optional contacts,
-search either field, and view the selected customer's completed purchases.
-Customer records and purchase links are retained; there is no delete action.
+### 3. Create the MySQL database and user
 
-**Sales History** lists completed sales with inclusive date filters (blank means
-any date), receipt text, cashier account, and payment method. Refunded amounts
-include approved refunds only. Select a sale to see its original item prices,
-quantities, and payment details. **Reprint receipt** saves its 80 mm PDF and opens
-the default viewer. Reprinting never charges the customer or changes inventory.
+Start your local MySQL server. Open a MySQL client as an administrator, for example:
 
-In **Users**, choose **Add cashier** and enter a unique username, full name, and
-password. Select a cashier to disable (with confirmation) or enable the account,
-or enter a new password and select **Reset password**. Owners cannot disable
-themselves or other owner accounts. An owner can select their own account to
-change the demo password. Existing names/usernames are read-only; password
-values are never displayed and are cleared after a successful save.
+```bash
+mysql -u root -p
+```
 
+Run the following SQL once, replacing the example password with your own:
 
-Inventory has four owner-only tabs:
+```sql
+CREATE DATABASE pawpos CHARACTER SET utf8mb4;
+CREATE USER 'pawpos'@'localhost' IDENTIFIED BY 'replace_with_your_local_password';
+GRANT ALL PRIVILEGES ON pawpos.* TO 'pawpos'@'localhost';
+```
 
-- **Stock Overview** lists products, categories, stock, and thresholds, with low
-  stock highlighted. Inactive products are included. Search and Refresh update
-  the list.
-- **Receive Stock** records a positive quantity, supplier (prefilled from the
-  product), delivery date, and optional note. The supplier applies to this
-  delivery; it does not change the product default.
-- **Adjust Stock** accepts a signed nonzero change, a reason, and a required
-  note. Stock cannot fall below zero. Piece quantities must be whole numbers;
-  kg quantities allow three decimals.
-- **Movement History** shows read-only received, adjustment, sale, and refund
-  entries, with signed changes, stock after, references, actor, and notes. Filter
-  by product, type, and inclusive dates (`YYYY-MM-DD`; blank means any date).
+If you already have a database and user, use their credentials instead.
+The app creates tables inside the configured database, but does not create the
+database itself. Its user needs permission to create tables and read/write data.
 
-Receiving and adjustments save stock and movement history in one transaction.
-Delivery supplier/note text shares a 255-character history field. Past delivery
-dates are recorded at midnight; future dates are rejected. Stock after means
-the balance when posted, including for backdated deliveries. Returning to the
-POS refreshes its stock while preserving any draft cart.
+### 4. Configure the connection
 
-Use **Request Refund** on the POS to load a receipt, select items, enter returned
-quantities, flag opened/used items, and give a reason. Requests must be submitted
-within seven elapsed days of sale completion. Opened food is blocked. Pending
-and approved requests count against the remaining refundable quantity; rejected
-requests release that quantity. Requests leave stock unchanged and preserve any
-active cart/customer. The displayed amounts use the original sale prices.
+Copy the example environment file:
 
-Owners open **Refunds** from the sidebar; its badge shows the pending count.
-Select a **Pending** request and set each line's **Resellable** choice (default
-No), then confirm **Approve**. Only resellable lines return to stock, with linked
-refund movements. **Reject** requires a note and confirmation, and leaves stock
-unchanged. **History** shows processed requests, item decisions, reviewer, and
-review note. A timely request can be reviewed after its seven-day request
-window. The refund money is handed back manually; there is no payment reversal
-integration. Approval stays in the owner workspace. Cashiers open **Refunds**
-to browse all shifts' requests by receipt/status and inspect the owner's decision.
-Only the requesting user gets persistent unread notices; **View decisions** opens
-them. Notices refresh every ten seconds, or use **Refresh notices** to retry.
+**Windows PowerShell**
 
-After returning the full approved amount, choose **Record payout**, select Cash
-or GCash (reference required), and confirm that the money has already been
-returned. Coordinate with other staff before handing over money: the app prevents
-duplicate records, not duplicate physical handovers. No partial payments or
-payment-provider integration are supported. Owners use **Status / payouts** in
-Refunds to record payments or correct a paid refund's method/reference with a
-required reason. Correction history and the original payout cashier/time remain
-visible. Existing approved refunds are marked assumed paid before tracking and
-cannot be paid again; their payment details remain unknown.
+```powershell
+Copy-Item .env.example .env
+```
 
-Local MySQL refund lookup/request, opened-food rejection, mixed resellable
-approval, rejection, and movement history were verified inside a transaction
-that was fully rolled back, leaving sales, refunds, movements, and shop stock
-unchanged.
+**macOS / Linux**
 
-To regenerate the bundled paw placeholders, run
-`python scripts/generate_assets.py`. Product image copies will live in
-`assets/products/`; generated receipts and logs are ignored by Git.
-Receipt PDFs use the bundled DejaVu Sans Mono font and its license in
-`assets/fonts/` so the peso sign prints without requiring a system font install.
+```bash
+cp .env.example .env
+```
 
-## Settings
+Edit `.env` to match the database and password from the previous step.
+Do not overwrite an existing `.env` containing your working settings.
 
-Owners open **Settings** from the sidebar. From POS, owners and cashiers use
-**Settings** to open a separate window without losing the cart, customer, or last
-receipt. Choose any built-in theme and press **Apply theme** to save and apply it
-immediately. The choice belongs to your account and returns at your next login;
-the login screen uses `cosmo`. **Reload saved theme** retries a failed read.
+## Configuration
 
-To change your password, enter your current password, a new password, and matching
-confirmation, then press **Change password**. Passwords must be nonblank and at
-most 72 UTF-8 bytes. You stay signed in after success. If you forget your password,
-ask the owner to reset it through Users. Theme and password changes save separately.
+The project-root `.env` contains the database connection settings:
 
-Startup creates the new `user_settings` table automatically. No manual ALTER SQL
-is needed, and existing shop data and saved preferences are preserved.
+```dotenv
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=pawpos
+DB_PASSWORD=replace_with_your_local_password
+DB_NAME=pawpos
+```
 
-## Reading order
+| Variable | Description | Default when unset |
+| --- | --- | --- |
+| `DB_HOST` | MySQL server hostname | `localhost` |
+| `DB_PORT` | MySQL server port | `3306` |
+| `DB_USER` | Database username | `pawpos` |
+| `DB_PASSWORD` | Database password | Empty string |
+| `DB_NAME` | Existing database name | `pawpos` |
 
-For each contributor session, follow [AGENTS.md](AGENTS.md):
+Existing environment variables take precedence over `.env`. The app finds `.env`
+in the project directory even when launched from another working directory.
+Connections use `utf8mb4` and a five-second connection timeout.
 
-1. Read the [documentation guide](docs/README.md).
-2. Read the [feature index](docs/features/INDEX.md).
-3. Read the spec for the current task.
-4. Read the living docs listed in that spec's **Touches** field.
+Keep `.env` private; it is ignored by Git.
 
-The guide links the current feature, business, architecture,
-[database schema](docs/DATABASE.md), UI, and tech-stack documentation.
-The [initial implementation plan](docs/IMPLEMENTATION_PLAN.md) is preserved as
-history; new work uses specs from [the feature template](docs/features/TEMPLATE.md).
+## Running and seeding
 
-## Scope summary
+With MySQL running and your virtual environment active, start the application:
 
-**In scope**
+```bash
+python main.py
+```
 
-- Two roles: **Owner** (full access) and **Cashier** (sales, void, refund requests/status/payouts)
-- Sell per-piece items and per-kilo items (weight typed manually by the cashier)
-- Payments: **Cash** and **GCash** (manual; only a reference number is stored)
-- Held transactions saved in the database
-- Voids (before payment, free, reason logged) and Refunds (after payment, owner approval required)
-- Inventory with a **stock movement history** table
-- Product thumbnails, categories, customers (optional at checkout)
-- Dashboard with charts (daily sales, best sellers) and a low-stock list
-- Receipt preview and a receipt-sized PDF opened in the system print flow
-- Simulated login with bcrypt-hashed passwords
+Startup checks the connection, creates missing tables, initializes refund
+tracking, and seeds demo data **only when the `users` table is empty**. There is
+no separate seed command to run.
 
-**Out of scope (do NOT build)**
-Expiry/batch tracking, FEFO, barcode/SKU, discounts (senior/PWD/promo), VAT, loyalty points, real GCash API, digital scale integration, backup, CSV export, forgotten-password recovery, auto-lock, multi-terminal/concurrency handling, migrations (Alembic), packaging (PyInstaller), cashier low-stock alerts.
+An empty installation receives two accounts, eight categories, fourteen products,
+and initial stock movement records for products with positive stock. Some
+products deliberately start low or out of stock for demonstrations.
 
-## Global rules for the AI agent
+| Role | Username | Initial password |
+| --- | --- | --- |
+| Owner | `owner` | `owner123` |
+| Cashier | `cashier` | `cashier123` |
 
-1. **Follow the layers**: UI never talks to the database directly; UI calls services, services use models/session. (See [ARCHITECTURE.md](docs/ARCHITECTURE.md).)
-2. **Money uses `decimal.Decimal`**, never `float`. Database columns are `Numeric`. Display with the peso sign: `₱1,234.50`.
-3. **Quantities**: per-piece items are whole numbers; per-kilo items allow up to **3 decimals** (kg).
-4. **Every stock change creates a `stock_movements` row** in the same DB transaction as the change. Stock is never edited without a movement record.
-5. **Sales, refunds, and stock changes must be atomic**: one transaction, rollback on any error.
-6. **Never hard-delete** products, users, categories with history. Use `is_active`.
-7. **Scope discipline**: do not add features listed as out of scope. If requirements are unclear or code and docs disagree, report the issue and ask the user, following [AGENTS.md](AGENTS.md).
-8. **Keep code simple and readable.** This is a school project: clear names, short functions, docstrings on services.
-9. **Write unit tests** for testable changes according to the current task spec. Tests use disposable SQLite databases.
-10. Follow the task loop in [AGENTS.md](AGENTS.md), verify the spec's "Done when" checklist, and update the affected docs, feature index, and changelog. Run the app (`python main.py`) for runtime changes.
+Change these demo passwords through **Settings** before using real shop data.
+The owner starts on Dashboard; the cashier starts in POS. Owners can also open
+POS from the sidebar.
 
-## Quick facts
+Later launches preserve existing accounts, passwords, inventory, and account
+preferences. If any user already exists, startup skips the entire demo seed;
+it does not restore missing demo accounts or reset stock.
 
-| Item                  | Value                                  |
-| --------------------- | -------------------------------------- |
-| System name           | PawPOS                                 |
-| Currency              | Philippine peso (₱)                    |
-| Run command           | `python main.py`                       |
-| Default owner login   | `owner` / `owner123` (seed; change it) |
-| Default cashier login | `cashier` / `cashier123` (seed)        |
-| Theme                 | ttkbootstrap, per account (`cosmo` default) |
+Table creation does not migrate columns in existing tables. Follow the relevant
+feature documentation if a future update requires manual SQL. Startup also
+classifies refunds approved before payout tracking as assumed paid once, without
+inventing payment details or paying them again.
 
-## Refund tracking data
+## Building
 
-Startup creates four refund-tracking tables in addition to the original ten.
-No manual ALTER SQL is required. Before login, existing approved refunds are
-marked assumed paid once; payment method, reference, cashier, and time remain
-unknown. Subsequent approvals await payout. Existing users/catalog data are
-preserved and the initialization is safe to repeat. Decision notices are created
-only for reviews performed by this version. Sales reports continue to deduct
-refunds on approval rather than payout.
+PawPOS runs directly from Python source. There is no separate build command,
+installer, or supported executable packaging step. Install `requirements.txt`,
+configure MySQL, and run `python main.py` as described above.
+
+## Using PawPOS
+
+### Checkout and receipts
+
+1. Search or filter products by category, then click a product to add it.
+   Kilogram products prompt for weight, with up to three decimal places;
+   piece quantities must be whole numbers. Out-of-stock products are disabled.
+2. Double-click a cart row or press **Enter** to edit its quantity. Use **Delete**
+   to remove a selected row. Optionally select or create a customer.
+3. Select **Pay (F5)**. For cash, enter the amount received and check the change.
+   For GCash, enter the reference number after handling payment manually.
+4. Confirm payment. The app saves the sale and deducts stock together, clears
+   the cart, and opens the receipt preview. Payment errors leave the cart available
+   for correction.
+5. Select **Print** to generate an 80 mm PDF in `receipts/` and open your default
+   PDF viewer. Print from that viewer. **Last receipt** reopens the latest receipt
+   in the current POS session; owners can also reprint from **Sales History**.
+
+Adding products to a cart does not deduct stock. Stock is checked again when
+payment is confirmed. Reprinting a receipt does not charge the customer again.
+
+### Hold, resume, and void
+
+- **Hold (F4)** saves the cart and customer, then clears the active cart.
+- **Held (F8)** lists shared held transactions, including after logout or restart.
+  Hold or empty your active cart before resuming another transaction.
+- **Void (F6)** records a cancellation of a selected line or the whole cart.
+  Choose a reason and confirm. Use **Cancel held (void)** to cancel a saved cart.
+- Holds and voids do not change stock. **Delete/Remove** is an ordinary cart edit;
+  use **Void** when a cancellation needs a reason in the audit history.
+
+### Owner management
+
+Use the owner sidebar to access these workspaces:
+
+| Workspace | What to do |
+| --- | --- |
+| Dashboard | Review net sales, transaction counts, best sellers, low stock, and pending refunds; use Refresh after changes |
+| Categories / Products | Add and edit the catalog, set prices and units, attach images, and deactivate records |
+| Inventory | Receive deliveries, adjust stock with a reason and note, and inspect movement history |
+| Customers | Add/edit customers, search contacts, and view their purchase history |
+| Sales History | Filter completed sales, inspect payment details, and reprint receipts |
+| Users | Create cashier accounts, enable/disable cashiers, and reset passwords |
+| Refunds | Review requests and manage payout status |
+| Settings | Change your own password and theme |
+
+Enter initial stock when creating a product. For later stock changes, use
+**Inventory**. Receiving stock and adjustments record their movement history
+together with the stock change. Adjustments cannot make stock negative.
+
+### Refunds and payouts
+
+1. In POS, select **Request Refund**, load a receipt, choose items and returned
+   quantities, indicate opened/used items, and enter a reason. Submit within
+   seven elapsed days of the sale; opened food cannot be refunded.
+2. The owner opens **Refunds** to review pending requests. On approval, mark
+   resellable lines to return their quantities to stock. Rejection requires a note.
+3. Cashiers open **Refunds** to inspect shared statuses and owner decisions.
+   Requesters receive persistent decision notices, refreshed every ten seconds;
+   **View decisions** opens them, and **Refresh notices** retries a read.
+4. After manually returning the full approved amount, use **Record payout**.
+   Choose Cash or GCash, supply a GCash reference when applicable, and confirm
+   that the money has already been returned.
+
+Coordinate with staff before handing over money. The app prevents duplicate
+payout records, but cannot prevent duplicate physical handovers. Partial payouts
+and automatic payment reversals are not supported. Owners can correct recorded
+payment details through **Status / payouts**, with a required reason and audit
+history. Refunds marked assumed paid before tracking cannot be paid again.
+
+### Account settings
+
+Open **Settings** from the owner sidebar or from POS for either role.
+Choose a theme and select **Apply theme** to save it to your account immediately.
+Opening settings from POS preserves the cart, customer, and last receipt.
+
+To change your password, enter the current password, the new password, and its
+confirmation. Passwords must be nonblank and at most 72 UTF-8 bytes. If a cashier
+forgets their password, the owner can reset it through **Users**. Log out to switch
+accounts; hold a draft cart first if you need to keep it.
+
+### Keyboard shortcuts
+
+| Key | Action |
+| --- | --- |
+| **F2** | Focus product search in POS |
+| **F4** | Hold the active cart |
+| **F5** | Open payment |
+| **F6** | Open the void dialog |
+| **F8** | List held transactions |
+| **Enter** | Edit the selected cart row when the cart has focus |
+| **Delete** | Remove the selected cart row when the cart has focus |
+| **Escape** | Close a dialog |
+
+## Testing and code checks
+
+Run commands from the project root with your virtual environment active.
+
+**Full test suite**
+
+```bash
+python -m pytest
+```
+
+Tests use disposable SQLite databases and do not require a MySQL server or real
+shop credentials. GUI tests use real Tk widgets and skip when no display is
+available. A passing run with skips does not verify those GUI scenarios.
+
+**GUI demo flow**
+
+```bash
+python -m pytest tests/test_demo_flow.py -q
+```
+
+This test exercises checkout, hold/resume across an app restart, voids, receipts,
+refunds, inventory, reports, and accounts with a disposable file-backed database.
+PDFs are generated, while external viewer launches are mocked. A display is
+required; physical printer output remains a manual check.
+
+**Headless Linux with Xvfb installed**
+
+```bash
+xvfb-run -a python -m pytest
+xvfb-run -a python -m pytest tests/test_demo_flow.py -q
+```
+
+**Lint and formatting checks**
+
+```bash
+python -m ruff check .
+python -m ruff format --check .
+```
+
+To apply formatting deliberately, run `python -m ruff format .`.
+Foundation checks are also available through `python -m unittest discover -v`;
+use pytest for the complete suite.
+
+## Files and assets
+
+| Path | Purpose |
+| --- | --- |
+| `.env` | Private local database settings; ignored by Git |
+| `pawpos.log` | UTF-8 startup and diagnostic log; ignored by Git |
+| `receipts/` | Generated receipt PDFs; ignored by Git |
+| `assets/products/` | Product images copied into the project when saved |
+| `assets/fonts/` | Bundled receipt font and its license |
+| `assets/logo.png`, `assets/placeholder_product.png` | Bundled paw graphics |
+
+To regenerate the bundled paw graphics, run:
+
+```bash
+python scripts/generate_assets.py
+```
+
+This replaces the logo and placeholder images. It is optional for normal setup.
+Receipt PDFs use the bundled DejaVu Sans Mono font to display the peso sign.
+
+## Troubleshooting
+
+| Problem | What to check |
+| --- | --- |
+| Cannot connect to the database | Start MySQL; confirm the database exists, `.env` values are correct, and the configured user has access. Check for environment variables overriding `.env`. |
+| Cannot initialize the database | Check the database user's table privileges and whether the existing schema needs a documented update. |
+| Tkinter cannot be imported | Install Tk support for your Python version and retry `python -m tkinter`. |
+| App cannot open / no display | Launch it in a graphical desktop session. For headless Linux tests, use Xvfb. |
+| Receipt PDF does not open | Install/configure a default PDF viewer. On Linux, ensure `xdg-open` is available. Open the generated PDF from `receipts/` manually if needed. |
+| Demo login does not work | Existing users prevent reseeding; an account may have a changed password or be disabled. Ask the owner to reset a cashier account. |
+
+Startup diagnostics appear in the terminal and `pawpos.log`. If the log cannot
+be written, console logging still works. Connection failures exit with status 1
+and show a desktop error dialog when a display is available.
+
+## Project documentation
+
+- [Documentation guide](docs/README.md): entry point to the technical documentation.
+- [Features](docs/FEATURES.md): current capabilities and acceptance criteria.
+- [Business processes](docs/BUSINESS_PROCESS.md): shop workflows and rules.
+- [Architecture](docs/ARCHITECTURE.md), [database](docs/DATABASE.md),
+  [UI/UX](docs/UI_UX.md), and [technology stack](docs/TECH_STACK.md): technical references.
+- [Contributor instructions](AGENTS.md) and [feature index](docs/features/INDEX.md):
+  development workflow and feature tracking.
+- [Changelog](CHANGELOG.md): project changes.

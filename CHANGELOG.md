@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Rewrite the README as a human-facing GitHub guide for setup, configuration,
+  automatic seeding, running, testing, daily workflows, and troubleshooting.
+
 - Improve every workspace and dialog table with readable row spacing, bold
   padded headers, subtle alternating backgrounds, and theme-aware selection.
   Live theme changes retain table data, selection, and low-stock warnings.
