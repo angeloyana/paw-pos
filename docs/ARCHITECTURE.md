@@ -103,6 +103,11 @@ pawpos/
 
 ## 3. Key design decisions
 
+Customer checkout services expose `list_customers(search="")` and
+`create_customer(name, contact="")` to active signed-in users, returning frozen
+`CustomerDetails` values. Searches match literal text in names or contacts;
+duplicate names are allowed. No schema changes are required.
+
 `services/cart.py` is pure Python and does not open a session or require login.
 `Cart.add_piece(product_id, product_name, unit_price, quantity=1,
 stock_quantity=...)` and `add_weight(product_id, product_name, unit_price,

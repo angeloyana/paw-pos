@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add signed-in customer lookup by name/contact and quick creation with optional
+  contact, ready for the Phase 4 checkout picker.
+
 - Add the pure Python cart with merged piece/kg lines, quantity editing and
   removal, current-stock checks, immutable line snapshots, and Decimal half-up
   pricing. Invalid operations preserve the active cart. The selling UI follows
