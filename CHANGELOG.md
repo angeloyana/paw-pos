@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Complete feature 001: refund visibility, requester alerts, and audited payouts.
+  Verify 423 tests and 26 subtests with real Tk coverage, app startup on disposable
+  SQLite, Ruff, and dependency compatibility. No manual ALTER SQL is needed.
+
 - Let cashiers browse shared refund decisions, receive requester-only unread
   alerts, and record confirmed cash/GCash payouts. Add owner payout correction
   controls and audit details, retry feedback, and notification cleanup at logout.

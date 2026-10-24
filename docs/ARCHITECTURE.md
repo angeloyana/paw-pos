@@ -233,9 +233,16 @@ status; cancellation history is retained in `void_logs`. No schema changes.
 
 ### 4.4 Refund
 
-1. `refund_service.create_request(receipt_number, items, reason, user)` validates the rules (see `BUSINESS_PROCESS.md` section 6) and inserts `RefundRequest(status='pending')` and `RefundItem`s.
-2. `refund_service.approve(request_id, resellable_map, owner_id)` in one transaction: set status, reviewer, time; for resellable items add stock, insert `StockMovement(type='refund')`.
-3. `refund_service.reject(request_id, note, owner_id)`.
+1. `refund_service.create_request(receipt_number, items, reason)` derives the
+   requester from the active login, validates the rules (see `BUSINESS_PROCESS.md`
+   section 6), and inserts pending request/items.
+2. Owner-only `approve(request_id, resellable_map)` atomically sets status,
+   reviewer/time, restores resellable stock with movements, and creates the
+   requester's decision notice.
+3. Owner-only `reject(request_id, note)` records rejection/reviewer/time/note and
+   the requester's decision notice atomically, without stock changes.
+4. Shared tracking reads expose the decision; `record_payout` separately records
+   full money returned without changing approval-date reports or stock.
 
 ### 4.5 Receipt printing
 

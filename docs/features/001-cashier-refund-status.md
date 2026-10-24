@@ -1,6 +1,6 @@
 # 001: Cashier refund status and payouts
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** docs/FEATURES.md, docs/BUSINESS_PROCESS.md, docs/ARCHITECTURE.md, docs/DATABASE.md, docs/UI_UX.md, README.md, CHANGELOG.md
 
@@ -38,14 +38,30 @@ and full cash/GCash payout recording while retaining owner-only review.
 
 ## Done when
 
-- [ ] Shared visibility, requester-only notices, payout validation, duplicate
+- [x] Shared visibility, requester-only notices, payout validation, duplicate
       prevention, correction audit, and legacy initialization are verified.
-- [ ] Reports and stock remain unchanged by payout operations.
-- [ ] Relevant tests and the full test suite pass; the app runs.
-- [ ] Affected living docs and changelog describe the completed behavior.
-- [ ] Remaining work is resolved and the spec and index statuses are done.
+- [x] Reports and stock remain unchanged by payout operations.
+- [x] Relevant tests and the full test suite pass; the app runs.
+- [x] Affected living docs and changelog describe the completed behavior.
+- [x] Remaining work is resolved and the spec and index statuses are done.
 
 ## Remaining work
 
-Storage, services, shared UI, alerts, and focused checks complete. Finish final
-full-suite verification and documentation closeout.
+None.
+
+## Verification
+
+- Full suite: 423 tests and 26 subtests pass, including all real Tk GUI tests;
+  no skipped tests. Headless checks used a temporary Xvfb display with top-level
+  keyboard focus support; no display tooling was added as an app dependency.
+- Focused coverage includes durable notices/read state and payouts after database
+  reopen, simultaneous payout attempts, failed commit rollback, interrupted legacy
+  initialization/retry, automatic polling, owner corrections/audit, and unchanged
+  report aggregates and stock.
+- Ruff lint and format checks pass; dependency compatibility check passes.
+- The real app entrypoint opens/closes successfully on disposable SQLite; a
+  cashier request → owner approval → cashier decision view was rendered and
+  inspected at the dialog's minimum size. GUI tests cover confirmed cash/GCash
+  payout and owner correction. The configured shop database was not modified.
+- MySQL table DDL compiles in schema tests. Four new tables are auto-created;
+  existing tables require no ALTER SQL and no manual migration command.
