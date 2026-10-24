@@ -50,4 +50,4 @@ own password while signed in. Preferences belong to the account.
 
 ## Remaining work
 
-Tasks 1–3.
+Task 1 implemented; verify service tests, then complete UI and final checks.

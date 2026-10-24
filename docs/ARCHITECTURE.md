@@ -378,3 +378,15 @@ writes disable repeat actions before list refresh. The existing cart is untouche
 The POS owns a ten-second Tk `after` timer for notices, a separate status label,
 unread badge, and explicit retry control; destruction cancels the timer. No
 blocking notification dialogs or new runtime dependencies are introduced.
+
+### Account settings
+
+`settings_service.get_settings()` and `set_theme(theme)` return frozen
+`Settings(theme)` values. `theme_names()` lists built-in ttkbootstrap themes
+without creating a Tk root. Preferences are stored in `user_settings`, keyed by
+user ID; missing/unsupported values read as the configured `cosmo` default.
+`auth_service.change_password(current_password, new_password, confirmation)`
+verifies the current hash and confirmation before hashing the replacement.
+Both services derive identity from the login session, recheck active status,
+and own their transactions. Neither accepts a target user ID. Password changes
+keep the in-memory identity and existing owner reset operations remain available.

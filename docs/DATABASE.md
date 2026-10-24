@@ -4,7 +4,7 @@ Conventions: table names plural snake_case; integer auto-increment `id` primary 
 
 ## users
 
-All fourteen tables are registered by `pawpos.models` and created by `init_db()`.
+All fifteen tables are registered by `pawpos.models` and created by `init_db()`.
 Named checks reject negative product prices, stock, thresholds, sale/refund
 amounts, and movement balances; sale/refund item quantities must be positive.
 Enums are checked in SQLite tests as well as MySQL. The declared indexes cover
@@ -21,6 +21,17 @@ project-wide soft-deletion rule. No migrations are used.
 | role          | enum('owner','cashier') | not null         |
 | is_active     | bool                    | default true     |
 | created_at    | datetime                | default now      |
+
+## user_settings
+
+Account theme preferences, created automatically by `init_db()`. Existing tables
+need no ALTER SQL. Missing settings use `cosmo`; rows are created on first save,
+and repeat seed runs preserve all preferences.
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| user_id | int PK, FK users.id | One preference per account |
+| theme | varchar(100) | Required built-in ttkbootstrap theme name |
 
 ## categories
 

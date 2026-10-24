@@ -16,7 +16,15 @@ Each feature lists **acceptance criteria (AC)** the AI should satisfy and verify
 **F-A3 User management (owner)**
 
 - AC: Create cashier (username unique, full name, password), enable/disable, reset password.
-- AC: Owner cannot disable their own account. No self-service password reset.
+- AC: Owner cannot disable their own account. No forgotten-password recovery. Signed-in password changes require the current password.
+
+**F-A4 Account settings services**
+
+- AC: Active owners and cashiers can read/save only their own built-in theme
+  preference. Missing or unsupported saved themes default to `cosmo`.
+- AC: Change own password requires the correct current password and matching
+  confirmation, preserves the session, and uses existing bcrypt validation.
+- AC: Failed saves roll back; seed runs preserve preferences and passwords.
 
 ## B. Catalog
 

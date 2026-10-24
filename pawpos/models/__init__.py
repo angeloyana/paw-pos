@@ -13,6 +13,7 @@ from pawpos.models.refund_tracking import (
 from pawpos.models.sale import Sale, SaleItem, VoidLog
 from pawpos.models.stock_movement import StockMovement
 from pawpos.models.user import User
+from pawpos.models.user_settings import UserSettings
 
 __all__ = [
     "Category",
@@ -28,5 +29,6 @@ __all__ = [
     "SaleItem",
     "StockMovement",
     "User",
+    "UserSettings",
     "VoidLog",
 ]

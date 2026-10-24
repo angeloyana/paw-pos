@@ -45,7 +45,10 @@ PRODUCTS = (
 
 
 def seed_database() -> bool:
-    """Initialize tracking; add demo users/inventory only when no users exist."""
+    """Initialize tracking; seed empty installs, leaving account themes intact.
+
+    Settings are created on first save; absent preferences use the default theme.
+    """
     with session_scope() as session:
         initialize_refund_tracking(session)
         if session.scalar(select(User.id).limit(1)) is not None:

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add account theme preference storage and authenticated password-change services
+  for owners and cashiers. A new table is created automatically; no ALTER SQL.
+
 - Complete feature 001: refund visibility, requester alerts, and audited payouts.
   Verify 423 tests and 26 subtests with real Tk coverage, app startup on disposable
   SQLite, Ruff, and dependency compatibility. No manual ALTER SQL is needed.

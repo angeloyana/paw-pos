@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pawpos.core import session as login_session
-from pawpos.core.errors import AuthError
-from pawpos.core.security import verify_password
+from pawpos.core.errors import AuthError, ValidationError
+from pawpos.core.security import hash_password, verify_password
 from pawpos.core.session import CurrentUser
 from pawpos.db.base import session_scope
 from pawpos.models import User
@@ -32,6 +32,19 @@ def login(username: str, password: str) -> CurrentUser:
 def logout() -> None:
     """Clear the signed-in user before returning to login."""
     login_session.logout()
+
+
+def change_password(
+    current_password: str, new_password: str, confirmation: str
+) -> None:
+    """Change the active account's password after verifying its current one."""
+    with session_scope() as session:
+        user = _require_user(session)
+        if not verify_password(current_password, user.password_hash):
+            raise ValidationError("Current password is incorrect.")
+        if new_password != confirmation:
+            raise ValidationError("New passwords do not match.")
+        user.password_hash = hash_password(new_password)
 
 
 def _require_user(session: Session) -> User:

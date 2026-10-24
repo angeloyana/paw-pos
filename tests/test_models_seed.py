@@ -15,6 +15,7 @@ def test_all_tables_exist_and_compile_for_mysql(session_factory):
     with session_factory() as session:
         assert set(inspect(session.bind).get_table_names()) == {
             "users",
+            "user_settings",
             "categories",
             "products",
             "customers",
@@ -38,7 +39,7 @@ def test_all_tables_exist_and_compile_for_mysql(session_factory):
     )
     Base.metadata.create_all(engine)
     tables = [sql for sql in statements if "CREATE TABLE" in sql]
-    assert len(tables) == 14
+    assert len(tables) == 15
     assert all("InnoDB" in sql and "utf8mb4" in sql for sql in tables)
 
 

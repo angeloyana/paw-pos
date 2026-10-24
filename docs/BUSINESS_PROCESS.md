@@ -106,7 +106,12 @@ and label piece/kg units. Inactive products remain in historical sales rankings.
 
 - Owner creates cashier accounts, disables/enables them, and resets their passwords.
 - Login is simulated: username + password checked against a bcrypt hash; the logged-in user is kept in memory. No tokens, no expiry, no auto-lock.
-- Disabled users cannot log in.
+- Disabled users cannot log in or read/write their settings.
+- Active owners and cashiers can change their own password with the current
+  password and matching new-password confirmation, without ending the session.
+  Passwords are nonblank and at most 72 UTF-8 bytes. Forgotten-password recovery
+  remains unavailable; the owner can reset account passwords.
+- Each account can save a built-in theme preference independently of other users.
 
 ### Refund payout records and decision notices
 
