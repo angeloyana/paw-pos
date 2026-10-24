@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 from pawpos.config import ASSETS_DIR, SHOP_NAME
 from pawpos.core.session import CurrentUser
 from pawpos.ui.owner.categories import CategoriesScreen
+from pawpos.ui.owner.inventory import InventoryScreen
 from pawpos.ui.owner.products import ProductsScreen
 from pawpos.ui.pos_screen import POSScreen
 
@@ -51,7 +52,7 @@ class OwnerShell(ttk.Frame):
                 command=lambda page=label: self.show_page(page),
             )
             button.pack(fill="x", pady=3)
-            if label not in ("Dashboard", "Products", "Categories", "POS"):
+            if label not in ("Dashboard", "Products", "Categories", "Inventory", "POS"):
                 button.configure(state="disabled")
             self.buttons[label] = button
         self.logout_button = ttk.Button(sidebar, text="Logout", command=on_logout)
@@ -62,7 +63,7 @@ class OwnerShell(ttk.Frame):
         self.show_page("Dashboard")
 
     def show_page(self, page: str) -> None:
-        if page not in ("Dashboard", "Products", "Categories", "POS"):
+        if page not in ("Dashboard", "Products", "Categories", "Inventory", "POS"):
             return
         if self.current_screen is not None:
             if self.current_screen is self.pos_screen:
@@ -81,6 +82,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = self.pos_screen
         elif page == "Products":
             self.current_screen = ProductsScreen(self.content)
+        elif page == "Inventory":
+            self.current_screen = InventoryScreen(self.content)
         elif page == "Categories":
             self.current_screen = CategoriesScreen(self.content)
         else:
@@ -92,7 +95,7 @@ class OwnerShell(ttk.Frame):
             ).pack(anchor="w")
             ttk.Label(
                 self.current_screen,
-                text="Manage your products and categories from the sidebar.",
+                text="Manage your products, categories, and inventory from the sidebar.",
             ).pack(anchor="w", pady=16)
             ttk.Label(
                 self.current_screen,

@@ -109,7 +109,7 @@ Single screen, two main columns plus a top bar.
 
 ## 5. Owner shell
 
-The sidebar implements Products, Categories, and POS. The Dashboard currently
+The sidebar implements Products, Categories, Inventory, and POS. The Dashboard currently
 shows an introduction; reports follow in Phase 10. Navigation for later phases
 is disabled. Select a catalog table row to edit it. Forms show errors inline and
 retain input on validation failure. The Active checkbox permits reactivation;
@@ -157,3 +157,16 @@ Shortcuts are active only on the POS screen (except Enter/Esc in dialogs). Show 
 - Empty states: friendly text ("Cart is empty. Click a product to start.").
 - Table columns right-align numbers; sortable headers where cheap.
 - Never freeze the UI on long work (PDF generation and charts are fast; no threading needed).
+
+### Inventory (Phase 7)
+
+The four tabs are available to the owner. Stock Overview includes inactive
+products and highlights balances at or below the threshold. Receive Stock
+prefills the selected product's supplier and accepts a delivery date, quantity,
+and note. Adjust Stock uses a signed quantity, a common reason, and a required
+note. Validation errors retain input. Successful writes clear quantity/note
+inputs before refreshing, preventing accidental resubmission after a read error.
+Movement History refreshes when opened and exposes only filtering and scrolling;
+there are no edit/delete actions. Date filters are inclusive and optional.
+History shows explicit positive signs, receipt/refund references, and an empty
+state when no rows match. Both tables have vertical and horizontal scrollbars.

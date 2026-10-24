@@ -149,9 +149,23 @@ rolled back; verification leaves no test sale/void rows and no stock changes.
 
 ## Phase 7: Inventory
 
-**Implementation status:** owner-only inventory services and rollback/validation
-tests are implemented. The four-tab owner screen follows in this phase.
-No schema changes are required.
+**Implementation status:** owner-only inventory services and the four-tab
+Inventory screen are implemented. Receiving and signed adjustments atomically
+save stock and movement rows, with precision/range checks and required adjustment
+notes. Overview includes inactive products and low-stock highlights. History
+is read-only with product/type/inclusive-date filters and receipt/refund
+references. Delivery supplier/date/note use existing movement fields; no schema
+changes are required.
+
+Verification: service tests cover access checks, precision, negative/overflow
+balances, dates, references, filters, and commit rollback. Real Tk tests cover
+receiving, adjustments, validation preservation, filters, empty states, refresh
+failure recovery, navigation, and minimum-window layout. Normal startup, both
+role logins/logout, and owner inventory tabs pass against local MySQL. MySQL
+receive/adjust/history checks pass inside an outer transaction that is rolled
+back, leaving stock and movement counts unchanged. The full suite passes with
+286 tests and 26 subtests, including all real Tk tests. Ruff lint/format checks
+pass.
 
 **Tasks**
 

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Enable the owner Inventory workspace with Stock Overview, Receive Stock,
+  Adjust Stock, and read-only Movement History tabs. Include low-stock
+  highlighting, supplier prefill, delivery dates, signed corrections, history
+  filters, validation feedback, and protection against resubmitting a saved
+  stock change after a refresh failure.
+
 - Connect F4/F6/F8 to hold, void, and held-transaction dialogs. Restore held
   quantities, prices, and customers after restart; prevent active-cart
   replacement; require reasons and confirmation for voids/held cancellations.

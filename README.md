@@ -6,15 +6,17 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 6 is implemented.** Startup checks the
+**Phase 7 is implemented.** Startup checks the
 database connection, creates all ten tables, seeds an empty installation, and
 opens the blue-themed desktop login. Owners can manage categories and products
 from the sidebar, including images, search, initial stock, and deactivation.
 Cashiers enter the POS screen; owners can open it from the sidebar. Both
 workspaces support logout.
 Local MySQL startup, catalog/POS reads, both demo-account logins, and logout have
-been verified. Automated checkout/rollback tests use disposable SQLite data;
-live MySQL checkout and physical printing remain manual acceptance checks.
+been verified. Inventory receiving, adjustments, and history were verified on
+local MySQL inside an outer transaction that was rolled back without changing
+shop stock or history. Automated checkout/rollback tests use disposable SQLite
+data; live MySQL checkout and physical printing remain manual acceptance checks.
 Hold/resume, held cancellation, and line/transaction voids were also verified
 against local MySQL inside a transaction that was fully rolled back.
 
@@ -98,8 +100,29 @@ to edit it; use **Add category** or **New** to create another record. Product
 images are copied to `assets/products/` when saved. **Show inactive** includes
 deactivated records, which can be reactivated with the **Active** checkbox.
 Categories with products cannot be deactivated. Initial stock is entered only
-when creating a product; existing stock will be managed through Inventory in
-Phase 7. Sidebar entries for later phases are disabled.
+when creating a product; use **Inventory** to change existing stock. Sidebar
+entries for later phases are disabled.
+
+Inventory has four owner-only tabs:
+
+- **Stock Overview** lists products, categories, stock, and thresholds, with low
+  stock highlighted. Inactive products are included. Search and Refresh update
+  the list.
+- **Receive Stock** records a positive quantity, supplier (prefilled from the
+  product), delivery date, and optional note. The supplier applies to this
+  delivery; it does not change the product default.
+- **Adjust Stock** accepts a signed nonzero change, a reason, and a required
+  note. Stock cannot fall below zero. Piece quantities must be whole numbers;
+  kg quantities allow three decimals.
+- **Movement History** shows read-only received, adjustment, sale, and refund
+  entries, with signed changes, stock after, references, actor, and notes. Filter
+  by product, type, and inclusive dates (`YYYY-MM-DD`; blank means any date).
+
+Receiving and adjustments save stock and movement history in one transaction.
+Delivery supplier/note text shares a 255-character history field. Past delivery
+dates are recorded at midnight; future dates are rejected. Stock after means
+the balance when posted, including for backdated deliveries. Returning to the
+POS refreshes its stock while preserving any draft cart.
 
 To regenerate the bundled paw placeholders, run
 `python scripts/generate_assets.py`. Product image copies will live in
