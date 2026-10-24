@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add the ten database tables and atomic first-run seed data: two demo accounts,
+  eight categories, fourteen products, and initial stock history.
+
 - Use Ruff for Python linting, import sorting, and formatting.
 
 - Start Phase 0: project layout, local MySQL configuration, atomic database

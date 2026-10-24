@@ -6,10 +6,10 @@ PawPOS is a single-shop **point of sale system for a pet shop** that sells pet f
 
 ## Implementation status and setup
 
-**Phase 0 is implemented.** The entry point currently checks the database connection
-and initializes registered tables. Models, seed accounts, and the desktop login
-screen will be implemented in Phase 1; the default logins below are planned seed
-accounts and are not available yet.
+**Phase 1 is in progress.** The entry point checks the database connection and
+creates the ten model tables. An atomic seed routine is implemented; startup
+seeding, authentication, and the desktop login screen are next. The default
+logins below will become available when startup seeding is connected.
 
 1. Install Python **3.11 or 3.12** and a local **MySQL 8** server.
 2. Create the database with `CREATE DATABASE pawpos CHARACTER SET utf8mb4;`

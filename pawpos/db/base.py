@@ -13,7 +13,7 @@ from pawpos.config import database_url
 
 
 class Base(DeclarativeBase):
-    pass
+    __table_args__ = {"mysql_engine": "InnoDB", "mysql_charset": "utf8mb4"}
 
 
 def make_engine() -> Engine:

@@ -21,6 +21,10 @@ live MySQL connection locally before proceeding to Phase 1.
 
 ## Phase 1: Models, seed, auth
 
+**Implementation status:** models and atomic seed routine are implemented.
+Authentication and desktop login are next. SQLite tests check the schema and
+seed behavior; live MySQL verification remains pending.
+
 **Tasks**
 
 - Implement all models from `DATABASE.md` and import them in `models/__init__.py`.

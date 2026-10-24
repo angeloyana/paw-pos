@@ -4,6 +4,14 @@ Conventions: table names plural snake_case; integer auto-increment `id` primary 
 
 ## users
 
+All ten tables are registered by `pawpos.models` and created by `init_db()`.
+Named checks reject negative product prices, stock, thresholds, sale/refund
+amounts, and movement balances; sale/refund item quantities must be positive.
+Enums are checked in SQLite tests as well as MySQL. The declared indexes cover
+product names and stock-movement product/date lookups; usernames, category
+names, and receipt numbers are unique. Category `is_active` implements the
+project-wide soft-deletion rule. No migrations are used.
+
 | Column        | Type                    | Notes            |
 | ------------- | ----------------------- | ---------------- |
 | id            | int PK                  |                  |
@@ -22,6 +30,7 @@ Conventions: table names plural snake_case; integer auto-increment `id` primary 
 | name        | varchar(80)  | unique, not null                                      |
 | description | varchar(255) | nullable                                              |
 | is_food     | bool         | default false; used for the refund "opened food" rule |
+| is_active   | bool         | default true; soft deletion preserves category history |
 
 ## products
 
