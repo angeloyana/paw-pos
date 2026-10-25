@@ -229,6 +229,8 @@ Detail text is read-only. Reprint receipt generates the existing 80 mm PDF and
 opens the default viewer, without changing sales or stock. Viewer errors retain
 the selected sale and the generated PDF path for manual opening. Details/forms
 scroll at the minimum window size; the sales table scrolls in both directions.
+Sales History columns share spare table width as the window expands, while
+preserving text-based minimum widths and horizontal scrolling in narrow windows.
 
 ### Users (Phase 9)
 

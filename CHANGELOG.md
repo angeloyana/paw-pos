@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix Sales History columns leaving unused space on wide windows; columns now
+  fill the table width while retaining readable minimums and narrow-window scrolling.
+
 - Balance Products table widths across all columns so Name uses less spare space
   and adjacent headers have room, preserving text-based minimums and scrolling.
 

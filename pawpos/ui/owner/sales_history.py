@@ -66,6 +66,8 @@ class SalesHistoryScreen(CatalogScreen):
                 ("refunded", "Refunded", 115),
             ]
         )
+        for column in self.tree.cget("columns"):
+            self.tree.column(column, stretch=True)
         for column in ("total", "refunded"):
             self.tree.column(column, anchor="e")
         self.tree.bind("<<TreeviewSelect>>", self.show_selected)

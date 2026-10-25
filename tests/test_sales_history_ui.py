@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from unittest.mock import patch
 
+import pytest
 from sqlalchemy import func, select
 
 from pawpos.models import Sale, StockMovement
@@ -154,3 +155,33 @@ def test_sales_history_reprint_accessible_at_minimum_window(app):
         <= screen.form_canvas.winfo_rooty() + screen.form_canvas.winfo_height()
     )
     assert screen.tree.winfo_height() > 100
+
+
+@pytest.mark.parametrize("theme", ["cosmo", "darkly"])
+def test_history_columns_fill_width_after_resize_and_refresh(app, theme):
+    make_sales(app)
+    screen = owner_screen(app, "Sales History")
+    app.apply_theme(theme)
+    app.state("normal")
+    table = screen.tree
+    columns = table.cget("columns")
+    for geometry in ("1920x1080", "1280x720", "1920x1080"):
+        app.geometry(geometry)
+        screen.refresh()
+        app.update()
+        for key in columns:
+            assert table.column(key, "width") >= table.column(key, "minwidth")
+        if geometry == "1920x1080":
+            # The final cell reaches the viewport edge, allowing for borders/padding.
+            row = table.get_children()[0]
+            x, _, width, _ = table.bbox(row, columns[-1])
+            assert abs(table.winfo_width() - (x + width)) <= 24
+            assert table.xview() == (0.0, 1.0)
+    app.geometry("1280x720")
+    table.insert("", "end", values=("Long receipt number " * 20,))
+    app.update()
+    assert table.xview()[1] < 1
+    for key in columns:
+        assert table.column(key, "width") >= table.column(key, "minwidth")
+    assert str(table.column("total", "anchor")) == "e"
+    assert str(table.column("refunded", "anchor")) == "e"
