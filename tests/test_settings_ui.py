@@ -109,6 +109,10 @@ def test_cashier_modal_entry_focus_escape_and_pos_state(app):
     def interact():
         dialog = next(w for w in pos.winfo_children() if isinstance(w, SettingsDialog))
         form = dialog.form
+        # Native window activation can precede input focus on Windows.
+        if dialog.focus_get() is not dialog.first_input:
+            app.after(10, interact)
+            return
         assert dialog.grab_current() is dialog
         assert dialog.focus_get() is dialog.first_input
         form.theme.set("darkly")

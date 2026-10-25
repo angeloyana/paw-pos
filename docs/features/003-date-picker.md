@@ -46,6 +46,11 @@ test checks input focus, Escape cancellation, owner focus restoration, and grab
 release without weakening the existing payment tests. Keep this spec and index
 in progress until the repository-wide test gate passes.
 
+Settings' modal test waits for native input focus within its existing four-second
+watchdog before running the unchanged focus/shortcut/password/state assertions.
+This handles Windows activation completing after the initial interaction timer.
+Settings and payment tests pass together (15 tests).
+
 Verification completed:
 
 - `python -m pytest tests/test_date_picker.py tests/test_inventory_ui.py
