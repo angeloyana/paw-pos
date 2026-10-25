@@ -1,4 +1,4 @@
-from tkinter import font
+from tkinter import TclError, font
 
 import pytest
 import ttkbootstrap as ttk
@@ -183,6 +183,10 @@ def test_products_share_extra_width_and_keep_spacing_after_refresh(app):
     screen = owner_screen(app, "Products")
     table = screen.tree
     app.state("normal")
+    try:
+        app.attributes("-zoomed", False)
+    except TclError:
+        pass  # Windows uses state("normal") without the X11 zoomed attribute.
     app.geometry("1280x720")
     app.update()
     columns = table.cget("columns")

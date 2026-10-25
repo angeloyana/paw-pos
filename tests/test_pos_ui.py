@@ -35,6 +35,10 @@ def by_name(screen, name):
 
 def layout_pos(app, role):
     app.state("normal")
+    try:
+        app.attributes("-zoomed", False)
+    except tk.TclError:
+        pass  # Windows uses state("normal") without the X11 zoomed attribute.
     app.geometry("1280x720")
     app.show_workspace(auth_service.login(role, f"{role}123"))
     if role == "owner":

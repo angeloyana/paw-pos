@@ -26,6 +26,9 @@ only by case remain unavailable for separate accounts.
    authentication and account documentation in the same change.
 2. Run relevant tests, the full suite, Ruff checks, and an app smoke check;
    complete acceptance checks, close the spec/index, and commit tested changes.
+3. Verify baseline focus-restoration failures on an isolated X11 test desktop
+   and rerun the full suite before closing acceptance. Clear X11 maximization
+   in resize-test setup, as existing minimum-size tests already do.
 
 ## Done when
 
