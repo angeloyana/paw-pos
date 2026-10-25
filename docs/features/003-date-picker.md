@@ -43,7 +43,7 @@ None.
 ## Verification
 
 - Full suite: `python -m pytest -q -x
-  --basetemp=.pytest_cache/date-picker-full-final` — 489 passed and 26 subtests
+  --basetemp=.pytest_cache/date-picker-full-final` â€” 489 passed and 26 subtests
   passed. Run on the Windows desktop with isolated test databases.
 - Payment/POS/nested-modal regression checks: 31 passed. Settings/payment checks:
   15 passed. Date-picker, Inventory, Sales History and service checks: 62 passed.
