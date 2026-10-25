@@ -29,14 +29,39 @@ only by case remain unavailable for separate accounts.
 
 ## Done when
 
-- [ ] Exact-case login succeeds and case mismatches clear previous login state.
-- [ ] Mixed-case account creation preserves case and rejects case-only duplicates.
-- [ ] Lowercase accounts and surrounding-whitespace trimming still work.
-- [ ] Case-insensitive database comparisons cannot bypass exact-case login.
+- [x] Exact-case login succeeds and case mismatches clear previous login state.
+- [x] Mixed-case account creation preserves case and rejects case-only duplicates.
+- [x] Lowercase accounts and surrounding-whitespace trimming still work.
+- [x] Case-insensitive database comparisons cannot bypass exact-case login.
 - [ ] Relevant tests and the full test suite pass; the app runs.
-- [ ] Affected living docs and the changelog describe the completed behavior.
+- [x] Affected living docs and the changelog describe the completed behavior.
 - [ ] Remaining work is resolved and the spec and index statuses are `done`.
 
 ## Remaining work
 
-Implementation and verification.
+No username implementation work remains. Full-suite acceptance and final status
+remain open because four unrelated GUI focus tests fail on this desktop, also
+reproduced on starting commit `81eb592`. Resolve or verify those baseline focus
+failures separately before closing the full-suite checklist and spec/index.
+
+## Verification
+
+- Regression tests first reproduced seven failures in the old implementation.
+- Authentication, Users UI, and Login UI: 43 passed, including mixed-case account
+  creation/login and real SQLite `NOCASE` username comparisons. Unicode case-fold
+  duplicates remain rejected.
+- Full suite: 495 passed, 26 subtests passed, four failed, no skips. All four
+  failures reproduced on a clean copy of starting commit `81eb592`:
+  `test_calendar_selection_and_cancellation[escape-2024-02-29]`,
+  `test_calendar_selection_and_cancellation[close-2024-02-29]`,
+  `test_modal_takes_keyboard_focus_and_restores_owner_focus`, and
+  `test_cashier_modal_entry_focus_escape_and_pos_state`. Each failure concerns
+  keyboard focus restoration after a dialog closes; `focus_get()` returns `None`.
+- Actual app entry point, initialization/seeding, Tk event loop, wrong-case
+  rejection, exact-case owner login, and shutdown passed with disposable SQLite.
+  Shop data was not accessed.
+- `python -m ruff check .`, Python formatting checks for `pawpos`, `tests`,
+  `main.py`, and `scripts`, and `git diff --check` pass. Repository-wide
+  `ruff format --check .` encounters pre-existing invalid UTF-8 in
+  `docs/features/003-date-picker.md`; that unrelated document is unchanged.
+- No schema changes, manual SQL, dependencies, or account renames were needed.
