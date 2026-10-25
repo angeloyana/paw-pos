@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Move POS Void History beside Held, replace category buttons with a dropdown,
+  and spread product cards evenly across the available grid width.
+
 - Refresh the app logo and default product placeholder with matching blue paw artwork.
 
 - Apply table filters automatically when dates or dropdowns change, and apply

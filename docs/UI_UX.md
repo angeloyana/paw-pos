@@ -38,8 +38,9 @@ inline error; logout returns to an empty login form.
 
 ## 3. Cashier POS screen
 
-Phase 4 implements browsing, cart editing, and customer selection. Category
-buttons wrap into rows to fit the owner workspace. Product thumbnails are cached
+Phase 4 implements browsing, cart editing, and customer selection. A read-only
+category dropdown defaults to All and filters immediately on selection. Refresh
+preserves the selected category, or resets to All if it is unavailable. Product thumbnails are cached
 for the screen lifetime, with a paw fallback for missing or corrupt files. Stock
 appears as plain text without low-stock alerts on the cashier screen. Click any
 part of an available card to add it; out-of-stock cards cannot add items.
@@ -85,10 +86,10 @@ Single screen, two main columns plus a top bar.
 
 ```
 +---------------------------------------------------------------------+
-| [logo] PawPOS        Cashier: Name          [Held F8] [Refund] [Logout]|
+| [logo] PawPOS   Cashier: Name   [Held F8] [Void History] [...] [Logout]|
 +--------------------------------------+------------------------------+
 | [Search F2 ______________]           |  CART                        |
-| [All][Dog Food][Cat Food][Toys]...   |  Item        Qty   Price     |
+| Category [All                  v]   |  Item        Qty   Price     |
 |                                      |  ----------------------------|
 |  +------+ +------+ +------+ +------+ |  ...cart lines...            |
 |  | img  | | img  | | img  | | img  | |                              |
@@ -101,8 +102,8 @@ Single screen, two main columns plus a top bar.
 
 **Product grid (left, ~60% width)**
 
-- Scrollable grid of cards (columns adapt to available width). Card: 96x96 thumbnail (paw placeholder if none), wrapped name, price (`/kg` suffix for kg items), stock text. Out-of-stock cards are **disabled**, with an "Out of stock" label. Low-stock alerts belong to the owner dashboard.
-- Category buttons (a horizontal row; "All" first) and a search box that filters live.
+- Scrollable grid of equally sized cards that fill the available width; columns adapt to window and card widths. A partial final row retains the same column widths. Card: 96x96 thumbnail (paw placeholder if none), wrapped name, price (`/kg` suffix for kg items), stock text. Out-of-stock cards are **disabled**, with an "Out of stock" label. Low-stock alerts belong to the owner dashboard.
+- Category dropdown ("All" first) and a search box filter together; search filters live.
 - Click a card: per-piece adds 1; per-kg opens the weight dialog.
 
 **Cart (right, ~40% width)**
@@ -116,7 +117,7 @@ Single screen, two main columns plus a top bar.
 - Customer row: shows "Walk-in" or the customer name; **Select** opens a picker with search and quick-add.
 - Large total. Buttons: **Hold (F4)**, **Void (F6)**, **Pay (F5)** (Pay is the primary large button; disabled when the cart is empty).
 
-**Top bar:** cashier name; **Held (F8)**; **Request Refund**; **Refunds** with unread decision count; **Settings**; **Logout**. No low-stock notice for cashiers.
+**Top bar:** cashier name; **Held (F8)**; **Void History** immediately to its right; **Refunds** with unread decision count; **Request Refund**; **Last receipt**; **Settings**; **Logout**. No low-stock notice for cashiers.
 
 ## 4. Dialogs
 
@@ -328,7 +329,7 @@ the shared modal while restoring the parent's focus/grab.
 
 ### Void History
 
-The POS **Void History** button sits beside product search/Refresh. Both roles
+The POS **Void History** button sits in the header immediately right of Held. Both roles
 open the same modal; owners also have a **Void History** sidebar page. Cashiers
 see only voids they performed; owners see all shop actors, including disabled
 accounts. Opening loads the history immediately.

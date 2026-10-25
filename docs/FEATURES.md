@@ -62,7 +62,8 @@ and column layouts are preserved.
 
 **F-C1 Product grid**
 
-- AC: Cards show thumbnail, name, price (with `/kg` for kg items), and stock. Category buttons plus a search box filter the grid.
+- AC: Cards show thumbnail, name, price (with `/kg` for kg items), and stock. A read-only category dropdown (default All) and search box filter the grid together. Refresh preserves the selected category or resets to All if unavailable.
+- AC: Adaptive columns share the available grid width equally, including after resizing and theme changes; a partial final row retains the same column widths.
 - AC: Out-of-stock cards are shown but disabled. Search is case-insensitive "contains".
 
 **F-C2 Cart**
@@ -79,7 +80,7 @@ and column layouts are preserved.
 **F-C4 Void**
 
 - AC: Void line or void all (F6). Reason required (dropdown of common reasons plus "Other" with text). Logged in `void_logs`. No owner approval.
-- AC: Void History in POS opens a read-only list; cashiers see only voids they
+- AC: Void History beside Held in the POS header opens a read-only list; cashiers see only voids they
   performed and owners see all actors, including disabled accounts. Owners also
   have a Void History sidebar page using the same form. Optional calendar From/To
   filters start blank, include whole days, and apply automatically when selected or cleared; Refresh reloads on demand.

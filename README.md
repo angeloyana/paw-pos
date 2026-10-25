@@ -209,7 +209,7 @@ configure MySQL, and run `python main.py` as described above.
 
 ### Checkout and receipts
 
-1. Search or filter products by category, then click a product to add it.
+1. Search or choose a category from the dropdown (All by default), then click a product to add it.
    Kilogram products prompt for weight, with up to three decimal places;
    piece quantities must be whole numbers. Out-of-stock products are disabled.
 2. Double-click a cart row or press **Enter** to edit its quantity. Use **Delete**
@@ -235,7 +235,7 @@ payment is confirmed. Reprinting a receipt does not charge the customer again.
   Choose a reason and confirm. Use **Cancel held (void)** to cancel a saved cart.
 - Holds and voids do not change stock. **Delete/Remove** is an ordinary cart edit;
   use **Void** when a cancellation needs a reason in the audit history.
-- **Void History**, beside product search/Refresh, shows your own voids when
+- **Void History**, immediately right of Held in the header, shows your own voids when
   signed in as a cashier; owners see all shop voids. Choose optional From/To
   dates with Calendar; filtering applies automatically. Blank dates are unrestricted
   and both selected days are included. Select an item row to read its full reason.

@@ -84,6 +84,10 @@ class POSScreen(ttk.Frame):
             header, text="Refunds", command=self.open_refunds
         )
         self.refund_status_button.pack(side="right", padx=6)
+        self.void_history_button = ttk.Button(
+            header, text="Void History", command=self.open_void_history
+        )
+        self.void_history_button.pack(side="right", padx=6)
         self.held_button = ttk.Button(header, text="Held (F8)", command=self.open_held)
         self.held_button.pack(side="right")
         add_tooltip(
@@ -107,12 +111,17 @@ class POSScreen(ttk.Frame):
         ttk.Button(tools, text="Refresh", command=self.refresh_catalog).pack(
             side="right"
         )
-        self.void_history_button = ttk.Button(
-            tools, text="Void History", command=self.open_void_history
-        )
-        self.void_history_button.pack(side="right", padx=6)
         self.category_bar = ttk.Frame(browse)
         self.category_bar.grid(row=1, column=0, columnspan=2, sticky="ew", pady=8)
+        ttk.Label(self.category_bar, text="Category").pack(side="left", padx=(0, 8))
+        self.category_combo = ttk.Combobox(self.category_bar, state="readonly")
+        self.category_combo.pack(side="left", fill="x", expand=True)
+        self.category_combo.bind(
+            "<<ComboboxSelected>>",
+            lambda _event: self.choose_category(
+                self.category_options[self.category_combo.current()][0]
+            ),
+        )
         self.canvas = tk.Canvas(
             browse,
             highlightthickness=0,
@@ -125,6 +134,7 @@ class POSScreen(ttk.Frame):
         scrollbar.grid(row=2, column=1, sticky="ns")
         self.canvas.configure(yscrollcommand=scrollbar.set)
         self.grid_frame = ttk.Frame(self.canvas)
+        self._grid_columns = 0
         self.grid_window = self.canvas.create_window(
             0, 0, window=self.grid_frame, anchor="nw"
         )
@@ -337,21 +347,19 @@ class POSScreen(ttk.Frame):
             categories = category_service.list_categories()
             if self.category_id not in {row.id for row in categories}:
                 self.category_id = None
-            for child in self.category_bar.winfo_children():
-                child.destroy()
-            for index, (key, label) in enumerate(
-                [(None, "All")] + [(row.id, row.name) for row in categories]
-            ):
-                ttk.Button(
-                    self.category_bar,
-                    text=label,
-                    bootstyle="primary"
+            self.category_options = [(None, "All")] + [
+                (row.id, row.name) for row in categories
+            ]
+            self.category_combo.configure(
+                values=[label for _key, label in self.category_options]
+            )
+            self.category_combo.current(
+                next(
+                    index
+                    for index, (key, _label) in enumerate(self.category_options)
                     if key == self.category_id
-                    else "secondary-outline",
-                    command=lambda value=key: self.choose_category(value),
-                ).grid(row=index // 3, column=index % 3, sticky="ew", padx=2, pady=2)
-            for column in range(3):
-                self.category_bar.columnconfigure(column, weight=1)
+                )
+            )
 
         if self.perform(load):
             self.refresh_products()
@@ -389,7 +397,18 @@ class POSScreen(ttk.Frame):
     def layout_cards(self, event=None):
         width = event.width if event else self.canvas.winfo_width()
         self.canvas.itemconfigure(self.grid_window, width=max(width, 1))
-        columns = max(1, width // 160)
+        card_width = max(
+            [160] + [card.winfo_reqwidth() + 8 for card in self.cards.values()]
+        )
+        columns = max(1, width // card_width)
+        for column in range(max(columns, self._grid_columns)):
+            self.grid_frame.columnconfigure(
+                column,
+                weight=1 if column < columns else 0,
+                uniform="product_columns" if column < columns else "",
+                minsize=0,
+            )
+        self._grid_columns = columns
         for index, card in enumerate(self.cards.values()):
             card.grid(
                 row=index // columns,

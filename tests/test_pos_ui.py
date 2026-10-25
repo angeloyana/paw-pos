@@ -9,6 +9,7 @@ from sqlalchemy import func, select
 from pawpos.models import Sale, StockMovement
 from pawpos.services import (
     auth_service,
+    category_service,
     customer_service,
     product_service,
     settings_service,
@@ -52,6 +53,99 @@ def layout_pos(app, role):
 
 def cart_width(screen):
     return screen.table.master.master.winfo_width()
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_void_history_is_immediately_right_of_held(app, role):
+    screen = layout_pos(app, role)
+    header = screen.held_button.master
+    assert screen.void_history_button.master == header
+    ordered = sorted(header.winfo_children(), key=lambda widget: widget.winfo_x())
+    assert ordered[ordered.index(screen.held_button) + 1] == screen.void_history_button
+    assert screen.void_history_button.winfo_ismapped()
+    assert (
+        screen.logout_button.winfo_rootx() + screen.logout_button.winfo_width()
+        <= app.winfo_rootx() + app.winfo_width()
+    )
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_category_dropdown_filters_with_search_and_preserves_refresh(app, role):
+    screen = layout_pos(app, role)
+    assert str(screen.category_combo.cget("state")) == "readonly"
+    assert screen.category_combo.get() == "All"
+    toy = by_name(screen, "Rubber Chew Toy")
+    index = next(
+        index
+        for index, (key, _label) in enumerate(screen.category_options)
+        if key == toy.category_id
+    )
+    screen.category_combo.current(index)
+    screen.category_combo.event_generate("<<ComboboxSelected>>")
+    app.update()
+    assert screen.category_id == toy.category_id
+    assert all(row.category_id == toy.category_id for row in screen.products.values())
+    screen.search.set("Rubber")
+    app.update()
+    assert list(screen.products) == [toy.id]
+    screen.refresh_catalog()
+    assert screen.category_id == toy.category_id
+    assert screen.category_combo.current() == index
+    screen.category_combo.current(0)
+    screen.category_combo.event_generate("<<ComboboxSelected>>")
+    app.update()
+    assert screen.category_id is None
+    assert screen.search.get() == "Rubber"
+    assert list(screen.products) == [toy.id]
+
+
+def test_category_dropdown_resets_when_selected_category_is_unavailable(app):
+    screen = cashier_pos(app)
+    category = category_service.list_categories()[0]
+    screen.choose_category(category.id)
+    available = [
+        row for row in category_service.list_categories() if row.id != category.id
+    ]
+    with patch.object(category_service, "list_categories", return_value=available):
+        screen.refresh_catalog()
+    assert screen.category_id is None
+    assert screen.category_combo.get() == "All"
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_product_grid_fills_width_after_resize_filter_and_theme_change(app, role):
+    screen = layout_pos(app, role)
+    for geometry, theme in (
+        ("1600x900", "cosmo"),
+        ("1280x720", "darkly"),
+        ("1600x900", "darkly"),
+        ("1280x720", "cosmo"),
+    ):
+        app.geometry(geometry)
+        app.apply_theme(theme)
+        app.update()
+        columns = screen._grid_columns
+        first_row = list(screen.cards.values())[:columns]
+        assert len(first_row) == columns
+        assert (
+            max(card.winfo_width() for card in first_row)
+            - min(card.winfo_width() for card in first_row)
+            <= 1
+        )
+        right = first_row[-1].winfo_x() + first_row[-1].winfo_width()
+        assert abs(screen.canvas.winfo_width() - right - 4) <= 1
+        assert abs(cart_width(screen) - (screen.winfo_width() - 24) * 0.4) <= 1
+        screen.search.set("Rubber Chew Toy")
+        app.update()
+        assert len(screen.cards) == 1
+        for column in range(columns, screen.grid_frame.grid_size()[0]):
+            assert screen.grid_frame.columnconfigure(column)["weight"] == 0
+        screen.search.set("no matching product")
+        app.update()
+        assert not screen.cards
+        assert "No products" in screen.grid_frame.winfo_children()[0].cget("text")
+        screen.search.set("")
+        app.update()
 
 
 @pytest.mark.parametrize("role", ["cashier", "owner"])
