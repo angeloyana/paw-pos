@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replace typed dates with a shared calendar-only picker for Inventory delivery
+  dates and Inventory/Sales History date filters. Optional filters have Clear
+  buttons; cancelling the calendar preserves the existing date.
+
 - Fix the POS cart expanding after theme changes or opening PAY. Keep the
   browser/cart split proportional and add horizontal scrolling for long cart rows.
 

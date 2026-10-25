@@ -190,6 +190,13 @@ note. Validation errors retain input. Successful writes clear quantity/note
 inputs before refreshing, preventing accidental resubmission after a read error.
 Movement History refreshes when opened and exposes only filtering and scrolling;
 there are no edit/delete actions. Date filters are inclusive and optional.
+Delivery date and both history date filters use the shared calendar-only picker.
+Dates display as YYYY-MM-DD in a read-only field with a Calendar button. Delivery
+date starts at today; optional filters start blank and each has a Clear button.
+The calendar opens at the selected date (today when blank). Selecting a day
+updates the field; Escape or closing the popup preserves the previous value.
+Calendar and Clear support keyboard access; closing restores focus. Filters
+apply only through Filter / Refresh.
 History shows explicit positive signs, receipt/refund references, and an empty
 state when no rows match. Both tables have vertical and horizontal scrollbars.
 
@@ -223,6 +230,9 @@ customers without purchases. Validation/write errors preserve input. Saved input
 is cleared before refreshing so a refresh failure cannot duplicate a new record.
 
 ### Sales History (Phase 9)
+
+From/To use the same calendar-only picker as Inventory, with individual Clear
+buttons for unrestricted dates. Filter / Refresh applies the chosen dates.
 
 The owner can filter completed sales by inclusive dates (blank = any date),
 literal receipt text, account, and Cash/GCash. Account choices include inactive

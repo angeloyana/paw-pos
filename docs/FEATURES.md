@@ -102,9 +102,9 @@ and column layouts are preserved.
 ## D. Inventory (owner)
 
 **F-D1 Stock overview**: product, category, stock, threshold, low-stock highlight.
-**F-D2 Receive stock**: product, quantity > 0, supplier (prefilled from product, editable), note. Creates `stock_received` movement.
+**F-D2 Receive stock**: product, quantity > 0, supplier (prefilled from product, editable), calendar-selected delivery date (defaults to today), note. Creates `stock_received` movement.
 **F-D3 Adjust stock**: product, signed quantity change (not zero), reason (damage, loss, correction, other), note required. Resulting stock must not go below 0. Creates `adjustment` movement.
-**F-D4 Movement history**: table with date, product, type, change (+/-), stock after, reference (receipt number or refund id), user, note. Filter by product, type, and date range. Read-only; never editable or deletable.
+**F-D4 Movement history**: table with date, product, type, change (+/-), stock after, reference (receipt number or refund id), user, note. Filter by product, type, and date range using calendar-only From/To pickers with individual Clear buttons (blank = unrestricted). Read-only; never editable or deletable.
 
 ## E. Refund approval (owner)
 
@@ -116,6 +116,7 @@ and column layouts are preserved.
 ## F. Sales history (owner; lookup also available to cashier via refund dialog)
 
 - AC: Table of completed sales: receipt number, date, cashier, customer, method, total, refunded amount. Filter by date range, receipt number, cashier, payment method.
+- AC: Date filters use the shared calendar-only From/To pickers with individual Clear buttons; blank dates are unrestricted. Calendar cancellation preserves the value. Filter / Refresh applies the inclusive range.
 - AC: Detail view with items; **Reprint receipt** button.
 
 ## G. Customers (owner)

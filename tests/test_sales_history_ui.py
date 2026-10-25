@@ -96,6 +96,27 @@ def test_invalid_filters_preserve_results_and_show_errors(app):
     assert screen.reprint_button.instate(["disabled"])
 
 
+def test_calendar_filters_and_clear_reach_sales_service(app):
+    screen = owner_screen(app, "Sales History")
+    assert screen.date_from.get() == screen.date_to.get() == ""
+    with patch("pawpos.ui.widgets.date_picker._CalendarDialog") as dialog:
+        dialog.return_value.selection = date(2024, 2, 29)
+        for picker in screen.date_pickers:
+            picker.open_calendar()
+    with patch(
+        "pawpos.ui.owner.sales_history.sales_history_service.list_sales",
+        return_value=[],
+    ) as history:
+        screen.refresh()
+        assert history.call_args.kwargs["date_from"] == date(2024, 2, 29)
+        assert history.call_args.kwargs["date_to"] == date(2024, 2, 29)
+        for picker in screen.date_pickers:
+            picker.clear_button.invoke()
+        screen.refresh()
+        assert history.call_args.kwargs["date_from"] is None
+        assert history.call_args.kwargs["date_to"] is None
+
+
 def test_reprint_writes_pdf_opens_viewer_and_does_not_charge_again(
     app, session_factory, tmp_path, monkeypatch
 ):

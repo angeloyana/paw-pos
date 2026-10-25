@@ -47,6 +47,32 @@ def test_owner_inventory_four_tabs_receive_adjust_and_readonly_history(app):
     assert len(screen.overview_tree.tag_has("low")) >= 1
 
 
+def test_calendar_dates_reach_receiving_and_history(app):
+    screen = owner_screen(app, "Inventory")
+    assert screen.delivery_date.get() == date.today().isoformat()
+    assert screen.delivery_picker.clear_button is None
+    assert screen.date_from.get() == screen.date_to.get() == ""
+    select_product(screen)
+    screen.receive_quantity.set("1")
+    with patch("pawpos.ui.widgets.date_picker._CalendarDialog") as dialog:
+        dialog.return_value.selection = date(2024, 2, 29)
+        screen.delivery_picker.open_calendar()
+        with patch.object(inventory, "receive_stock") as receive:
+            screen.receive()
+            assert receive.call_args.kwargs["received_date"] == date(2024, 2, 29)
+        for picker in screen.history_date_pickers:
+            picker.open_calendar()
+        with patch.object(inventory, "list_movements", return_value=[]) as history:
+            screen.refresh_history()
+            assert history.call_args.kwargs["date_from"] == date(2024, 2, 29)
+            assert history.call_args.kwargs["date_to"] == date(2024, 2, 29)
+            for picker in screen.history_date_pickers:
+                picker.clear_button.invoke()
+            screen.refresh_history()
+            assert history.call_args.kwargs["date_from"] is None
+            assert history.call_args.kwargs["date_to"] is None
+
+
 def test_invalid_entry_preserves_form_and_stock(app):
     screen = owner_screen(app, "Inventory")
     product = select_product(screen)

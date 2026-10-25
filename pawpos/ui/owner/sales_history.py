@@ -9,6 +9,7 @@ from pawpos.core.errors import ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.services import receipt_service, sales_history_service, user_service
 from pawpos.ui.owner.catalog_screen import CatalogScreen
+from pawpos.ui.widgets.date_picker import DatePicker
 
 
 class SalesHistoryScreen(CatalogScreen):
@@ -22,21 +23,25 @@ class SalesHistoryScreen(CatalogScreen):
         self.receipt_number = tk.StringVar(self)
         self.cashier = tk.StringVar(self, value="All accounts")
         self.method = tk.StringVar(self, value="All methods")
+        self.date_pickers = []
         for column, (label, variable) in enumerate(
             (
-                ("From (YYYY-MM-DD)", self.date_from),
-                ("To (YYYY-MM-DD)", self.date_to),
+                ("From", self.date_from),
+                ("To", self.date_to),
                 ("Receipt contains", self.receipt_number),
             )
         ):
             field = ttk.Frame(self.toolbar)
             field.grid(row=0, column=column, sticky="ew", padx=(0, 12))
             ttk.Label(field, text=label).pack(anchor="w")
-            entry = ttk.Entry(
-                field, textvariable=variable, width=22 if column == 2 else 14
-            )
-            entry.pack(fill="x")
-            entry.bind("<Return>", lambda _event: self.refresh())
+            if column < 2:
+                picker = DatePicker(field, variable, allow_clear=True)
+                picker.pack(fill="x")
+                self.date_pickers.append(picker)
+            else:
+                entry = ttk.Entry(field, textvariable=variable, width=22)
+                entry.pack(fill="x")
+                entry.bind("<Return>", lambda _event: self.refresh())
         choices = ttk.Frame(self.toolbar)
         choices.grid(row=1, column=0, columnspan=3, sticky="ew", pady=(8, 0))
         ttk.Label(choices, text="Cashier").pack(side="left")

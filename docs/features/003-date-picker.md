@@ -2,7 +2,7 @@
 
 **Status:** in progress
 
-**Touches:** `docs/UI_UX.md`, `docs/FEATURES.md`
+**Touches:** `docs/UI_UX.md`, `docs/FEATURES.md`, `README.md`, `CHANGELOG.md`
 
 ## Summary
 
@@ -28,12 +28,17 @@ fields: Inventory delivery date, Movement History From/To, and Sales History Fro
 
 ## Done when
 
-- [ ] Selection, cancellation, clearing, read-only input, and leap day are tested.
-- [ ] Delivery and filter selections reach their existing service calls.
+- [x] Selection, cancellation, clearing, read-only input, and leap day are tested.
+- [x] Delivery and filter selections reach their existing service calls.
 - [ ] Existing validation tests and the full suite pass; the app runs.
-- [ ] Layout at 1280x720 and light/dark calendars are verified.
+- [x] Layout at 1280x720 and light/dark calendars are verified with running-widget checks.
 - [ ] Living docs/changelog are updated; spec and index are done.
 
 ## Remaining work
 
-Implementation and verification.
+Full regression suite and closeout. Targeted UI tests passed (22 tests), followed
+by all nine widget tests including minimum-size/light/dark layout checks. Ruff
+passes. Desktop capture access to the Python app was denied, so screenshot-based
+visual inspection was unavailable; live Tk bounds, popup visibility, and active
+themes were checked instead. The app was also launched against an isolated,
+seeded in-memory database without accessing shop data.

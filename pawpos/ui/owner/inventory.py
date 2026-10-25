@@ -9,6 +9,7 @@ import ttkbootstrap as ttk
 from pawpos.core.errors import PawPOSError, ValidationError
 from pawpos.core.money import format_qty
 from pawpos.services import inventory_service as inventory
+from pawpos.ui.widgets.date_picker import DatePicker
 from pawpos.ui.widgets.table import TableView
 
 logger = logging.getLogger(__name__)
@@ -155,7 +156,11 @@ class InventoryScreen(ttk.Frame):
             combo.bind("<<ComboboxSelected>>", self.prefill_supplier)
             self._field(tab, 1, "Quantity to receive", self.receive_quantity)
             self._field(tab, 2, "Supplier", self.supplier)
-            self._field(tab, 3, "Delivery date (YYYY-MM-DD)", self.delivery_date)
+            ttk.Label(tab, text="Delivery date").grid(
+                row=3, column=0, sticky="w", padx=(0, 12), pady=7
+            )
+            self.delivery_picker = DatePicker(tab, self.delivery_date)
+            self.delivery_picker.grid(row=3, column=1, sticky="ew", pady=7)
             self._field(tab, 4, "Note (optional)", self.receive_note)
             self.receive_button = ttk.Button(
                 tab, text="Receive stock", command=self.receive
@@ -194,12 +199,13 @@ class InventoryScreen(ttk.Frame):
         )
         dates = ttk.Frame(filters)
         dates.grid(row=2, column=0, columnspan=2, sticky="w")
+        self.history_date_pickers = []
         for label, variable in (("From", self.date_from), ("To", self.date_to)):
             ttk.Label(dates, text=label).pack(side="left", padx=(0, 8))
-            ttk.Entry(dates, textvariable=variable, width=12).pack(
-                side="left", padx=(0, 12)
-            )
-        ttk.Label(dates, text="YYYY-MM-DD (blank = any)").pack(side="left")
+            picker = DatePicker(dates, variable, allow_clear=True)
+            picker.pack(side="left", padx=(0, 12))
+            self.history_date_pickers.append(picker)
+        ttk.Label(dates, text="Blank = any date").pack(side="left")
         ttk.Button(dates, text="Filter / Refresh", command=self.refresh_history).pack(
             side="left", padx=12
         )

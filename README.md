@@ -242,6 +242,11 @@ Use the owner sidebar to access these workspaces:
 | Inventory | Receive deliveries, adjust stock with a reason and note, and inspect movement history |
 | Customers | Add/edit customers, search contacts, and view their purchase history |
 | Sales History | Filter completed sales, inspect payment details, and reprint receipts |
+
+Inventory delivery dates and the From/To filters in Inventory and Sales History
+use a **Calendar** button instead of typed dates. Each optional filter has a
+**Clear** button; blank dates include all dates. Use **Filter / Refresh** to
+apply filters. Closing the calendar or pressing Escape keeps the previous date.
 | Users | Create cashier accounts, enable/disable cashiers, and reset passwords |
 | Refunds | Review requests and manage payout status |
 | Settings | Change your own password and theme |
