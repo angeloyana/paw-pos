@@ -78,6 +78,8 @@ nested transaction-void dialog and then refreshes the list. Successful writes
 update the cart; failures retain the dialog/input and show an inline error.
 Nested modals restore the parent's keyboard focus/grab, Enter confirms, and
 Escape closes the dialog. Whole-cart voids clear the selected customer too.
+Opening a modal explicitly moves keyboard focus to its first input, including
+on Windows when the owner window previously held focus.
 
 Single screen, two main columns plus a top bar.
 

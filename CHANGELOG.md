@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix modal keyboard focus on Windows so Enter and Escape reach the open dialog
+  instead of leaving keyboard focus in the owner screen.
+
 - Replace typed dates with a shared calendar-only picker for Inventory delivery
   dates and Inventory/Sales History date filters. Optional filters have Clear
   buttons; cancelling the calendar preserves the existing date.

@@ -58,6 +58,32 @@ def test_live_tender_validation_method_switch_quick_amount_and_cancel(app):
     assert screen.cart.total == 85
 
 
+def test_modal_takes_keyboard_focus_and_restores_owner_focus(app):
+    screen = pos(app)
+    add_toy(screen)
+    screen.search_entry.focus_force()
+    app.update()
+    dialog = PaymentDialog(screen, screen.cart)
+    focused = []
+
+    def cancel_from_keyboard():
+        # Native activation/focus events may follow the first timer on Windows.
+        if app.focus_get() != dialog.first_input:
+            app.after(10, cancel_from_keyboard)
+            return
+        focused.append(app.focus_get())
+        dialog.event_generate("<Escape>")
+
+    watchdog = app.after(2000, dialog.destroy)
+    app.after(100, cancel_from_keyboard)
+    assert dialog.show() is None
+    app.after_cancel(watchdog)
+    app.update()
+    assert focused == [dialog.first_input]
+    assert app.focus_get() == screen.search_entry
+    assert app.grab_current() is None
+
+
 @pytest.mark.parametrize("method", ["cash", "gcash"])
 def test_full_payment_receipt_pdf_and_cart_reset(
     app, session_factory, tmp_path, method

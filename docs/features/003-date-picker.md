@@ -25,6 +25,8 @@ fields: Inventory delivery date, Movement History From/To, and Sales History Fro
 2. Replace all five fields; test widget behavior and screen integration.
 3. Run relevant/full tests and the app; verify minimum-size and themed layouts.
 4. Update living docs/changelog, complete acceptance checks, and commit.
+5. Resolve the existing modal keyboard-focus blocker with a minimal focus fix;
+   verify payment and nested-dialog keyboard interactions before the full suite.
 
 ## Done when
 
@@ -36,15 +38,13 @@ fields: Inventory delivery date, Movement History From/To, and Sales History Fro
 
 ## Remaining work
 
-Full-suite verification and final status closeout remain blocked by an existing
-payment-modal keyboard test failure. The initial full run reported payment test
-failures and then stalled in another modal test; it was interrupted. Running
-`tests/test_payment_ui.py -x` separately reproduces the failure: generated Return
-does not submit payment, then receipt lookup raises StopIteration. The identical
-failure reproduces from a clean archive of pre-implementation commit `b9a6f57`,
-both without this widget and without the owner-screen changes. Existing payment
-code/tests have been left unchanged. Keep this spec and index in progress until
-the repository-wide test gate passes.
+Full-suite verification and final status closeout. The existing payment-modal
+failure reproduced from pre-implementation commit `b9a6f57`. Tracing showed
+keyboard focus remaining in POS search despite the modal grab. Modal opening now
+activates the toplevel before requesting focus for its first input. A regression
+test checks input focus, Escape cancellation, owner focus restoration, and grab
+release without weakening the existing payment tests. Keep this spec and index
+in progress until the repository-wide test gate passes.
 
 Verification completed:
 

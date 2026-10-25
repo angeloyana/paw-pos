@@ -47,6 +47,8 @@ class ModalDialog(ttk.Toplevel):
             self.wait_visibility()
             self.grab_set()
             self.first_input.bind("<Escape>", self.cancel_key)
+            # Windows can leave keyboard focus in the owner despite the modal grab.
+            self.focus_force()
             self.first_input.focus_set()
             self.wait_window()
         finally:
