@@ -105,6 +105,10 @@ Single screen, two main columns plus a top bar.
 
 **Cart (right, ~40% width)**
 
+- The browser/cart split stays proportional when themes change or payment dialogs
+  open and close; it adjusts with the window size rather than table content.
+- The cart table scrolls horizontally when long item names or other values exceed
+  its available width, keeping every column accessible.
 - Table: item name, qty or kg, unit price, line total. Select a line; buttons or keys to edit quantity and remove.
 - Double-click or Enter on a line to edit quantity/weight.
 - Customer row: shows "Walk-in" or the customer name; **Select** opens a picker with search and quick-add.

@@ -49,8 +49,9 @@ class POSScreen(ttk.Frame):
         self.total_text = tk.StringVar(self, value=format_peso(0))
         self.customer_text = tk.StringVar(self, value="Walk-in")
         self.cache = ThumbnailCache(self)
-        self.columnconfigure(0, weight=3, minsize=440)
-        self.columnconfigure(1, weight=2, minsize=400)
+        # Keep stretched table requests from moving the browser/cart divider.
+        self.columnconfigure(0, weight=3, minsize=440, uniform="pos_columns")
+        self.columnconfigure(1, weight=2, minsize=400, uniform="pos_columns")
         self.rowconfigure(2, weight=1)
         header = ttk.Frame(self)
         header.grid(row=0, column=0, columnspan=2, sticky="ew")
@@ -251,6 +252,11 @@ class POSScreen(ttk.Frame):
         scroll = ttk.Scrollbar(table_frame, command=self.table.yview)
         scroll.grid(row=0, column=1, sticky="ns")
         self.table.configure(yscrollcommand=scroll.set)
+        horizontal_scroll = ttk.Scrollbar(
+            table_frame, orient="horizontal", command=self.table.xview
+        )
+        horizontal_scroll.grid(row=1, column=0, sticky="ew")
+        self.table.configure(xscrollcommand=horizontal_scroll.set)
         self.table.bind("<Double-1>", lambda _event: self.edit_selected())
         self.table.bind("<Return>", lambda _event: self.edit_selected())
         self.table.bind("<Delete>", lambda _event: self.remove_selected())

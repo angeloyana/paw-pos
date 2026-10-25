@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix the POS cart expanding after theme changes or opening PAY. Keep the
+  browser/cart split proportional and add horizontal scrolling for long cart rows.
+
 - Fix Sales History columns leaving unused space on wide windows; columns now
   fill the table width while retaining readable minimums and narrow-window scrolling.
 

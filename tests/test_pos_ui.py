@@ -2,13 +2,21 @@ import tkinter as tk
 from decimal import Decimal
 from unittest.mock import patch
 
+import pytest
 from PIL import Image
 from sqlalchemy import func, select
 
 from pawpos.models import Sale, StockMovement
-from pawpos.services import auth_service, product_service
+from pawpos.services import (
+    auth_service,
+    customer_service,
+    product_service,
+    settings_service,
+)
 from pawpos.ui.dialogs.customer_picker import CustomerPicker
 from pawpos.ui.dialogs.held_list import HeldListDialog
+from pawpos.ui.dialogs.payment import PaymentDialog
+from pawpos.ui.dialogs.receipt_preview import ReceiptPreview
 from pawpos.ui.dialogs.weight import WeightDialog
 from pawpos.ui.pos_screen import POSScreen
 from pawpos.ui.widgets.product_card import ThumbnailCache
@@ -23,6 +31,116 @@ def cashier_pos(app):
 
 def by_name(screen, name):
     return next(row for row in screen.products.values() if row.name == name)
+
+
+def layout_pos(app, role):
+    app.state("normal")
+    app.geometry("1280x720")
+    app.show_workspace(auth_service.login(role, f"{role}123"))
+    if role == "owner":
+        app.screen.show_page("POS")
+        screen = app.screen.current_screen
+    else:
+        screen = app.screen
+    app.update()
+    return screen
+
+
+def cart_width(screen):
+    return screen.table.master.master.winfo_width()
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_cart_width_stays_proportional_across_themes_and_resizing(app, role):
+    screen = layout_pos(app, role)
+    screen.add_product(by_name(screen, "Rubber Chew Toy").id)
+    app.update()
+    before = screen.cart.lines
+    width = cart_width(screen)
+    assert abs(width - (screen.winfo_width() - 24) * 0.4) <= 1
+    for theme in (*settings_service.theme_names(), "darkly", "cosmo"):
+        app.apply_theme(theme)
+        screen.render_cart()
+        app.update()
+        assert abs(cart_width(screen) - width) <= 1
+        assert screen.cart.lines == before
+    app.geometry("1600x900")
+    app.update()
+    assert cart_width(screen) > width
+    assert abs(cart_width(screen) - (screen.winfo_width() - 24) * 0.4) <= 1
+    app.geometry("1280x720")
+    app.update()
+    assert abs(cart_width(screen) - width) <= 1
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_cart_width_survives_real_payment_modals_and_completion(app, role):
+    screen = layout_pos(app, role)
+    screen.add_product(by_name(screen, "Rubber Chew Toy").id)
+    screen.customer = customer_service.create_customer("Layout Customer")
+    screen.customer_text.set(screen.customer.name)
+    app.update()
+    width = cart_width(screen)
+    before = (screen.cart.lines, screen.customer, screen.last_sale)
+    opened_widths = []
+
+    def interact(complete):
+        dialog = next(
+            child
+            for child in screen.winfo_children()
+            if isinstance(child, PaymentDialog)
+        )
+        opened_widths.append(cart_width(screen))
+        if complete:
+            dialog.amount.set(str(screen.cart.total))
+            dialog.confirm_button.invoke()
+        else:
+            dialog.event_generate("<Escape>")
+
+    def close_stalled_dialogs():
+        for child in screen.winfo_children():
+            if isinstance(child, PaymentDialog):
+                child.destroy()
+
+    for complete in (False, False, False, True):
+        watchdog = app.after(4000, close_stalled_dialogs)
+        app.after(100, lambda value=complete: interact(value))
+        with patch.object(ReceiptPreview, "show", lambda dialog: dialog.destroy()):
+            screen.pay_button.invoke()
+        app.after_cancel(watchdog)
+        app.update()
+        assert abs(cart_width(screen) - width) <= 1
+        if not complete:
+            assert (screen.cart.lines, screen.customer, screen.last_sale) == before
+    assert len(opened_widths) == 4
+    assert all(abs(value - width) <= 1 for value in opened_widths)
+    assert screen.last_sale is not None
+    assert screen.cart.lines == () and screen.customer is None
+
+
+@pytest.mark.parametrize("role", ["cashier", "owner"])
+def test_long_cart_names_scroll_without_expanding_cart(app, role):
+    screen = layout_pos(app, role)
+    width = cart_width(screen)
+    toy = by_name(screen, "Rubber Chew Toy")
+    screen.cart.add_piece(
+        toy.id, "Long item name " * 8, toy.unit_price, stock_quantity=toy.stock_quantity
+    )
+    screen.render_cart()
+    app.update()
+    assert abs(cart_width(screen) - width) <= 1
+    assert screen.table.xview()[1] < 1
+    scrollbar = next(
+        widget
+        for widget in screen.table.master.winfo_children()
+        if widget.winfo_class() == "TScrollbar"
+        and str(widget.cget("orient")) == "horizontal"
+    )
+    assert scrollbar.winfo_ismapped()
+    app.tk.call(*app.tk.splitlist(scrollbar.cget("command")), "moveto", 1)
+    app.update()
+    assert screen.table.xview()[1] == 1
+    assert abs(cart_width(screen) - width) <= 1
 
 
 def test_product_grid_cart_weight_edit_remove_and_no_stock_writes(app, session_factory):
