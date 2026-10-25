@@ -245,6 +245,14 @@ log records the current actor and original name, quantity, and rounded amount.
 No stock or stock movements change. The existing schema has no `voided` sale
 status; cancellation history is retained in `void_logs`. No schema changes.
 
+`void_history_service.list_voids(date_from=None, date_to=None)` returns immutable
+item snapshots ordered by timestamp and ID descending. Every call rechecks the
+active database account: cashiers are restricted to their own `user_id`; owners
+can read all actors, including disabled accounts. Optional calendar-date bounds
+are inclusive and reversed ranges are rejected. `get_access()` rechecks the
+account ID and persisted role before cached details are displayed. The service
+has no write operations and takes no caller-supplied actor filter.
+
 ### 4.4 Refund
 
 1. `refund_service.create_request(receipt_number, items, reason)` derives the

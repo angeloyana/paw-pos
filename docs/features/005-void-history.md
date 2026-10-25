@@ -1,6 +1,6 @@
 # 005: Read-only void history
 
-**Status:** planned
+**Status:** in progress
 
 **Touches:** docs/FEATURES.md, docs/BUSINESS_PROCESS.md, docs/ARCHITECTURE.md, docs/UI_UX.md, README.md, CHANGELOG.md
 
@@ -94,7 +94,6 @@ read-only history with optional inclusive date filters.
 
 ## Remaining work
 
-Draft only: implementation, tests, runtime verification, living-doc updates,
-README, and the user-visible changelog entry remain pending. The proposed
-entry points and initially unrestricted date range are design choices in this
-draft. No application code or schema has changed.
+Task 1 is complete: scoped service and 14 focused service tests pass. Tasks 2
+and 3 remain: shared UI, integration tests, runtime verification, final living
+docs, README, changelog, and full-suite checks. No schema changes are required.

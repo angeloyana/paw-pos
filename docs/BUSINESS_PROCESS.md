@@ -48,6 +48,11 @@ Owner screens are only visible to the owner. The cashier uses the POS screen and
 - Voiding a held transaction removes the held sale/items and preserves each
   line, the actor, and the cancellation reason in `void_logs` atomically. The
   schema uses only `held` and `completed` sale statuses.
+- Void history is read-only: active cashiers can read only voids they performed;
+  active owners can read all shop voids, including disabled accounts' records.
+  Optional From/To dates include the whole selected local day. Each record is
+  an item snapshot; whole-transaction voids remain separate item records.
+  History access cannot edit, delete, restore, or cancel anything.
 
 ## 6. Refund (after payment)
 
