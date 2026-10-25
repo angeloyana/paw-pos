@@ -154,12 +154,13 @@ def test_row_height_accommodates_large_fonts(app):
 
 @pytest.mark.parametrize("page", ["Products", "Dashboard"])
 @pytest.mark.parametrize("theme", ["cosmo", "darkly"])
-def test_columns_fit_headers_and_values_with_cell_spacing(app, page, theme):
+@pytest.mark.parametrize("geometry", ["1280x720", "1920x1080"])
+def test_columns_fit_headers_and_values_with_cell_spacing(app, page, theme, geometry):
     screen = owner_screen(app, page)
     table = screen.tree if page == "Products" else screen.low_tree
     app.apply_theme(theme)
     app.state("normal")
-    app.geometry("1280x720")
+    app.geometry(geometry)
     app.update()
     padding = app.tk.splitlist(app.style.lookup(table.STYLE, "padding"))
     assert padding and int(padding[0]) >= 8
@@ -176,6 +177,32 @@ def test_columns_fit_headers_and_values_with_cell_spacing(app, page, theme):
         ) + 2 * int(padding[0])
         assert table.column(column, "minwidth") >= required
         assert table.column(column, "width") >= required
+
+
+def test_products_share_extra_width_and_keep_spacing_after_refresh(app):
+    screen = owner_screen(app, "Products")
+    table = screen.tree
+    app.state("normal")
+    app.geometry("1280x720")
+    app.update()
+    columns = table.cget("columns")
+    before = {key: table.column(key, "width") for key in columns}
+
+    app.geometry("1920x1080")
+    app.update()
+    growth = [table.column(key, "width") - before[key] for key in columns]
+    assert min(growth) > 0
+    assert max(growth) - min(growth) <= 2
+    assert table.column("name", "width") > table.column("active", "width")
+
+    screen.refresh()
+    app.update()
+    app.geometry("1280x720")
+    table.insert("", "end", values=("Long product name " * 20,))
+    app.update()
+    for key in columns:
+        assert table.column(key, "width") >= table.column(key, "minwidth")
+    assert table.xview()[1] < 1  # Narrow layouts scroll rather than squeeze text.
 
 
 def test_column_sizing_updates_on_reload_and_larger_fonts(app):

@@ -23,6 +23,9 @@ text away from table borders. Column minimum widths fit their headers and loaded
 values using the current font metrics; reloading rows or changing themes updates
 these widths. Narrow windows use horizontal scrolling instead of squeezing text
 into neighboring columns. Numeric alignment and keyboard/mouse actions are preserved.
+The Products table shares extra width across all columns, keeping Name wider for
+product names without assigning it all the available space. Columns remain
+manually resizable and retain their text-based minimum widths.
 
 ## 2. Login screen
 

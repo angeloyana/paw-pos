@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Balance Products table widths across all columns so Name uses less spare space
+  and adjacent headers have room, preserving text-based minimums and scrolling.
+
 - Fix table text crowding neighboring columns and borders by adding cell padding
   and sizing columns for their headers and loaded values, including after reloads
   and theme changes.

@@ -59,6 +59,9 @@ class ProductsScreen(CatalogScreen):
                 ("active", "Active", 55),
             ]
         )
+        # Share spare width so Name does not crowd the remaining columns.
+        for column in self.tree.cget("columns"):
+            self.tree.column(column, stretch=True)
         self.tree.bind("<<TreeviewSelect>>", self.edit_selected)
         self.form_title = ttk.Label(
             self.form, text="New product", font=("Segoe UI", 14, "bold")
