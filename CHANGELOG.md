@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Complete feature 004: case-sensitive username login. Verify 499 tests and 26
+  subtests on isolated X11, app startup/login, and full Ruff checks. Existing
+  usernames remain unchanged and no manual SQL is required.
+
 - Require exact username capitalization at login, including with case-insensitive
   database comparisons. Preserve case in new cashier usernames and continue
   rejecting case-only duplicates. Existing usernames stay unchanged; no SQL update.

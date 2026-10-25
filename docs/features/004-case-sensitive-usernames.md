@@ -1,6 +1,6 @@
 # 004: Case-sensitive usernames
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** `docs/FEATURES.md`, `docs/BUSINESS_PROCESS.md`, `docs/ARCHITECTURE.md`, `README.md`, `CHANGELOG.md`.
 
@@ -36,16 +36,13 @@ only by case remain unavailable for separate accounts.
 - [x] Mixed-case account creation preserves case and rejects case-only duplicates.
 - [x] Lowercase accounts and surrounding-whitespace trimming still work.
 - [x] Case-insensitive database comparisons cannot bypass exact-case login.
-- [ ] Relevant tests and the full test suite pass; the app runs.
+- [x] Relevant tests and the full test suite pass; the app runs.
 - [x] Affected living docs and the changelog describe the completed behavior.
-- [ ] Remaining work is resolved and the spec and index statuses are `done`.
+- [x] Remaining work is resolved and the spec and index statuses are `done`.
 
 ## Remaining work
 
-No username implementation work remains. Full-suite acceptance and final status
-remain open because four unrelated GUI focus tests fail on this desktop, also
-reproduced on starting commit `81eb592`. Resolve or verify those baseline focus
-failures separately before closing the full-suite checklist and spec/index.
+None.
 
 ## Verification
 
@@ -53,18 +50,22 @@ failures separately before closing the full-suite checklist and spec/index.
 - Authentication, Users UI, and Login UI: 43 passed, including mixed-case account
   creation/login and real SQLite `NOCASE` username comparisons. Unicode case-fold
   duplicates remain rejected.
-- Full suite: 495 passed, 26 subtests passed, four failed, no skips. All four
-  failures reproduced on a clean copy of starting commit `81eb592`:
-  `test_calendar_selection_and_cancellation[escape-2024-02-29]`,
-  `test_calendar_selection_and_cancellation[close-2024-02-29]`,
-  `test_modal_takes_keyboard_focus_and_restores_owner_focus`, and
-  `test_cashier_modal_entry_focus_escape_and_pos_state`. Each failure concerns
-  keyboard focus restoration after a dialog closes; `focus_get()` returns `None`.
+- Final full suite: 499 passed, 26 subtests passed, no failures or skips, on an
+  isolated Xvfb/Openbox desktop with disposable SQLite (254.66 seconds).
+- Initial WSLg runs had four dialog-focus failures also reproduced on starting
+  commit `81eb592` and in a plain Tk window. Calendar, payment, settings, and
+  nested-dialog checks pass with application code unchanged on isolated X11.
+- Resize-test setup now clears X11's separate maximized attribute, following
+  existing minimum-size tests. This allows the existing growth and proportional
+  width assertions to exercise actual window resizing under a Linux window manager.
+  All three affected resize cases pass; no assertions were removed or loosened.
 - Actual app entry point, initialization/seeding, Tk event loop, wrong-case
   rejection, exact-case owner login, and shutdown passed with disposable SQLite.
   Shop data was not accessed.
-- `python -m ruff check .`, Python formatting checks for `pawpos`, `tests`,
-  `main.py`, and `scripts`, and `git diff --check` pass. Repository-wide
-  `ruff format --check .` encounters pre-existing invalid UTF-8 in
-  `docs/features/003-date-picker.md`; that unrelated document is unchanged.
+- `python -m ruff check .`, `python -m ruff format --check .`, and
+  `git diff --check` pass. A single Windows-encoded dash in the historical
+  date-picker spec was corrected to UTF-8 to unblock repository-wide formatting.
+- X11 test tools were downloaded/extracted under `/tmp`, with no system-wide
+  installation or project dependency changes. Temporary displays and window
+  managers shut down after each run.
 - No schema changes, manual SQL, dependencies, or account renames were needed.
