@@ -7,6 +7,7 @@ import ttkbootstrap as ttk
 from pawpos.core.money import format_peso
 from pawpos.services import customer_service, sales_history_service
 from pawpos.ui.owner.catalog_screen import CatalogScreen
+from pawpos.ui.widgets.auto_filter import AutoFilter
 from pawpos.ui.widgets.table import TableView
 
 
@@ -22,9 +23,7 @@ class CustomersScreen(CatalogScreen):
         search = ttk.Entry(self.toolbar, textvariable=self.search, width=24)
         search.pack(side="left", padx=8)
         search.bind("<Return>", lambda _event: self.refresh())
-        ttk.Button(self.toolbar, text="Search / Refresh", command=self.refresh).pack(
-            side="left"
-        )
+        ttk.Button(self.toolbar, text="Refresh", command=self.refresh).pack(side="left")
         ttk.Button(self.toolbar, text="Add customer", command=self.new).pack(
             side="right"
         )
@@ -87,13 +86,16 @@ class CustomersScreen(CatalogScreen):
             yscrollcommand=vertical.set, xscrollcommand=horizontal.set
         )
         self.refresh()
+        self.auto_filter = AutoFilter(self, self.refresh, text=(self.search,))
 
     def refresh(self):
+        if hasattr(self, "auto_filter"):
+            self.auto_filter.cancel()
         self.perform(self._load, "Select a customer to edit, or add a new one.")
 
     def _load(self):
         rows = customer_service.list_customers(self.search.get())
-        self.new()
+        self.new(focus=False)
         self.tree.delete(*self.tree.get_children())
         self.records = {row.id: row for row in rows}
         for row in rows:
@@ -103,7 +105,7 @@ class CustomersScreen(CatalogScreen):
                 "No customers match your search. Use Add customer to create one."
             )
 
-    def new(self):
+    def new(self, *, focus=True):
         self.customer_id = None
         self.name.set("")
         self.contact.set("")
@@ -111,7 +113,8 @@ class CustomersScreen(CatalogScreen):
         self.tree.selection_remove(*self.tree.selection())
         self.purchases_tree.delete(*self.purchases_tree.get_children())
         self.purchase_message.set("Select a customer to see completed purchases.")
-        self.name_entry.focus_set()
+        if focus:
+            self.name_entry.focus_set()
 
     def edit_selected(self, _event=None):
         selected = self.tree.selection()

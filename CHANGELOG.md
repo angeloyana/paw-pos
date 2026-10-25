@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Apply table filters automatically when dates or dropdowns change, and apply
+  customer, inventory, sales receipt, and refund receipt searches after a short
+  typing pause. Keep manual reload buttons labeled Refresh and preserve search focus.
+
 - Add read-only Void History in POS and the owner sidebar. Cashiers can review
   only their own voids; owners can review all actors, including disabled accounts.
   Filter by inclusive calendar dates and select an item to read its full reason.

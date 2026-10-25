@@ -9,6 +9,7 @@ from pawpos.core.errors import ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.services import refund_tracking_service as tracking
 from pawpos.ui.dialogs.base import ModalDialog
+from pawpos.ui.widgets.auto_filter import AutoFilter
 from pawpos.ui.widgets.table import TableView
 
 STATUS_LABELS = {
@@ -195,6 +196,12 @@ class RefundStatusDialog(ModalDialog):
             actions, text="Close", command=self.destroy, bootstyle="secondary"
         ).pack(side="right")
         self.refresh()
+        self.auto_filter = AutoFilter(
+            self,
+            self.refresh,
+            text=(self.receipt,),
+            choices=(self.filter,),
+        )
         if initial_id is not None and self.tree.exists(str(initial_id)):
             self.tree.selection_set(str(initial_id))
             self.select()
@@ -211,6 +218,9 @@ class RefundStatusDialog(ModalDialog):
         self.correct_button.configure(state="disabled")
 
     def refresh(self):
+        if hasattr(self, "auto_filter"):
+            self.auto_filter.cancel()
+
         def load():
             status = next(
                 (

@@ -237,7 +237,7 @@ payment is confirmed. Reprinting a receipt does not charge the customer again.
   use **Void** when a cancellation needs a reason in the audit history.
 - **Void History**, beside product search/Refresh, shows your own voids when
   signed in as a cashier; owners see all shop voids. Choose optional From/To
-  dates with Calendar, then **Filter / Refresh**. Blank dates are unrestricted
+  dates with Calendar; filtering applies automatically. Blank dates are unrestricted
   and both selected days are included. Select an item row to read its full reason.
   History is read-only; whole-cart cancellations appear as one row per item.
 
@@ -259,8 +259,13 @@ Use the owner sidebar to access these workspaces:
 
 Inventory delivery dates and the From/To filters in Inventory, Sales History, and Void History
 use a **Calendar** button instead of typed dates. Each optional filter has a
-**Clear** button; blank dates include all dates. Use **Filter / Refresh** to
-apply filters. Closing the calendar or pressing Escape keeps the previous date.
+**Clear** button; blank dates include all dates. Selecting or clearing a date
+applies filters automatically; **Refresh** reloads on demand. Closing the calendar
+or pressing Escape keeps the previous date.
+
+Table filters apply automatically when dates or dropdowns change. Customer,
+inventory, sales receipt, and refund receipt searches apply after a short typing
+pause; Enter or **Refresh** reloads immediately.
 
 Enter initial stock when creating a product. For later stock changes, use
 **Inventory**. Receiving stock and adjustments record their movement history

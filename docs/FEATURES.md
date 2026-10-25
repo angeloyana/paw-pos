@@ -82,7 +82,7 @@ and column layouts are preserved.
 - AC: Void History in POS opens a read-only list; cashiers see only voids they
   performed and owners see all actors, including disabled accounts. Owners also
   have a Void History sidebar page using the same form. Optional calendar From/To
-  filters start blank, include whole days, and apply with Filter / Refresh.
+  filters start blank, include whole days, and apply automatically when selected or cleared; Refresh reloads on demand.
 - AC: Show saved item name, actor, timestamp, quantity (without an inferred unit),
   amount, and Line/Transaction scope, newest first by timestamp/ID. Selecting a
   row shows its full reason in a scrollable read-only area. Transaction voids
@@ -131,7 +131,7 @@ and column layouts are preserved.
 ## F. Sales history (owner; lookup also available to cashier via refund dialog)
 
 - AC: Table of completed sales: receipt number, date, cashier, customer, method, total, refunded amount. Filter by date range, receipt number, cashier, payment method.
-- AC: Date filters use the shared calendar-only From/To pickers with individual Clear buttons; blank dates are unrestricted. Calendar cancellation preserves the value. Filter / Refresh applies the inclusive range.
+- AC: Date filters use the shared calendar-only From/To pickers with individual Clear buttons; blank dates are unrestricted. Calendar cancellation preserves the value. Selecting or clearing dates automatically applies the inclusive range; Refresh reloads on demand.
 - AC: Detail view with items; **Reprint receipt** button.
 
 ## G. Customers (owner)
@@ -165,3 +165,13 @@ and column layouts are preserved.
   payment stays complete and original actor/time remain intact.
 - AC: Startup marks existing approvals assumed paid once, with no fabricated
   payment details or old notices. Reports and stock are unchanged by payouts.
+
+## J. Automatic table filtering
+
+- AC: Sales History, Movement History, and owner/POS Void History apply date and
+  dropdown filters automatically. Customers, Stock Overview, Sales History receipt,
+  and Refund Status receipt searches apply after a 300 ms typing pause. Refund
+  Status changes apply automatically. Enter and Refresh reload immediately.
+- AC: Refresh buttons remain available and use the label Refresh. Search retains
+  focus; pending reloads are cancelled when the screen closes. Existing live
+  filters, validation, permissions, and read-failure handling remain in effect.

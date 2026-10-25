@@ -155,7 +155,7 @@ at the minimum window size and with larger system fonts.
 | **Inventory**     | Tabs: **Stock Overview**, **Receive Stock**, **Adjust Stock**, **Movement History** (filters: product, type, dates)                                                                                                                   |
 | **Customers**     | Table with search; add/edit form; selected customer's purchases below                                                                                                                                                                 |
 | **Sales History** | Filters (dates, receipt no., cashier, method); table; detail panel; **Reprint**                                                                                                                                                       |
-| **Void History** | Optional From/To calendar dates; read-only item table for all actors; scrollable selected-row reason; **Filter / Refresh** |
+| **Void History** | Optional From/To calendar dates; read-only item table for all actors; scrollable selected-row reason; **Refresh** |
 | **Refunds**       | Tabs: **Pending** and **History**. Select a request, view items; **Approve** (resellable checkboxes per line) or **Reject** (note)                                                                                                    |
 | **Users**         | Table with role/status; **Add cashier**, **Enable/Disable**, **Reset password**                                                                                                                                                       |
 
@@ -198,8 +198,9 @@ Dates display as YYYY-MM-DD in a read-only field with a Calendar button. Deliver
 date starts at today; optional filters start blank and each has a Clear button.
 The calendar opens at the selected date (today when blank). Selecting a day
 updates the field; Escape or closing the popup preserves the previous value.
-Calendar and Clear support keyboard access; closing restores focus. Filters
-apply only through Filter / Refresh.
+Calendar and Clear support keyboard access; closing restores focus. Date and
+dropdown filters apply automatically. Text searches apply after a 300 ms typing
+pause; Enter and Refresh apply immediately.
 History shows explicit positive signs, receipt/refund references, and an empty
 state when no rows match. Both tables have vertical and horizontal scrollbars.
 
@@ -232,10 +233,17 @@ total, and approved refunded amount. Empty states explain unmatched searches and
 customers without purchases. Validation/write errors preserve input. Saved input
 is cleared before refreshing so a refresh failure cannot duplicate a new record.
 
+Table searches in Customers and Inventory Stock Overview apply after a 300 ms
+typing pause. Enter or Refresh reloads immediately. Search retains keyboard focus.
+Movement History product/type selectors and Sales History account/payment selectors
+apply automatically. Existing live Products, Categories, POS and customer-picker
+filters retain their behavior. Pending filter callbacks are cancelled on close.
+
 ### Sales History (Phase 9)
 
 From/To use the same calendar-only picker as Inventory, with individual Clear
-buttons for unrestricted dates. Filter / Refresh applies the chosen dates.
+buttons for unrestricted dates. Selecting or clearing a date applies it
+automatically; Refresh reloads on demand.
 
 The owner can filter completed sales by inclusive dates (blank = any date),
 literal receipt text, account, and Cash/GCash. Account choices include inactive
@@ -292,7 +300,8 @@ diagnostics also go to the ignored project-root `pawpos.log`.
 
 POS Refunds opens a shared modal list with receipt search and filters for All,
 Pending, Rejected, Approved awaiting payout, Paid, Assumed paid before tracking,
-and Unread decisions. Refresh runs on opening and by button/Enter; failed reads
+and Unread decisions. Refresh runs on opening, status changes, a 300 ms receipt
+typing pause, and by button/Enter; failed reads
 retain the previous list and show inline retry feedback. Select a request to
 load its current decision, item amounts, requester/reviewer/times, review note,
 payment details, and correction history. Opening a decision acknowledges only
@@ -325,8 +334,8 @@ see only voids they performed; owners see all shop actors, including disabled
 accounts. Opening loads the history immediately.
 
 From/To use shared calendar-only pickers, initially blank with individual Clear
-buttons. **Filter / Refresh** applies inclusive local dates; blank bounds are
-unrestricted. Calendar cancellation preserves the value. Reversed ranges show
+buttons. Selecting or clearing a date automatically applies inclusive local
+dates; **Refresh** retries loading; blank bounds are unrestricted. Calendar cancellation preserves the value. Reversed ranges show
 inline feedback and keep the loaded records. Failed reads keep authorized
 records with a retry message; changed sessions clear the list and reason.
 

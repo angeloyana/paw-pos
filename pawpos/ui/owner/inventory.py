@@ -9,6 +9,7 @@ import ttkbootstrap as ttk
 from pawpos.core.errors import PawPOSError, ValidationError
 from pawpos.core.money import format_qty
 from pawpos.services import inventory_service as inventory
+from pawpos.ui.widgets.auto_filter import AutoFilter
 from pawpos.ui.widgets.date_picker import DatePicker
 from pawpos.ui.widgets.table import TableView
 
@@ -59,6 +60,17 @@ class InventoryScreen(ttk.Frame):
         self._build_history()
         self.refresh()
         self.refresh_history()
+        self.auto_filter = AutoFilter(self, self.refresh, text=(self.search,))
+        self.history_auto_filter = AutoFilter(
+            self,
+            self.refresh_history,
+            choices=(
+                self.history_product,
+                self.history_type,
+                self.date_from,
+                self.date_to,
+            ),
+        )
         self.notebook.bind("<<NotebookTabChanged>>", self._tab_changed)
 
     def refresh_theme(self):
@@ -206,7 +218,7 @@ class InventoryScreen(ttk.Frame):
             picker.pack(side="left", padx=(0, 12))
             self.history_date_pickers.append(picker)
         ttk.Label(dates, text="Blank = any date").pack(side="left")
-        ttk.Button(dates, text="Filter / Refresh", command=self.refresh_history).pack(
+        ttk.Button(dates, text="Refresh", command=self.refresh_history).pack(
             side="left", padx=12
         )
         self.history_tree = self._table(
@@ -228,6 +240,8 @@ class InventoryScreen(ttk.Frame):
         )
 
     def refresh(self):
+        if hasattr(self, "auto_filter"):
+            self.auto_filter.cancel()
         self.perform(self._load, "Stock overview refreshed.")
 
     def _load(self):
@@ -326,6 +340,8 @@ class InventoryScreen(ttk.Frame):
             raise ValidationError(self.status.get()) from None
 
     def refresh_history(self):
+        if hasattr(self, "history_auto_filter"):
+            self.history_auto_filter.cancel()
         self.perform(self._load_history)
 
     def _load_history(self):

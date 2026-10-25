@@ -11,6 +11,7 @@ from pawpos.core.errors import AuthError, ValidationError
 from pawpos.core.money import format_peso
 from pawpos.services import void_history_service
 from pawpos.ui.dialogs.base import ModalDialog
+from pawpos.ui.widgets.auto_filter import AutoFilter
 from pawpos.ui.widgets.date_picker import DatePicker
 from pawpos.ui.widgets.table import TableView
 
@@ -46,9 +47,7 @@ class VoidHistoryScreen(ttk.Frame):
             picker = DatePicker(field, variable, allow_clear=True)
             picker.pack(fill="x")
             self.date_pickers.append(picker)
-        self.refresh_button = ttk.Button(
-            toolbar, text="Filter / Refresh", command=self.refresh
-        )
+        self.refresh_button = ttk.Button(toolbar, text="Refresh", command=self.refresh)
         self.refresh_button.grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
         table = ttk.Frame(self)
         table.grid(row=3, column=0, sticky="nsew")
@@ -104,6 +103,11 @@ class VoidHistoryScreen(ttk.Frame):
         self.detail.configure(yscrollcommand=scroll.set)
         self.refresh()
         self._watch_session()
+        self.auto_filter = AutoFilter(
+            self,
+            self.refresh,
+            choices=(self.date_from, self.date_to),
+        )
 
     def _set_detail(self, text):
         self.detail.configure(state="normal")
@@ -137,6 +141,8 @@ class VoidHistoryScreen(ttk.Frame):
         self._session_after = self.after(200, self._watch_session)
 
     def refresh(self):
+        if hasattr(self, "auto_filter"):
+            self.auto_filter.cancel()
         try:
             self._check_access()
             rows = void_history_service.list_voids(
@@ -157,7 +163,7 @@ class VoidHistoryScreen(ttk.Frame):
         except Exception:
             logger.exception("Cannot refresh void history")
             self._feedback(
-                "Cannot load void history. Use Filter / Refresh to retry.", error=True
+                "Cannot load void history. Use Refresh to retry.", error=True
             )
             return
         self._clear()

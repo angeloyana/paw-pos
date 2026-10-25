@@ -9,6 +9,7 @@ from pawpos.core.errors import ValidationError
 from pawpos.core.money import format_peso, format_qty
 from pawpos.services import receipt_service, sales_history_service, user_service
 from pawpos.ui.owner.catalog_screen import CatalogScreen
+from pawpos.ui.widgets.auto_filter import AutoFilter
 from pawpos.ui.widgets.date_picker import DatePicker
 
 
@@ -57,7 +58,7 @@ class SalesHistoryScreen(CatalogScreen):
             values=("All methods", "Cash", "GCash"),
             width=12,
         ).pack(side="left", padx=8)
-        ttk.Button(choices, text="Filter / Refresh", command=self.refresh).pack(
+        ttk.Button(choices, text="Refresh", command=self.refresh).pack(
             side="left", padx=8
         )
         self.tree = self.make_table(
@@ -98,6 +99,12 @@ class SalesHistoryScreen(CatalogScreen):
             wraplength=280,
         ).grid(row=3, column=0, columnspan=2, sticky="w")
         self.refresh()
+        self.auto_filter = AutoFilter(
+            self,
+            self.refresh,
+            text=(self.receipt_number,),
+            choices=(self.date_from, self.date_to, self.cashier, self.method),
+        )
 
     def _set_detail(self, value):
         self.detail.configure(state="normal")
@@ -117,6 +124,8 @@ class SalesHistoryScreen(CatalogScreen):
             ) from None
 
     def refresh(self):
+        if hasattr(self, "auto_filter"):
+            self.auto_filter.cancel()
         self.perform(
             self._load,
             "Sales history refreshed. Dates are inclusive; blank dates include all sales.",
