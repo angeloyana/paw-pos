@@ -1,6 +1,6 @@
 # 005: Read-only void history
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** docs/FEATURES.md, docs/BUSINESS_PROCESS.md, docs/ARCHITECTURE.md, docs/UI_UX.md, README.md, CHANGELOG.md
 
@@ -74,28 +74,49 @@ read-only history with optional inclusive date filters.
 
 ## Done when
 
-- [ ] Cashiers can view only their own voids; owners can view all shop voids,
+- [x] Cashiers can view only their own voids; owners can view all shop voids,
       including disabled accounts' history, through every supported entry point.
-- [ ] Unauthenticated, disabled, and unauthorized access is rejected by the service;
+- [x] Unauthenticated, disabled, and unauthorized access is rejected by the service;
       any detail lookup cannot bypass cashier isolation.
-- [ ] Existing and new line, whole-cart, and held-cart void records appear with
+- [x] Existing and new line, whole-cart, and held-cart void records appear with
       correct actors, saved values, complete reasons, and stable ordering.
-- [ ] Optional inclusive date bounds, clearing, calendar cancellation, same-day
+- [x] Optional inclusive date bounds, clearing, calendar cancellation, same-day
       filtering, and invalid ranges are verified.
-- [ ] Empty states, retryable read failures, and session changes preserve access
+- [x] Empty states, retryable read failures, and session changes preserve access
       restrictions without exposing another account's cached records.
-- [ ] History is read-only for both roles and leaves audit records, stock, sales,
+- [x] History is read-only for both roles and leaves audit records, stock, sales,
       and the POS cart/customer/last receipt unchanged.
-- [ ] POS modal and owner navigation work at 1280x720 in light/dark themes with
+- [x] POS modal and owner navigation work at 1280x720 in light/dark themes with
       readable scrolling, full reasons, and correct keyboard focus/grab handling.
-- [ ] Relevant tests, the full test suite, and required code checks pass; the app runs.
-- [ ] Affected living docs, README, and changelog describe the completed behavior.
-- [ ] Remaining work is resolved and the spec and index statuses are `done`.
+- [x] Relevant tests, the full test suite, and required code checks pass; the app runs.
+- [x] Affected living docs, README, and changelog describe the completed behavior.
+- [x] Remaining work is resolved and the spec and index statuses are `done`.
 
 ## Remaining work
 
-Tasks 1 and 2 are complete: 14 focused service tests and eight GUI tests pass,
-including real modal keyboard/focus checks for both roles and light/dark layouts
-at 1280x720. Matching living docs, README, and changelog are updated. Task 3
-remains: full-suite checks, standalone startup smoke test, and final acceptance
-review. No schema changes are required.
+None.
+
+## Verification
+
+- Full regression run: `.venv/Scripts/python.exe -m pytest -q -x
+  --basetemp=.pytest_cache/void-history-full` — 520 tests and 26 subtests passed
+  on the Windows desktop, with no skips. The additional owner-page layout/live
+  theme test was added during that run and passed separately (521 tests covered
+  in total). The feature has 14 service tests and eight real Tk GUI tests.
+- GUI coverage includes both roles' POS modals, owner navigation, inclusive
+  filters and shared calendar selection/cancellation/clearing, complete reasons,
+  read retries, empty states, session changes, persisted role changes, disabled
+  accounts, real new void paths, preserved audit/stock/sales/POS state, and
+  1280x720 light/dark layouts. Modal tests verify Escape, focus/grab restoration,
+  and suppression of POS function keys. Navigation/destruction cancels the
+  history session-check callback and clears cached records.
+- `.venv/Scripts/python.exe -m ruff check .`,
+  `.venv/Scripts/python.exe -m ruff format --check .`, `git diff --check`, and
+  `.venv/Scripts/python.exe -m pip check` pass.
+- A standalone `main.main()` smoke run used seeded in-memory SQLite and the real
+  app event loop: startup, cashier login and a new void/history read, owner login
+  and sidebar history read, logout, and shutdown succeeded without callback
+  errors. No configured shop database was accessed or modified by verification.
+- Existing tables, seed data, and dependencies are unchanged; no manual SQL or
+  migration is required. Whole-cart voids retain one row per item and historical
+  units/transaction groups are not inferred.

@@ -75,6 +75,7 @@ pawpos/
 │   │   ├── customer_service.py
 │   │   ├── cart.py            # in-memory Cart class (pure logic)
 │   │   ├── sale_service.py    # hold/resume/void/complete
+│   │   ├── void_history_service.py # scoped read-only void item history
 │   │   ├── refund_service.py
 │   │   ├── inventory_service.py
 │   │   ├── report_service.py
@@ -84,6 +85,7 @@ pawpos/
 │       ├── widgets/           # product_card.py, money_entry.py, chart_frame.py, dialogs.py
 │       ├── login_screen.py
 │       ├── settings_screen.py  # shared owner form and POS modal
+│       ├── void_history.py     # shared owner history form and POS modal
 │       ├── pos_screen.py
 │       ├── dialogs/           # weight, payment, receipt_preview, void, customer_picker, held_list, refund_request
 │       └── owner/

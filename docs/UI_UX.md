@@ -132,7 +132,7 @@ Single screen, two main columns plus a top bar.
 
 ## 5. Owner shell
 
-The sidebar implements Products, Categories, Inventory, Customers, Sales History,
+The sidebar implements Products, Categories, Inventory, Customers, Sales History, Void History,
 Refunds, Users, Settings, and POS. The Dashboard now shows report cards, charts, and active
 low-stock products. All owner sidebar workspaces are enabled. Select a catalog
 table row to edit it. Forms show errors inline and
@@ -142,7 +142,7 @@ creation. Missing image files display the paw placeholder.
 Catalog forms have a vertical scrollbar so the final controls remain accessible
 at the minimum window size and with larger system fonts.
 
-- Left **sidebar** with logo and buttons: **Dashboard, Products, Categories, Inventory, Customers, Sales History, Refunds, Users, Settings**, plus **POS** (opens the cashier screen to sell) and **Logout** at the bottom. Active item highlighted. A badge on Refunds shows the pending count.
+- Left **sidebar** with logo and buttons: **Dashboard, Products, Categories, Inventory, Customers, Sales History, Void History, Refunds, Users, Settings**, plus **POS** (opens the cashier screen to sell) and **Logout** at the bottom. Active item highlighted. A badge on Refunds shows the pending count.
 - Content area on the right swaps frames.
 
 ### Screens
@@ -155,6 +155,7 @@ at the minimum window size and with larger system fonts.
 | **Inventory**     | Tabs: **Stock Overview**, **Receive Stock**, **Adjust Stock**, **Movement History** (filters: product, type, dates)                                                                                                                   |
 | **Customers**     | Table with search; add/edit form; selected customer's purchases below                                                                                                                                                                 |
 | **Sales History** | Filters (dates, receipt no., cashier, method); table; detail panel; **Reprint**                                                                                                                                                       |
+| **Void History** | Optional From/To calendar dates; read-only item table for all actors; scrollable selected-row reason; **Filter / Refresh** |
 | **Refunds**       | Tabs: **Pending** and **History**. Select a request, view items; **Approve** (resellable checkboxes per line) or **Reject** (note)                                                                                                    |
 | **Users**         | Table with role/status; **Add cashier**, **Enable/Disable**, **Reset password**                                                                                                                                                       |
 
