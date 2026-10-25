@@ -1,6 +1,6 @@
 # 003: Shared calendar date picker
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** `docs/UI_UX.md`, `docs/FEATURES.md`, `README.md`, `CHANGELOG.md`
 
@@ -32,34 +32,28 @@ fields: Inventory delivery date, Movement History From/To, and Sales History Fro
 
 - [x] Selection, cancellation, clearing, read-only input, and leap day are tested.
 - [x] Delivery and filter selections reach their existing service calls.
-- [ ] Existing validation tests and the full suite pass; the app runs.
+- [x] Existing validation tests and the full suite pass; the app runs.
 - [x] Layout at 1280x720 and light/dark calendars are verified with running-widget checks.
-- [ ] Living docs/changelog are updated; spec and index are done.
+- [x] Living docs/changelog are updated; spec and index are done.
 
 ## Remaining work
 
-Full-suite verification and final status closeout. The existing payment-modal
-failure reproduced from pre-implementation commit `b9a6f57`. Tracing showed
-keyboard focus remaining in POS search despite the modal grab. Modal opening now
-activates the toplevel before requesting focus for its first input. A regression
-test checks input focus, Escape cancellation, owner focus restoration, and grab
-release without weakening the existing payment tests. Keep this spec and index
-in progress until the repository-wide test gate passes.
+None.
 
-Settings' modal test waits for native input focus within its existing four-second
-watchdog before running the unchanged focus/shortcut/password/state assertions.
-This handles Windows activation completing after the initial interaction timer.
-Settings and payment tests pass together (15 tests).
+## Verification
 
-Verification completed:
-
-- `python -m pytest tests/test_date_picker.py tests/test_inventory_ui.py
-  tests/test_sales_history_ui.py tests/test_inventory_service.py
-  tests/test_sales_history_service.py -q --basetemp=.pytest_cache/date-picker-final`
-  â€” 62 passed, including all nine widget tests, service integration, existing
-  malformed-date/reversed-range validation, and minimum-size/light/dark checks.
+- Full suite: `python -m pytest -q -x
+  --basetemp=.pytest_cache/date-picker-full-final` — 489 passed and 26 subtests
+  passed. Run on the Windows desktop with isolated test databases.
+- Payment/POS/nested-modal regression checks: 31 passed. Settings/payment checks:
+  15 passed. Date-picker, Inventory, Sales History and service checks: 62 passed.
 - `python -m ruff check .` and `git diff --check` pass.
 - The app launched against an isolated, seeded in-memory database without
-  accessing shop data. Desktop capture access to the Python app was denied, so
-  screenshot-based visual inspection was unavailable; live Tk bounds, popup
-  visibility, and active themes were checked instead.
+  accessing shop data. Live Tk checks verified widget bounds at 1280x720, popup
+  visibility and screen bounds, and cosmo/darkly themes. Desktop capture access
+  to the Python app was denied, so screenshot inspection was unavailable.
+- The original full-suite blocker reproduced before this feature. Activating
+  each modal toplevel before assigning input focus resolved its Windows keyboard
+  failure. The added regression verifies input focus, Escape cancellation, owner
+  focus restoration, and grab release. Settings' existing assertions wait for
+  native input focus within their existing four-second watchdog.
