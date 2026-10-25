@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Refresh the app logo and default product placeholder with matching blue paw artwork.
+
 - Apply table filters automatically when dates or dropdowns change, and apply
   customer, inventory, sales receipt, and refund receipt searches after a short
   typing pause. Keep manual reload buttons labeled Refresh and preserve search focus.
