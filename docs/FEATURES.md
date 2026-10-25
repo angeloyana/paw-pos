@@ -79,6 +79,17 @@ and column layouts are preserved.
 **F-C4 Void**
 
 - AC: Void line or void all (F6). Reason required (dropdown of common reasons plus "Other" with text). Logged in `void_logs`. No owner approval.
+- AC: Void History in POS opens a read-only list; cashiers see only voids they
+  performed and owners see all actors, including disabled accounts. Owners also
+  have a Void History sidebar page using the same form. Optional calendar From/To
+  filters start blank, include whole days, and apply with Filter / Refresh.
+- AC: Show saved item name, actor, timestamp, quantity (without an inferred unit),
+  amount, and Line/Transaction scope, newest first by timestamp/ID. Selecting a
+  row shows its full reason in a scrollable read-only area. Transaction voids
+  remain individual item rows. No edit/delete/restore action is available.
+- AC: Invalid ranges and read failures retain authorized results with inline
+  feedback; session changes clear cached records. History preserves the POS
+  cart/customer/last receipt, sales, stock, and audit records.
 
 **F-C5 Customer (optional)**
 

@@ -235,6 +235,11 @@ payment is confirmed. Reprinting a receipt does not charge the customer again.
   Choose a reason and confirm. Use **Cancel held (void)** to cancel a saved cart.
 - Holds and voids do not change stock. **Delete/Remove** is an ordinary cart edit;
   use **Void** when a cancellation needs a reason in the audit history.
+- **Void History**, beside product search/Refresh, shows your own voids when
+  signed in as a cashier; owners see all shop voids. Choose optional From/To
+  dates with Calendar, then **Filter / Refresh**. Blank dates are unrestricted
+  and both selected days are included. Select an item row to read its full reason.
+  History is read-only; whole-cart cancellations appear as one row per item.
 
 ### Owner management
 
@@ -247,14 +252,15 @@ Use the owner sidebar to access these workspaces:
 | Inventory | Receive deliveries, adjust stock with a reason and note, and inspect movement history |
 | Customers | Add/edit customers, search contacts, and view their purchase history |
 | Sales History | Filter completed sales, inspect payment details, and reprint receipts |
-
-Inventory delivery dates and the From/To filters in Inventory and Sales History
-use a **Calendar** button instead of typed dates. Each optional filter has a
-**Clear** button; blank dates include all dates. Use **Filter / Refresh** to
-apply filters. Closing the calendar or pressing Escape keeps the previous date.
+| Void History | Review all actors' voided item records and reasons with optional date filters; read-only |
 | Users | Create cashier accounts, enable/disable cashiers, and reset passwords |
 | Refunds | Review requests and manage payout status |
 | Settings | Change your own password and theme |
+
+Inventory delivery dates and the From/To filters in Inventory, Sales History, and Void History
+use a **Calendar** button instead of typed dates. Each optional filter has a
+**Clear** button; blank dates include all dates. Use **Filter / Refresh** to
+apply filters. Closing the calendar or pressing Escape keeps the previous date.
 
 Enter initial stock when creating a product. For later stock changes, use
 **Inventory**. Receiving stock and adjustments record their movement history

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add read-only Void History in POS and the owner sidebar. Cashiers can review
+  only their own voids; owners can review all actors, including disabled accounts.
+  Filter by inclusive calendar dates and select an item to read its full reason.
+  Existing records are available without schema changes or manual SQL.
+
 - Complete feature 004: case-sensitive username login. Verify 499 tests and 26
   subtests on isolated X11, app startup/login, and full Ruff checks. Existing
   usernames remain unchanged and no manual SQL is required.

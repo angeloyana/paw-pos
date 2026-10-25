@@ -26,6 +26,7 @@ from pawpos.ui.dialogs.refund_request import RefundRequestDialog
 from pawpos.ui.dialogs.refund_status import RefundStatusDialog
 from pawpos.ui.dialogs.void import VoidDialog
 from pawpos.ui.dialogs.weight import WeightDialog
+from pawpos.ui.void_history import VoidHistoryDialog
 from pawpos.ui.widgets.product_card import ProductCard, ThumbnailCache
 from pawpos.ui.widgets.table import TableView
 from pawpos.ui.widgets.tooltip import add_tooltip
@@ -106,6 +107,10 @@ class POSScreen(ttk.Frame):
         ttk.Button(tools, text="Refresh", command=self.refresh_catalog).pack(
             side="right"
         )
+        self.void_history_button = ttk.Button(
+            tools, text="Void History", command=self.open_void_history
+        )
+        self.void_history_button.pack(side="right", padx=6)
         self.category_bar = ttk.Frame(browse)
         self.category_bar.grid(row=1, column=0, columnspan=2, sticky="ew", pady=8)
         self.canvas = tk.Canvas(
@@ -168,6 +173,9 @@ class POSScreen(ttk.Frame):
         from pawpos.ui.settings_screen import SettingsDialog
 
         SettingsDialog(self).show()
+
+    def open_void_history(self):
+        self.perform(lambda: VoidHistoryDialog(self).show())
 
     def open_refunds(self, *, unread_only=False):
         self.perform(

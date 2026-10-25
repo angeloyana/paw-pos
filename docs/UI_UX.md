@@ -316,6 +316,32 @@ and retained before/after audit. Assumed-paid legacy requests show unknown payme
 details and have no payment/correction actions. Details scroll and Escape closes
 the shared modal while restoring the parent's focus/grab.
 
+### Void History
+
+The POS **Void History** button sits beside product search/Refresh. Both roles
+open the same modal; owners also have a **Void History** sidebar page. Cashiers
+see only voids they performed; owners see all shop actors, including disabled
+accounts. Opening loads the history immediately.
+
+From/To use shared calendar-only pickers, initially blank with individual Clear
+buttons. **Filter / Refresh** applies inclusive local dates; blank bounds are
+unrestricted. Calendar cancellation preserves the value. Reversed ranges show
+inline feedback and keep the loaded records. Failed reads keep authorized
+records with a retry message; changed sessions clear the list and reason.
+
+The table shows Date/time, Actor, saved Product name, Quantity, Amount, and Scope
+(Line or Transaction), ordered newest first with ID breaking timestamp ties.
+Each row is a saved item, including whole-cart and held-cart cancellations;
+quantities have up to three decimals without inferred historical units. Select
+a row to read the complete reason in a disabled, vertically scrollable text
+area below the table. Empty results show an explicit message. The table scrolls
+in both directions and follows shared styling and live themes.
+
+History has no editing, deletion, restoration, or cancellation controls. POS
+cart/customer/last receipt survive opening and closing the modal and owner
+navigation. POS function keys are inactive in the modal; Escape/Close restores
+the parent's focus/grab. The shared form fits the 1280x720 minimum app window.
+
 ### Settings
 
 Owners open Settings from the sidebar; owners and cashiers can also use the POS

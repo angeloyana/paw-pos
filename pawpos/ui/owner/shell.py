@@ -19,6 +19,7 @@ from pawpos.ui.owner.sales_history import SalesHistoryScreen
 from pawpos.ui.owner.users import UsersScreen
 from pawpos.ui.pos_screen import POSScreen
 from pawpos.ui.settings_screen import SettingsScreen
+from pawpos.ui.void_history import VoidHistoryScreen
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,7 @@ class OwnerShell(ttk.Frame):
             "Inventory",
             "Customers",
             "Sales History",
+            "Void History",
             "Refunds",
             "Users",
             "Settings",
@@ -79,6 +81,7 @@ class OwnerShell(ttk.Frame):
             "Inventory",
             "Customers",
             "Sales History",
+            "Void History",
             "Refunds",
             "Users",
             "Settings",
@@ -111,6 +114,8 @@ class OwnerShell(ttk.Frame):
             self.current_screen = CustomersScreen(self.content)
         elif page == "Sales History":
             self.current_screen = SalesHistoryScreen(self.content)
+        elif page == "Void History":
+            self.current_screen = VoidHistoryScreen(self.content)
         elif page == "Users":
             self.current_screen = UsersScreen(self.content)
         elif page == "Settings":

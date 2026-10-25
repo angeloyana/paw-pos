@@ -94,6 +94,8 @@ read-only history with optional inclusive date filters.
 
 ## Remaining work
 
-Task 1 is complete: scoped service and 14 focused service tests pass. Tasks 2
-and 3 remain: shared UI, integration tests, runtime verification, final living
-docs, README, changelog, and full-suite checks. No schema changes are required.
+Tasks 1 and 2 are complete: 14 focused service tests and eight GUI tests pass,
+including real modal keyboard/focus checks for both roles and light/dark layouts
+at 1280x720. Matching living docs, README, and changelog are updated. Task 3
+remains: full-suite checks, standalone startup smoke test, and final acceptance
+review. No schema changes are required.
