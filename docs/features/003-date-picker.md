@@ -36,9 +36,25 @@ fields: Inventory delivery date, Movement History From/To, and Sales History Fro
 
 ## Remaining work
 
-Full regression suite and closeout. Targeted UI tests passed (22 tests), followed
-by all nine widget tests including minimum-size/light/dark layout checks. Ruff
-passes. Desktop capture access to the Python app was denied, so screenshot-based
-visual inspection was unavailable; live Tk bounds, popup visibility, and active
-themes were checked instead. The app was also launched against an isolated,
-seeded in-memory database without accessing shop data.
+Full-suite verification and final status closeout remain blocked by an existing
+payment-modal keyboard test failure. The initial full run reported payment test
+failures and then stalled in another modal test; it was interrupted. Running
+`tests/test_payment_ui.py -x` separately reproduces the failure: generated Return
+does not submit payment, then receipt lookup raises StopIteration. The identical
+failure reproduces from a clean archive of pre-implementation commit `b9a6f57`,
+both without this widget and without the owner-screen changes. Existing payment
+code/tests have been left unchanged. Keep this spec and index in progress until
+the repository-wide test gate passes.
+
+Verification completed:
+
+- `python -m pytest tests/test_date_picker.py tests/test_inventory_ui.py
+  tests/test_sales_history_ui.py tests/test_inventory_service.py
+  tests/test_sales_history_service.py -q --basetemp=.pytest_cache/date-picker-final`
+  — 62 passed, including all nine widget tests, service integration, existing
+  malformed-date/reversed-range validation, and minimum-size/light/dark checks.
+- `python -m ruff check .` and `git diff --check` pass.
+- The app launched against an isolated, seeded in-memory database without
+  accessing shop data. Desktop capture access to the Python app was denied, so
+  screenshot-based visual inspection was unavailable; live Tk bounds, popup
+  visibility, and active themes were checked instead.
