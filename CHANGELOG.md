@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Require exact username capitalization at login, including with case-insensitive
+  database comparisons. Preserve case in new cashier usernames and continue
+  rejecting case-only duplicates. Existing usernames stay unchanged; no SQL update.
+
 - Fix modal keyboard focus on Windows so Enter and Escape reach the open dialog
   instead of leaving keyboard focus in the owner screen.
 

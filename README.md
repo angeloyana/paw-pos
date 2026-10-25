@@ -181,6 +181,11 @@ products deliberately start low or out of stock for demonstrations.
 | Owner | `owner` | `owner123` |
 | Cashier | `cashier` | `cashier123` |
 
+Usernames are case sensitive: enter `owner`, not `Owner` or `OWNER`. Surrounding
+username whitespace is ignored. New cashier usernames preserve their capitalization,
+but names differing only by case cannot be used for separate accounts. Existing
+usernames are unchanged; accounts stored in lowercase require lowercase login.
+
 Change these demo passwords through **Settings** before using real shop data.
 The owner starts on Dashboard; the cashier starts in POS. Owners can also open
 POS from the sidebar.

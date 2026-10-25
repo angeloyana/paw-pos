@@ -37,16 +37,15 @@ def _required_text(value: str, label: str, limit: int) -> str:
 
 
 def create_cashier(username: str, full_name: str, password: str) -> UserDetails:
-    """Create an active cashier with a unique normalized username."""
+    """Preserve username case while rejecting case-folded duplicates."""
     try:
         with session_scope() as session:
             _require_owner(session)
-            username = _required_text(username, "Username", 50).casefold()
             username = _required_text(username, "Username", 50)
             full_name = _required_text(full_name, "Full name", 100)
-            if (
-                session.scalar(select(User.id).where(User.username == username))
-                is not None
+            if any(
+                existing.casefold() == username.casefold()
+                for existing in session.scalars(select(User.username))
             ):
                 raise ValidationError("Username is already in use.")
             user = User(

@@ -105,6 +105,10 @@ and label piece/kg units. Inactive products remain in historical sales rankings.
 ## 10. Accounts
 
 - Owner creates cashier accounts, disables/enables them, and resets their passwords.
+- Usernames preserve capitalization and trim surrounding whitespace on creation
+  and login. Login requires exact capitalization; separate accounts cannot have
+  names that match under Python case folding. Existing usernames are unchanged,
+  so accounts stored in lowercase require lowercase login.
 - Login is simulated: username + password checked against a bcrypt hash; the logged-in user is kept in memory. No tokens, no expiry, no auto-lock.
 - Disabled users cannot log in or read/write their settings.
 - Active owners and cashiers can change their own password with the current

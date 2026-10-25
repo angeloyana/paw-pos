@@ -9,6 +9,7 @@ Statuses: `planned`, `in progress`, `done`. Keep each spec's status aligned here
 | 001 | [Cashier refund status and payouts](001-cashier-refund-status.md) | done |
 | 002 | [Settings](002-settings.md) | done |
 | 003 | [Shared calendar date picker](003-date-picker.md) | done |
+| 004 | [Case-sensitive usernames](004-case-sensitive-usernames.md) | in progress |
 
 The initial build's completion and verification are recorded in its Phase 11
 section. Existing capabilities remain documented in [FEATURES.md](../FEATURES.md);

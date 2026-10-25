@@ -171,7 +171,11 @@ Authentication returns a frozen `CurrentUser` containing only public identity
 fields. A failed login clears previous login state. User-management operations
 recheck that the signed-in account is active and has the owner role in the DB;
 they return frozen `UserDetails` without password hashes. Usernames are trimmed
-and case-folded on creation and login. Account status changes apply to cashiers;
+on creation and login, preserving capitalization. Login checks exact username
+equality in Python before accepting credentials, regardless of database
+collation. Creation compares existing usernames with Python `casefold()` to
+reject case-only duplicates. Existing usernames are unchanged; no schema changes
+or manual SQL are required. Account status changes apply to cashiers;
 owners can reset their own seeded password as well as cashier passwords.
 
 | Topic           | Decision                                                                                                                                          |

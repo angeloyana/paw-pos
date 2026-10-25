@@ -2,8 +2,10 @@ from unittest.mock import patch
 
 import pytest
 
+from pawpos.core import session as login_session
 from pawpos.core.errors import AuthError
 from pawpos.services import auth_service, user_service
+from pawpos.ui.pos_screen import POSScreen
 from tests.test_catalog_ui import owner_screen, select
 
 
@@ -45,6 +47,28 @@ def test_owner_create_cashier_disable_enable_and_reset_login(app):
     with pytest.raises(AuthError):
         auth_service.login("newcashier", "first-pass")
     assert auth_service.login("newcashier", "second-pass").id == cashier.id
+
+
+def test_mixed_case_cashier_creation_and_login(app):
+    screen = owner_screen(app, "Users")
+    add_cashier(screen, username="Alice")
+    assert screen.status.get() == "Cashier created."
+    assert any(user.username == "Alice" for user in user_service.list_users())
+    app.screen.logout_button.invoke()
+    app.update()
+    form = app.screen
+    form.username.set("alice")
+    form.password.set("first-pass")
+    form.login_button.invoke()
+    assert app.screen is form
+    assert form.error.get() == "Incorrect username or password."
+    assert login_session.current_user is None
+    form.username.set("Alice")
+    form.password.set("first-pass")
+    form.login_button.invoke()
+    app.update()
+    assert isinstance(app.screen, POSScreen)
+    assert login_session.current_user.username == "Alice"
 
 
 def test_owner_disable_blocked_and_own_password_reset_available(app):

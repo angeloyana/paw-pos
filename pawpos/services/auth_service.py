@@ -16,11 +16,15 @@ def login(username: str, password: str) -> CurrentUser:
     login_session.logout()
     if not isinstance(username, str) or not username.strip():
         raise AuthError("Enter your username and password.")
+    username = username.strip()
     with session_scope() as session:
-        user = session.scalar(
-            select(User).where(User.username == username.strip().casefold())
-        )
-        if user is None or not verify_password(password, user.password_hash):
+        user = session.scalar(select(User).where(User.username == username))
+        # Database collation may match a different capitalization.
+        if (
+            user is None
+            or user.username != username
+            or not verify_password(password, user.password_hash)
+        ):
             raise AuthError("Incorrect username or password.")
         if not user.is_active:
             raise AuthError("This account is disabled. Contact the shop owner.")

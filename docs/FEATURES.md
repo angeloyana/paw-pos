@@ -13,6 +13,8 @@ and column layouts are preserved.
 **F-A1 Login screen**
 
 - AC: Username + password; wrong credentials show an error; disabled users are rejected.
+- AC: Login requires exact username capitalization after trimming surrounding
+  whitespace, even with a case-insensitive database collation.
 - AC: Passwords verified with bcrypt. Owner goes to the owner shell; cashier goes to the POS screen.
 
 **F-A2 Logout**
@@ -22,6 +24,8 @@ and column layouts are preserved.
 **F-A3 User management (owner)**
 
 - AC: Create cashier (username unique, full name, password), enable/disable, reset password.
+- AC: New usernames retain capitalization and trim surrounding whitespace;
+  usernames differing only by case are rejected using Python case folding.
 - AC: Owner cannot disable their own account. No forgotten-password recovery. Signed-in password changes require the current password.
 
 **F-A4 Account settings**
