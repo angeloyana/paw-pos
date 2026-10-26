@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta
 from decimal import Decimal
 from unittest.mock import patch
@@ -38,7 +39,7 @@ def test_owner_default_dashboard_renders_seed_summary_empty_charts_and_low_stock
         "No completed sales" in text.get_text() for text in screen.best_chart.axes.texts
     )
     assert len(screen.low_tree.get_children()) == 2
-    assert "approval date" in screen.status.get()
+    assert re.fullmatch(r"Updated \d{2}:\d{2}:\d{2}\.", screen.status.get())
 
 
 def test_sales_refunds_pending_cards_and_revenue_chart(app):

@@ -182,11 +182,7 @@ class VoidHistoryScreen(ttk.Frame):
                     "Line" if row.scope == "line" else "Transaction",
                 ),
             )
-        self._feedback(
-            "Void history refreshed. Dates are inclusive; blank dates are unrestricted."
-            if rows
-            else "No void records match these filters."
-        )
+        self._feedback("" if rows else "No void records match these filters.")
 
     def show_selected(self, _event=None):
         try:

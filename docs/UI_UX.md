@@ -4,6 +4,13 @@
 
 - **Library:** ttkbootstrap, default theme **`cosmo`** (blue primary), configured in `config.py`. Signed-in users can choose any built-in theme in Settings.
 - **Tone:** friendly pet-shop feel, but clean and professional. Straightforward labels, no clutter.
+- Categories, Customers, Users, Settings, and Sales History open and refresh
+  without routine instructional status text. Users has no account-management
+  explanatory paragraph; Sales History has no static PDF reprint explanation.
+  Inventory Receive/Adjust forms have no explanatory footer, and populated
+  Movement History and Void History show no routine informational note.
+  Dashboard refresh status shows only `Updated HH:MM:SS.`. Empty-state messages,
+  action results, and errors remain available.
 - **Brand:** system name **PawPOS**; paw-icon placeholder logo (`assets/logo.png`) in the login screen and top bar.
 - **Palette (default-theme guide):** primary blue `#2F80ED`, light blue background `#EAF3FF`, white cards, dark text `#1F2D3D`, success green, warning amber, danger red for voids/low stock.
 - **Typography:** system font (Segoe UI on Windows). Body 11 pt, headings 16-20 pt bold, totals 24 pt bold.

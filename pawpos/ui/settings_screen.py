@@ -84,7 +84,7 @@ class SettingsScreen(ttk.Frame):
     def load(self):
         self.perform(
             lambda: self.theme.set(settings_service.get_settings().theme),
-            "Your theme is saved for this account.",
+            "",
         )
 
     def apply_theme(self):

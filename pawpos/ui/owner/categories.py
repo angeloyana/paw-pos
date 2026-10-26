@@ -68,7 +68,7 @@ class CategoriesScreen(CatalogScreen):
         self.refresh()
 
     def refresh(self) -> None:
-        self.perform(self._load, "Select a category to edit, or add a new one.")
+        self.perform(self._load)
 
     def _load(self) -> None:
         categories = category_service.list_categories(

@@ -91,7 +91,7 @@ class CustomersScreen(CatalogScreen):
     def refresh(self):
         if hasattr(self, "auto_filter"):
             self.auto_filter.cancel()
-        self.perform(self._load, "Select a customer to edit, or add a new one.")
+        self.perform(self._load)
 
     def _load(self):
         rows = customer_service.list_customers(self.search.get())

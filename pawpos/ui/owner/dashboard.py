@@ -164,9 +164,7 @@ class DashboardScreen(ttk.Frame):
                 if low
                 else "No active products are low on stock."
             )
-            self.status.set(
-                f"Updated {datetime.now():%H:%M:%S}. Net sales deduct refunds on their approval date."
-            )
+            self.status.set(f"Updated {datetime.now():%H:%M:%S}.")
             self.status_label.configure(bootstyle="secondary")
         except PawPOSError as error:
             self.status.set(str(error))

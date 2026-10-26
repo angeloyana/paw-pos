@@ -41,7 +41,7 @@ def test_owner_inventory_four_tabs_receive_adjust_and_readonly_history(app):
     assert screen.status.get() == "Stock adjusted."
     row = screen.history_tree.item(screen.history_tree.get_children()[0], "values")
     assert row[2] == "adjustment" and row[3] == "-1" and row[-1] == "Damage: Broken"
-    assert "read-only" in screen.history_empty.get()
+    assert screen.history_empty.get() == ""
     assert not screen.history_tree.bind("<Double-1>")
     assert not screen.history_tree.bind("<Delete>")
     assert len(screen.overview_tree.tag_has("low")) >= 1

@@ -60,15 +60,10 @@ class UsersScreen(CatalogScreen):
             state="disabled",
         )
         self.reset_button.grid(row=6, column=0, columnspan=2, sticky="ew", pady=6)
-        ttk.Label(
-            self.form,
-            text="Select an account to reset its password. Only cashier accounts can be enabled/disabled; your owner account stays active. Passwords are never displayed.",
-            wraplength=280,
-        ).grid(row=7, column=0, columnspan=2, sticky="w", pady=8)
         self.refresh()
 
     def refresh(self):
-        self.perform(self._load, "Select an account, or add a cashier.")
+        self.perform(self._load)
 
     def _load(self):
         rows = user_service.list_users()

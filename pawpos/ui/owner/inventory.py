@@ -178,7 +178,6 @@ class InventoryScreen(ttk.Frame):
                 tab, text="Receive stock", command=self.receive
             )
             self.receive_button.grid(row=5, column=1, sticky="w", pady=16)
-            hint = "Supplier is prefilled from the product. Delivery details are saved in history."
         else:
             self.adjust_combo = combo
             self._field(tab, 1, "Quantity change (+ or -)", self.adjust_quantity)
@@ -190,10 +189,6 @@ class InventoryScreen(ttk.Frame):
                 tab, text="Apply adjustment", command=self.adjust
             )
             self.adjust_button.grid(row=5, column=1, sticky="w", pady=16)
-            hint = "Enter a signed change, such as -2 for loss or +3 for a count correction."
-        ttk.Label(tab, text=hint, wraplength=700).grid(
-            row=6, column=0, columnspan=2, sticky="w", pady=8
-        )
 
     def _build_history(self):
         tab = self.tabs["Movement History"]
@@ -374,7 +369,5 @@ class InventoryScreen(ttk.Frame):
                 ),
             )
         self.history_empty.set(
-            "No stock movements match these filters."
-            if not rows
-            else "History is read-only. Stock after is the balance when posted."
+            "No stock movements match these filters." if not rows else ""
         )

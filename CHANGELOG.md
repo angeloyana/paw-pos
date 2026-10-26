@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Remove selected helper notes from Categories, Customers, Settings, Users,
+  Inventory, Sales History, and Void History. Keep only the update time in the
+  dashboard status, preserving empty-state messages and action/error feedback.
+
 - Rank dashboard Top 5 Products by net revenue instead of quantity. Deduct
   approved product refunds on approval date, including returns of older sales;
   show peso/centavo labels and zero/negative results in the existing date ranges.

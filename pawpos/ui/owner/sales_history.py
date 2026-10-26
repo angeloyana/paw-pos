@@ -93,11 +93,6 @@ class SalesHistoryScreen(CatalogScreen):
             self.form, text="Reprint receipt", command=self.reprint, state="disabled"
         )
         self.reprint_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=12)
-        ttk.Label(
-            self.form,
-            text="Reprint opens an 80 mm PDF in your default viewer. Print from that viewer.",
-            wraplength=280,
-        ).grid(row=3, column=0, columnspan=2, sticky="w")
         self.refresh()
         self.auto_filter = AutoFilter(
             self,
@@ -126,10 +121,7 @@ class SalesHistoryScreen(CatalogScreen):
     def refresh(self):
         if hasattr(self, "auto_filter"):
             self.auto_filter.cancel()
-        self.perform(
-            self._load,
-            "Sales history refreshed. Dates are inclusive; blank dates include all sales.",
-        )
+        self.perform(self._load)
 
     def _load(self):
         accounts = user_service.list_users()
