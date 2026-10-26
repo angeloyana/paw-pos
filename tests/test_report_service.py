@@ -249,16 +249,83 @@ def test_calendar_ranges_zero_dates_refund_only_negative_day_and_money_types(act
     assert sum(row.gross_sales for row in month) == Decimal("368.13")
 
 
-def test_best_sellers_gross_qty_units_limits_and_date_ranges(activity):
+def test_best_sellers_net_revenue_units_limits_and_date_ranges(activity):
     today = reports.best_sellers(1)
     assert [(row.product_name, row.unit_type, row.quantity) for row in today] == [
-        ("Alpha", "piece", Decimal("5.000")),
         ("Beta", "kg", Decimal("1.375")),
+        ("Alpha", "piece", Decimal("5.000")),
     ]
+    assert [row.net_revenue for row in today] == [Decimal("95.00"), Decimal("40.00")]
     week = reports.best_sellers(7)
-    assert [row.quantity for row in week] == [Decimal("9.000"), Decimal("1.875")]
+    assert [row.quantity for row in week] == [Decimal("1.875"), Decimal("9.000")]
+    assert [row.net_revenue for row in week] == [Decimal("133.00"), Decimal("70.00")]
     assert reports.best_sellers(30, 1)[0].quantity == Decimal("19.000")
     assert len(reports.best_sellers(7, 1)) == 1
+    assert all(isinstance(row.net_revenue, Decimal) for row in week)
+
+
+def test_multiple_refunds_and_old_sale_refund_only_negative_revenue(catalog):
+    old = sell(catalog, TODAY - timedelta(days=31), [(1, 5)])
+    for hour in (1, 2):
+        refund(
+            old,
+            "Alpha",
+            1,
+            TODAY - timedelta(days=30, hours=-hour),
+            "approved",
+            TODAY + timedelta(hours=hour),
+        )
+    refund(old, "Alpha", 1, TODAY - timedelta(days=30), "pending")
+    refund(
+        old,
+        "Alpha",
+        1,
+        TODAY - timedelta(days=30),
+        "rejected",
+        TODAY + timedelta(hours=4),
+    )
+    for days in (1, 7, 30):
+        (row,) = reports.best_sellers(days)
+        assert row.quantity == Decimal("0.000")
+        assert row.net_revenue == Decimal("-20.00")
+    sell(catalog, TODAY, [(1, 2)])
+    assert reports.best_sellers(1)[0].net_revenue == Decimal("0.00")
+
+
+def test_revenue_ranking_limits_after_combining_and_uses_recorded_prices(catalog):
+    with catalog.begin() as session:
+        for product_id in range(7, 13):
+            session.add(
+                Product(
+                    id=product_id,
+                    name=f"Product {product_id}",
+                    category_id=1,
+                    unit_type="piece",
+                    unit_price=product_id,
+                    stock_quantity=100,
+                )
+            )
+    sale = sell(catalog, TODAY, [(pid, 2) for pid in range(7, 13)])
+    refund(sale, "Product 12", 2, TODAY, "approved", TODAY)
+    with catalog.begin() as session:
+        session.get(Product, 7).unit_price = 1000
+    rows = reports.best_sellers(1)
+    assert [row.product_id for row in rows] == [11, 10, 9, 8, 7]
+    assert [row.net_revenue for row in rows] == [
+        Decimal(n) for n in (22, 20, 18, 16, 14)
+    ]
+
+
+def test_refund_approval_window_includes_start_excludes_next_day(catalog):
+    sale = sell(catalog, TODAY - timedelta(days=10), [(1, 4)])
+    for when in (
+        TODAY - timedelta(microseconds=1),
+        TODAY,
+        TODAY + timedelta(days=1, microseconds=-1),
+        TODAY + timedelta(days=1),
+    ):
+        refund(sale, "Alpha", 1, TODAY - timedelta(days=9), "approved", when)
+    assert reports.best_sellers(1)[0].net_revenue == Decimal("-20.00")
 
 
 def test_best_seller_ties_and_inactive_historical_products(catalog):

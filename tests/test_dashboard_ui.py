@@ -41,7 +41,7 @@ def test_owner_default_dashboard_renders_seed_summary_empty_charts_and_low_stock
     assert "approval date" in screen.status.get()
 
 
-def test_sales_refunds_pending_cards_and_quantity_chart(app):
+def test_sales_refunds_pending_cards_and_revenue_chart(app):
     completed, _, _ = sale(app)
     lines = refund_service.lookup_receipt(completed.receipt_number).items
     toy = next(line for line in lines if line.unit_type == "piece")
@@ -64,9 +64,12 @@ def test_sales_refunds_pending_cards_and_quantity_chart(app):
         "kg" in label for label in labels
     )
     assert [text.get_text() for text in screen.best_chart.axes.texts] == [
-        "2",
-        "1.375 kg",
+        "₱150.00",
+        "₱130.63",
     ]
+    assert screen.best_chart.axes.get_xlabel() == "Net revenue (₱)"
+    assert screen.best_chart.axes.xaxis.get_major_formatter()(0.5) == "₱0.50"
+    assert [bar.get_width() for bar in screen.best_chart.axes.patches] == [150, 130.63]
 
 
 def test_chart_range_selectors_redraw_existing_canvases(app):
@@ -92,11 +95,11 @@ def test_chart_range_selectors_redraw_existing_canvases(app):
     screen.best_range.set("Today")
     screen.best_selector.event_generate("<<ComboboxSelected>>")
     app.update()
-    assert screen.best_chart.axes.patches[0].get_width() == 2
+    assert screen.best_chart.axes.patches[0].get_width() == 300
     screen.best_range.set("30 days")
     screen.best_selector.event_generate("<<ComboboxSelected>>")
     app.update()
-    assert screen.best_chart.axes.patches[0].get_width() == 3
+    assert screen.best_chart.axes.patches[0].get_width() == 450
     assert (
         screen.daily_chart.canvas is daily_canvas
         and screen.best_chart.canvas is best_canvas
@@ -159,6 +162,29 @@ def test_negative_net_sales_and_empty_low_stock_render(app):
         screen.low_tree.get_children() == () and screen.values["low_stock"].get() == "0"
     )
     assert "No active products" in screen.low_message.get()
+
+
+def test_zero_and_refund_only_negative_product_revenue_survive_theme_redraw(app):
+    screen = owner_screen(app, "Dashboard")
+    rows = [
+        report_service.BestSeller(1, "Fully refunded", "piece", Decimal(2), Decimal(0)),
+        report_service.BestSeller(
+            2, "Older sale refund", "kg", Decimal(0), Decimal("-9.50")
+        ),
+    ]
+    chart = screen.best_chart
+    canvas = chart.canvas
+    chart.draw_best_sellers(rows)
+    chart.refresh_theme()
+    app.update()
+    assert chart.canvas is canvas
+    assert [bar.get_width() for bar in chart.axes.patches] == [0, -9.5]
+    assert [text.get_text() for text in chart.axes.texts] == ["₱0.00", "₱-9.50"]
+    renderer = chart.canvas.get_renderer()
+    figure_box = chart.figure.bbox
+    for text in chart.axes.texts:
+        box = text.get_window_extent(renderer)
+        assert figure_box.x0 <= box.x0 < box.x1 <= figure_box.x1
 
 
 def test_dashboard_fits_minimum_window_and_repeated_navigation_cleans_canvases(app):

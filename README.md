@@ -34,6 +34,8 @@ to a payment provider.
 - **Refund requests and owner decisions**, plus shared status tracking, decision
   notices, and recorded payouts.
 - **Owner dashboard and sales history** with charts, filters, and receipt reprints.
+  Dashboard Top 5 Products ranks by net revenue, deducting approved refunds on
+  their approval date, with Today / 7 days / 30 days ranges.
 
 This version is designed for a single terminal. It does not include executable
 packaging, multi-terminal support, barcode scanning, digital scales, discounts,

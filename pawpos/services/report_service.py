@@ -4,12 +4,12 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
-from sqlalchemy import func, select
+from sqlalchemy import Numeric, func, literal, select, union_all
 from sqlalchemy.orm import Session, joinedload
 
 from pawpos.core.errors import ValidationError
 from pawpos.db.base import session_scope
-from pawpos.models import Category, Product, RefundRequest, Sale, SaleItem
+from pawpos.models import Category, Product, RefundItem, RefundRequest, Sale, SaleItem
 from pawpos.services.auth_service import _require_owner
 from pawpos.services.product_service import ProductDetails, _details
 
@@ -38,6 +38,7 @@ class BestSeller:
     product_name: str
     unit_type: str
     quantity: Decimal
+    net_revenue: Decimal
 
 
 def _window(days: int) -> tuple[date, datetime, datetime]:
@@ -129,7 +130,7 @@ def daily_sales(days: int = 7) -> list[DailySales]:
 
 
 def best_sellers(days: int = 7, limit: int = 5) -> list[BestSeller]:
-    """Rank gross quantities sold in completed sales; retain inactive products' history."""
+    """Rank net revenue, deducting refunds on approval; retain historical products."""
     with session_scope() as session:
         _require_owner(session)
         if type(days) is not int or days not in (1, 7, 30):
@@ -137,18 +138,54 @@ def best_sellers(days: int = 7, limit: int = 5) -> list[BestSeller]:
         if type(limit) is not int or limit <= 0:
             raise ValidationError("Best-seller limit must be a positive whole number.")
         _, start, end = _window(days)
-        total = func.sum(SaleItem.quantity)
-        query = (
-            select(Product.id, Product.name, SaleItem.unit_type, total)
-            .join(SaleItem, SaleItem.product_id == Product.id)
+        sales = (
+            select(
+                SaleItem.product_id,
+                SaleItem.unit_type,
+                func.sum(SaleItem.quantity).label("quantity"),
+                func.sum(SaleItem.line_total).label("revenue"),
+            )
             .join(SaleItem.sale)
             .where(
                 Sale.status == "completed",
                 Sale.completed_at >= start,
                 Sale.completed_at < end,
             )
-            .group_by(Product.id, Product.name, SaleItem.unit_type)
-            .order_by(total.desc(), Product.name, Product.id, SaleItem.unit_type)
+            .group_by(SaleItem.product_id, SaleItem.unit_type)
+        )
+        refunds = (
+            select(
+                SaleItem.product_id,
+                SaleItem.unit_type,
+                literal(Decimal("0.000"), type_=Numeric(10, 3)).label("quantity"),
+                (-func.sum(RefundItem.amount)).label("revenue"),
+            )
+            .select_from(RefundItem)
+            .join(RefundItem.sale_item)
+            .join(RefundItem.request)
+            .join(SaleItem.sale)
+            .where(
+                Sale.status == "completed",
+                RefundRequest.status == "approved",
+                RefundRequest.reviewed_at >= start,
+                RefundRequest.reviewed_at < end,
+            )
+            .group_by(SaleItem.product_id, SaleItem.unit_type)
+        )
+        # Aggregate each source before combining, avoiding sale/refund multiplication.
+        activity = union_all(sales, refunds).subquery()
+        revenue = func.sum(activity.c.revenue)
+        query = (
+            select(
+                Product.id,
+                Product.name,
+                activity.c.unit_type,
+                func.sum(activity.c.quantity),
+                revenue,
+            )
+            .join(activity, activity.c.product_id == Product.id)
+            .group_by(Product.id, Product.name, activity.c.unit_type)
+            .order_by(revenue.desc(), Product.name, Product.id, activity.c.unit_type)
             .limit(limit)
         )
         return [BestSeller(*row) for row in session.execute(query)]

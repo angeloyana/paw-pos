@@ -100,14 +100,17 @@ A refund applies only to a **completed** sale.
 ## 9. Reports (owner dashboard)
 
 1. **Daily sales** (chart + total for today and number of transactions)
-2. **Best-selling products** (chart, top 5 by quantity sold, selectable range: today / 7 days / 30 days)
+2. **Best-selling products** (chart, top 5 by net revenue, selectable range: today / 7 days / 30 days)
 3. **Low-stock list** (table)
 
 Net sales count sales on their completion date and subtract approved refunds
 on their review date. Pending/rejected requests do not reduce net sales.
 Calendar ranges include today and zero-fill empty dates; refund-only days may
-be negative. Best sellers rank gross quantities sold, without subtracting returns,
-and label piece/kg units. Inactive products remain in historical sales rankings.
+be negative. Best sellers rank completed-sale line totals minus approved refund-item
+amounts, using completion and approval dates respectively, including refunds for
+older sales. Pending/rejected refunds and payout dates have no effect. Products
+with sales or approved refunds participate, including zero/negative revenue and
+inactive historical products. The chart labels amounts in pesos and centavos.
 
 ## 10. Accounts
 

@@ -143,7 +143,7 @@ and column layouts are preserved.
 ## H. Dashboard (owner)
 
 - AC: Cards: today's net sales, today's transactions, number of low-stock items, pending refunds count.
-- AC: Chart 1: daily sales (bar, last 7 days, toggle 30). Chart 2: best sellers (horizontal bar, top 5; range today / 7 / 30 days). Low-stock table.
+- AC: Chart 1: daily sales (bar, last 7 days, toggle 30). Chart 2: best sellers (horizontal bar, top 5 by net revenue after approved refunds; range today / 7 / 30 days). Low-stock table.
 - AC: Charts use Matplotlib embedded via `FigureCanvasTkAgg`, themed to match the selected account theme.
 - AC: Refresh button (and refresh when the dashboard is shown).
 

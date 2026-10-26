@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Rank dashboard Top 5 Products by net revenue instead of quantity. Deduct
+  approved product refunds on approval date, including returns of older sales;
+  show peso/centavo labels and zero/negative results in the existing date ranges.
+
 - Move POS Void History beside Held, replace category buttons with a dropdown,
   and spread product cards evenly across the available grid width.
 

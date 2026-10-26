@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator, StrMethodFormatter
 
-from pawpos.core.money import format_qty
+from pawpos.core.money import format_peso
 
 
 class ChartFrame(ttk.Frame):
@@ -88,8 +88,11 @@ class ChartFrame(ttk.Frame):
         if rows:
             bars = self.axes.barh(
                 range(len(rows)),
-                [row.quantity for row in rows],
-                color=self.colors.primary,
+                [row.net_revenue for row in rows],
+                color=[
+                    self.colors.danger if row.net_revenue < 0 else self.colors.primary
+                    for row in rows
+                ],
             )
             self.axes.set_yticks(
                 range(len(rows)),
@@ -98,7 +101,7 @@ class ChartFrame(ttk.Frame):
             self.axes.invert_yaxis()
             self.axes.bar_label(
                 bars,
-                labels=[format_qty(row.quantity, row.unit_type) for row in rows],
+                labels=[format_peso(row.net_revenue) for row in rows],
                 padding=3,
                 fontsize=8,
                 color=self.colors.fg,
@@ -109,14 +112,16 @@ class ChartFrame(ttk.Frame):
             self.axes.text(
                 0.5,
                 0.5,
-                "No completed sales\nin this range.",
+                "No completed sales or approved refunds\nin this range.",
                 transform=self.axes.transAxes,
                 ha="center",
                 va="center",
                 color=self.colors.fg,
             )
         self.axes.xaxis.set_major_locator(MaxNLocator(nbins=4))
-        self.axes.set_xlabel("Quantity sold (piece / kg)", fontsize=8)
+        self.axes.xaxis.set_major_formatter(StrMethodFormatter("₱{x:,.2f}"))
+        self.axes.axvline(0, color=self.colors.secondary, linewidth=0.7)
+        self.axes.set_xlabel("Net revenue (₱)", fontsize=8)
         self.canvas.draw_idle()
 
     def refresh_theme(self):

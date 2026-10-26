@@ -88,7 +88,7 @@ class DashboardScreen(ttk.Frame):
                 self.best_selector = combo
         self.daily_chart = ChartFrame(charts, "Daily net sales")
         self.daily_chart.grid(row=1, column=0, sticky="nsew", padx=(0, 12))
-        self.best_chart = ChartFrame(charts, "Top 5 products")
+        self.best_chart = ChartFrame(charts, "Top 5 products by net revenue")
         self.best_chart.grid(row=1, column=1, sticky="nsew")
         low = ttk.Frame(self)
         low.grid(row=4, column=0, sticky="nsew")

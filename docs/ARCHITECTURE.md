@@ -367,10 +367,15 @@ Gross sales use `completed_at`; approved refunds use `reviewed_at`, including
 refunds of sales from earlier days. Refund-only days can have negative net sales.
 Sales/refund aggregates run separately to avoid multiplying totals across joins.
 
-`best_sellers(1|7|30, limit=5)` ranks gross quantities from completed sales and
-labels units. Refund quantities do not reduce this gross-sales ranking. Products
+`best_sellers(1|7|30, limit=5)` returns `BestSeller` snapshots with Decimal
+`net_revenue` alongside the existing product ID/name/unit and gross `quantity`.
+It separately aggregates completed-sale line totals by completion date and
+approved refund-item amounts by approval date, combines them with UNION ALL,
+then groups, ranks net revenue descending and limits the result. Refund-only
+products retain zero gross quantity and can have negative revenue. Products
 are grouped by ID/unit with current names, including inactive historical products;
-ties use name/ID/unit for a stable order. `low_stock` includes active products in
+ties use name/ID/unit for a stable order. Zero/negative results are not clamped.
+Pending/rejected refunds and payout dates do not affect revenue. `low_stock` includes active products in
 active categories when stock is at or below threshold, including zero. Inactive
 entries remain available in Inventory but do not generate dashboard restocking
 alerts. The card and list share that rule. `pending_refund_count` supplies the

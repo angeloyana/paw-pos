@@ -150,7 +150,7 @@ at the minimum window size and with larger system fonts.
 
 | Screen            | Layout                                                                                                                                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard**     | Top row of 4 stat cards (Today's sales, Transactions, Low-stock items, Pending refunds). Middle row: Daily sales bar chart (7/30 toggle) and Best sellers chart (range selector). Bottom: Low-stock table (product, stock, threshold) |
+| **Dashboard**     | Top row of 4 stat cards (Today's sales, Transactions, Low-stock items, Pending refunds). Middle row: Daily sales bar chart (7/30 toggle) and Top 5 products by net revenue chart (range selector). Bottom: Low-stock table (product, stock, threshold) |
 | **Products**      | Table (thumbnail optional, name, category, type, price, stock, threshold, active) with search and category filter; **Add / Edit / Deactivate**. Form: all product fields + image picker with preview                                  |
 | **Categories**    | Simple table + add/edit/delete form with `is_food` checkbox                                                                                                                                                                           |
 | **Inventory**     | Tabs: **Stock Overview**, **Receive Stock**, **Adjust Stock**, **Movement History** (filters: product, type, dates)                                                                                                                   |
@@ -276,8 +276,12 @@ Owner login and the Dashboard sidebar entry show four summary cards, two theme-c
 Matplotlib charts, and a read-only low-stock table. Daily net sales offers 7/30
 calendar days, fills empty dates, and renders negative days in red. Currency
 axis labels show pesos and centavos. Best sellers offers Today/7/30 days and
-labels the top five gross quantities with piece/kg units. Product names wrap,
-and exact quantity labels use Decimal-derived text.
+ranks the top five products by net revenue, defaulting to 7 days. The title is
+"Top 5 products by net revenue"; bars, axis ticks and exact Decimal-derived
+labels show pesos and centavos. Product names wrap and retain piece/kg units.
+Approved refunds deduct on approval date, including returns of older sales.
+Zero and negative results remain visible; negative bars are red. Empty charts
+explain that there are no completed sales or approved refunds in the range.
 
 The low-stock list includes active products/categories at or below threshold,
 including zero stock, and scrolls in both directions. Cards/list share the same
