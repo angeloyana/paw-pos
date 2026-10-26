@@ -1,6 +1,6 @@
 # 006: Dashboard Top 5 Products by Net Revenue
 
-**Status:** in progress
+**Status:** done
 
 **Touches:** `docs/FEATURES.md`, `docs/BUSINESS_PROCESS.md`, `docs/UI_UX.md`, `docs/ARCHITECTURE.md`, `README.md`, `CHANGELOG.md`
 
@@ -34,15 +34,26 @@ Deduct approved refunds on their approval date, matching daily net sales.
 
 ## Done when
 
-- [ ] Lower-quantity, higher-revenue products rank first.
-- [ ] Partial/multiple approved refunds deduct once; pending/rejected refunds do not.
-- [ ] Old sales refunded today reduce today's product revenue.
-- [ ] Boundaries, ranges, limit, ties, inactive history and owner authorization pass.
-- [ ] Fractional-kg sales use recorded money and retain Decimal precision.
-- [ ] Empty, zero, negative and refund-only results render with currency labels.
-- [ ] Refresh, ranges, theme redraws and canvas reuse pass.
-- [ ] Full tests, Ruff checks and app verification pass; docs and commits are complete.
+- [x] Lower-quantity, higher-revenue products rank first.
+- [x] Partial/multiple approved refunds deduct once; pending/rejected refunds do not.
+- [x] Old sales refunded today reduce today's product revenue.
+- [x] Boundaries, ranges, limit, ties, inactive history and owner authorization pass.
+- [x] Fractional-kg sales use recorded money and retain Decimal precision.
+- [x] Empty, zero, negative and refund-only results render with currency labels.
+- [x] Refresh, ranges, theme redraws and canvas reuse pass.
+- [x] Full tests, Ruff checks and app verification pass; docs and commits are complete.
 
 ## Remaining work
 
-Implement and verify the tasks above.
+None.
+
+## Verification
+
+- Focused report/dashboard tests: 35 passed.
+- Full pytest suite: 543 passed and 26 subtests passed. Used a fresh permitted
+  `--basetemp` directory because sandbox default temp-directory creation failed.
+- `python -m ruff check .` and `python -m ruff format --check .`: passed.
+- App smoke against disposable seeded SQLite: owner login, 1280x720 dashboard,
+  positive/zero/negative currency bars, dark theme and desktop event loop passed.
+  Rendered chart visually checked for readable labels.
+- Report query compiles for MySQL; no live shop data was changed.

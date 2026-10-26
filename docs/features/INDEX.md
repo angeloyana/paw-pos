@@ -11,7 +11,7 @@ Statuses: `planned`, `in progress`, `done`. Keep each spec's status aligned here
 | 003 | [Shared calendar date picker](003-date-picker.md) | done |
 | 004 | [Case-sensitive usernames](004-case-sensitive-usernames.md) | done |
 | 005 | [Read-only void history](005-void-history.md) | done |
-| 006 | [Dashboard products by net revenue](006-dashboard-product-revenue.md) | in progress |
+| 006 | [Dashboard products by net revenue](006-dashboard-product-revenue.md) | done |
 
 The initial build's completion and verification are recorded in its Phase 11
 section. Existing capabilities remain documented in [FEATURES.md](../FEATURES.md);
